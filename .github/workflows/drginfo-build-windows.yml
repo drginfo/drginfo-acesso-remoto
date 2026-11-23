@@ -748,6 +748,21 @@ jobs:
           name: librustdesk.so.${{ matrix.job.target }}
           path: ./target/${{ matrix.job.target }}/release/liblibrustdesk.so
 
+      - name: Embed DRGinfo custom client config (optional)
+        shell: bash
+        env:
+          # Secret com o custom.txt assinado, codificado em base64. Nunca fica no repositório.
+          DRGINFO_CUSTOM_TXT_B64: ${{ secrets.DRGINFO_CUSTOM_TXT_B64 }}
+        run: |
+          # Sem o secret, não cria o asset: o APK sai sem personalização, como antes.
+          if [ -z "$DRGINFO_CUSTOM_TXT_B64" ]; then
+            echo "Secret DRGINFO_CUSTOM_TXT_B64 ausente: APK sem configuração DRGinfo."
+            exit 0
+          fi
+          mkdir -p ./flutter/android/app/src/main/assets/drginfo
+          # printf evita newline extra; base64 -d devolve o custom.txt original.
+          printf '%s' "$DRGINFO_CUSTOM_TXT_B64" | base64 -d > ./flutter/android/app/src/main/assets/drginfo/custom.txt
+
       - name: Build rustdesk
         shell: bash
         env:
