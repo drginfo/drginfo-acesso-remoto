@@ -47,6 +47,9 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 
+// Configuração personalizada DRGinfo (custom.txt assinado), embutida no APK em src/main/assets/.
+const val CUSTOM_CLIENT_CONFIG_ASSET = "drginfo/custom.txt"
+
 const val DEFAULT_NOTIFY_TITLE = "RustDesk"
 const val DEFAULT_NOTIFY_TEXT = "Service is running"
 const val DEFAULT_NOTIFY_ID = 1
@@ -253,10 +256,22 @@ class MainService : Service() {
         val configPath = prefs.getString(KEY_APP_DIR_CONFIG_PATH, "") ?: ""
         val homePath = applicationContext.getExternalFilesDir(null)?.absolutePath
             ?: applicationContext.filesDir.absolutePath
-        FFI.startServer(configPath, homePath, "")
+        FFI.startServer(configPath, homePath, loadCustomClientConfig())
         FFI.setInputServiceOpen(InputService.isOpen)
 
         createForegroundNotification()
+    }
+
+    // Retorna "" quando o asset não existe; o Rust então usa o custom.txt da pasta do executável (comportamento padrão).
+    private fun loadCustomClientConfig(): String {
+        return try {
+            assets.open(CUSTOM_CLIENT_CONFIG_ASSET).bufferedReader().use { it.readText().trim() }
+        } catch (e: java.io.FileNotFoundException) {
+            ""
+        } catch (e: java.io.IOException) {
+            Log.w(logTag, "Falha ao ler configuração personalizada: ${e.message}")
+            ""
+        }
     }
 
     override fun onDestroy() {
