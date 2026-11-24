@@ -16,7 +16,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = '99202b84e44920bd7db293c940953014c578ca6e'
+$SourceCommit = '18b4f829c35f8a4724cf58472a0f64d780ce8760'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
