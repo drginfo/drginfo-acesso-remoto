@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - fix/drginfo-windows-startup-diagnostics
+      - feat/drginfo-embedded-config
     paths:
       - 'flutter/windows/runner/main.cpp'
       - 'src/common.rs'
