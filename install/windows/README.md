@@ -1,60 +1,72 @@
-# Instalacao Windows x64 — DRGinfo Acesso Remoto
+# DRGinfo Acesso Remoto — Distribuicao pela VPS (Windows x64)
 
-## Origem validada
+## Politica definitiva
 
-Build Windows x64 GitHub Actions: [execucao 45468695045](https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45468695045), commit `2dfc3bdd05452700475cc958d1b2ff7e3fb718ad`.
+1. O instalador baixa a distribuicao **exclusivamente** por HTTPS da VPS DRGinfo, nunca do GitHub.
+2. O dominio previsto e \`downloads.drginfo.com.br\`, que deve ter DNS, certificado TLS e virtual host validados **antes** da primeira instalacao.
+3. O pacote ZIP possui SHA-256 **fixado** por release, enviado como parametro; um hash recebido da mesma conexao de download **nao e suficiente** para garantir autenticidade.
+4. O executavel \`rustdesk.exe\` e \`librustdesk.dll\` devem possuir assinaturas **Authenticode Valid** da DRGinfo, verificadas por thumbprint de certificado autorizado.
+5. A compilacao de GitHub Actions \`45468695045\` foi homologada em **modo portatil** e tem o artefato \`rustdesk-unsigned-windows-x86_64\`. Ele **ainda nao e uma release assinada** e, portanto, o instalador definitivo se recusara a instala-lo.
+6. O certificado TLS da VPS **nao** substitui o certificado de assinatura de codigo Windows. O certificado A1 de emissao fiscal nao deve ser presumido apto para assinar executaveis (verificar EKU Code Signing).
 
-Artefato: `rustdesk-unsigned-windows-x86_64` (ID `14960691084`).
-O cliente PORTATIL desse pacote foi testado no Windows 11 e teve acesso remoto fim a fim confirmado.
+## Pastas definitivas
 
-**O artefato nao tem assinatura Authenticode; NAO publicar para clientes como release final.**
-Este instalador PowerShell e apenas para VM de homologacao.
+| Funcao | Pasta |
+| --- | --- |
+| App instalado | \`C:\Program Files\DRGinfo Acesso Remoto\` |
+| Releases/cache validado | \`C:\ProgramData\DRGinfo\AcessoRemoto\packages\<SHA256>\` |
+| ZIP original | \`...\packages\<SHA256>\package.zip\` |
+| Arquivos de origem extratidos | \`...\packages\<SHA256>\extracted\` |
+| Logs | \`C:\ProgramData\DRGinfo\AcessoRemoto\instalacao.log\` |
+| Inventario SHA256 | \`C:\ProgramData\DRGinfo\AcessoRemoto\manifesto-sha256.csv\` |
+| Hospedagem VPS | URL publica \`https://downloads.drginfo.com.br/acesso-remoto/windows-x64/DRGinfo-AcessoRemoto-windows-x64.zip\`; caminho local na VPS depende da configuracao do web server |
 
-## Preparar a VM
+As pastas de release sao persistentes e nao sao apagadas em caso de falha de instalacao. Sem \`%TEMP%\` como fonte operacional. O cliente Windows usa configuracao incorporada, sem \`custom.txt\`.
 
-1. Extrair a distribuicao completa em `C:\DRGinfo-Teste` (inclusive `data`, DLLs e plugins).
-2. Garantir que nao haja `custom.txt` nessa pasta. Configuracoes de ID/relay/chave publica ja estao no binario.
-3. Baixar o script `install/windows/Instalar-DRGinfo-AcessoRemoto.ps1` na mesma VM.
-4. Manter o RustDesk original e outros servicos intactos; a versao DRGinfo usa seu proprio nome.
+## Preparacao de release assinada (nao concluida)
 
-## Instalacao (Windows PowerShell x64 COMO ADMINISTRADOR)
+1. Disponibilizar um certificado valido de **assinatura de codigo** da DRGinfo, com sua chave privada armazenada fora do repositório, preferencialmente em armazenamento protegido/hardware.
+2. Assinar o executavel e a DLL do nucleo Rust, com SHA-256 e carimbo do tempo confiavel. Verificar ambos usando \`Get-AuthenticodeSignature\`.
+3. Empacotar a distribuicao completa (EXE, DLLs, \`data/\`, plugins) em ZIP, preservando estrutura de diretórios. **Nao** incluir \`custom.txt\`.
+4. Calcular o SHA-256 definitivo do ZIP, salvar em manifesto de release de acesso controlado e disponibilizar o pacote na VPS via deploy atomico.
+5. Confirmar DNS/HTTPS e acesso ao pacote. Publicar SHA-256 e thumbprint para o procedimento de instalacao; nunca publicar chaves privadas.
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\DRGinfo-Teste\Instalar-DRGinfo-AcessoRemoto.ps1" -SourceDirectory "C:\DRGinfo-Teste"
-```
+**Nao ha prova de que o endereco de download ja esteja online. Nao executar instalacao ate o pacote assinado ser publicado.**
 
-O instalador verifica elevacao, arquitetura, arquivos, ausencia de `custom.txt` e inexistencia de instalacao previa. Copia a distribuicao completa para `C:\Program Files\DRGinfo Acesso Remoto`, renomeia o EXE para `DRGinfo Acesso Remoto.exe` (nome usado pelo proprio nucleo Rust), cria o servico Windows `DRGinfo Acesso Remoto`, configura inicio automatico, verifica o estado e gera manifesto SHA-256.
+## Instalacao/validacao em pastas definitivas
 
-Falhas geram tentativa de rollback dos itens criados pelo script. Nenhuma configuracao de usuario e apagada.
+Windows PowerShell x64 **como Administrador**, apos disponibilizacao da release assinada:
 
-## Verificacao unica
+\`\`\`powershell
+$Script = 'C:\ProgramData\DRGinfo\AcessoRemoto\Instalar-DRGinfo-AcessoRemoto.ps1'
+$Hash = '<SHA256-OFICIAL-DO-ZIP-64-HEX>'
+$Thumbprint = '<CERTIFICADO-CODE-SIGNING-40-OU-64-HEX>'
 
-```powershell
-Get-Service -Name 'DRGinfo Acesso Remoto' |
-  Select-Object Name, Status, StartType
-Get-Item 'C:\Program Files\DRGinfo Acesso Remoto\DRGinfo Acesso Remoto.exe' |
-  Select-Object Name, Length, LastWriteTime
-```
+# Validacao sem instalar servico nem alterar Program Files
+& $Script -PackageSha256 $Hash -PublisherThumbprint $Thumbprint -ValidateOnly
 
-Abrir `C:\Program Files\DRGinfo Acesso Remoto\DRGinfo Acesso Remoto.exe` e verificar se apresenta ID, estado Pronto e permite conexao fim a fim. Depois, verificar permanencia do servico apos reinicializacao (teste isolado).
+# So executar depois de aprovar a validacao
+& $Script -PackageSha256 $Hash -PublisherThumbprint $Thumbprint
+\`\`\`
 
-## Logs, integridade, rollback
+O arquivo do script deve ser distribuido por canal administrado/confiavel e ter sua integridade verificada. A validacao de ZIP protege o pacote, mas nao autentica um script adulterado.
 
-- Log: `C:\ProgramData\DRGinfo\AcessoRemoto\instalacao.log`
-- Manifesto: `C:\ProgramData\DRGinfo\AcessoRemoto\manifesto-sha256.csv`
-- Desinstalacao explicitamente autorizada: `install/windows/Desinstalar-DRGinfo-AcessoRemoto.ps1 -ConfirmRemoval`
-- O desinstalador valida o caminho do executavel, remove apenas o servico e arquivos DRGinfo, preservando dados e logs.
-- Nao alterar/reinstalar os componentes RustDesk originais.
+## Homologacao
 
-## Antes da distribuicao comercial
+- [x] Build portatil abriu, apresentou ID/Pronto e passou em conexao fim a fim, sem \`custom.txt\`
+- [ ] Certificado de assinatura de codigo DRGinfo verificado
+- [ ] Build portatil assinado (EXE + DLL), validado e empacotado
+- [ ] VPS publica release HTTPS com hash oficial confirmado
+- [ ] Instalador executou \`-ValidateOnly\` na pasta definitiva
+- [ ] Instalacao com servico Windows testada em VM
+- [ ] Reboot e acesso remoto sem login interativo comprovados
+- [ ] Desinstalacao, rollback e convivencia com outras instalacoes confirmados
+- [ ] Assinatura do instalador PowerShell e publicacao comercial revisadas
 
-- [ ] Homologar instalacao e registro do servico em VM Windows limpa
-- [ ] Confirmar inicializacao apos reboot e acesso remoto sem login interativo
-- [ ] Validar conexao fim a fim com instalacao
-- [ ] Validar desinstalacao/rollback e ausencia de interferencia com outras instalacoes
-- [ ] Assinar o executavel/instalador com certificado de assinatura de codigo Windows apropriado
-- [ ] Preservar aviso AGPL-3.0, atribuicoes RustDesk e disponibilizar fonte correspondente aos destinatarios
+## Rollback / desinstalacao
 
-## Versoes
+O script de instalacao **nao sobrescreve** instalacoes existentes. Em falha apos instalacao, tenta remover somente servico e pasta criados; mantem cache persistente para auditoria. O desinstalador fica em \`Desinstalar-DRGinfo-AcessoRemoto.ps1\` e exige \`-ConfirmRemoval\`.
 
-- 2026-11-24: primeira versao de homologacao do instalador PowerShell, sem rebuild do nucleo Rust/Flutter.
+## Direitos e suporte
+
+Conservar avisos AGPL-3.0/atribuicoes RustDesk e disponibilizar o codigo-fonte correspondente quando exigido pela licenca. Nenhum instalador foi homologado ate a conclusao dos testes acima.
