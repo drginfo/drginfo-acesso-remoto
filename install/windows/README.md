@@ -13,7 +13,7 @@ O script gera ZIP e release-sha256.txt em `C:\ProgramData\DRGinfo\AcessoRemoto\r
 **Publicar na VPS**, a partir do Debian, usando `install/linux/publicar-release-vps.sh`, com o SSH e o caminho real do document root da VPS, sem adivinhar o mapeamento HTTP:
 
 ```bash
-bash install/linux/publicar-release-vps.sh USUARIO@VPS /CAMINHO/REAL/DO/DOCROOT 1.5.3-drginfo.1 DRGinfo-AcessoRemoto-windows-x64.zip SHA256_VALIDADO
+bash install/linux/publicar-release-vps.sh vpsdrg /srv/drginfo-downloads 1.5.3-drginfo.1 DRGinfo-AcessoRemoto-windows-x64.zip SHA256_VALIDADO
 ```
 
 **Executar instalacao somente depois de verificar publicacao da release na VPS**, baixando de `https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip` e passando `-AllowUnsigned` explicitamente:
@@ -70,6 +70,8 @@ Foi adicionado `install/windows/Preparar-Release-Assinada.ps1`: recebe a pasta p
 ```
 
 A release antiga localizada em `/rustdesk/1.5.3/rustdesk-1.5.3-x86_64.exe` nao deve ser sobrescrita. A publicacao da versao assinada deve adotar caminho separado e versionado na mesma raiz da VPS.
+
+**Caminho fisico da VPS confirmado pelo operador:** `/srv/drginfo-downloads/rustdesk/1.5.3/rustdesk-1.5.3-x86_64.exe`. Logo, o document root da publicacao do projeto e `/srv/drginfo-downloads`. A nova release vai para `/srv/drginfo-downloads/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/`, preservando a distribuicao antiga.
 
 ## Instalacao/validacao em pastas definitivas
 
