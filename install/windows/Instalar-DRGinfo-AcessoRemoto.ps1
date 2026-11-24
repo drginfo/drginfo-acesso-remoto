@@ -50,12 +50,6 @@ function Assert-Authenticode([string]$Path, [string]$ExpectedThumbprint) {
   }
   Write-Log ("Assinatura Authenticode valida: {0}" -f (Split-Path $Path -Leaf))
 }
-function Invoke-SC([string[]]$Arguments) {
-  $result = & "$env:SystemRoot\System32\sc.exe" @Arguments 2>&1
-  if ($LASTEXITCODE -ne 0) {
-    throw ("Falha sc.exe {0}: {1}" -f $Arguments[0], ($result | Out-String).Trim())
-  }
-}
 function Assert-ZipEntries([string]$Path) {
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $zip = [IO.Compression.ZipFile]::OpenRead($Path)
@@ -157,10 +151,26 @@ try {
       SHA256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
     }
   } | Export-Csv -LiteralPath $manifest -Encoding UTF8 -NoTypeInformation
+  # Win32_Service.Create evita problemas de citacao do sc.exe em PS 5.1.
   $binPath = '"' + $InstalledExe + '" --service'
-  Invoke-SC @('create', $ServiceName, 'binPath=', $binPath, 'start=', 'auto', 'DisplayName=', $AppName)
+  $createArgs = @{
+    Name = $ServiceName
+    DisplayName = $AppName
+    PathName = $binPath
+    ServiceType = [uint32]16
+    ErrorControl = [uint32]1
+    StartMode = 'Automatic'
+    DesktopInteract = $false
+    StartName = 'LocalSystem'
+  }
+  Write-Log 'Criando servico via Win32_Service.Create.'
+  $result = Invoke-CimMethod -ClassName Win32_Service -MethodName Create -Arguments $createArgs -ErrorAction Stop
+  if ($result.ReturnValue -ne 0) {
+    throw "Win32_Service.Create falhou: codigo $($result.ReturnValue)."
+  }
   $CreatedService = $true
-  Invoke-SC @('start', $ServiceName)
+  Write-Log 'Servico registrado. Iniciando.'
+  Start-Service -Name $ServiceName -ErrorAction Stop
   $status = 'Unknown'
   for ($i=0;$i -lt 12;$i++) {
     $status = (Get-Service -Name $ServiceName).Status
@@ -173,9 +183,17 @@ try {
 } catch {
   Write-Log $_.Exception.Message 'ERRO'
   if ($CreatedService) {
-    & "$env:SystemRoot\System32\sc.exe" stop $ServiceName 2>&1 | Out-Null
-    & "$env:SystemRoot\System32\sc.exe" delete $ServiceName 2>&1 | Out-Null
-    Write-Log 'Rollback do servico solicitado.' 'ROLLBACK'
+    try {
+      $svc = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
+      if ($svc -and $svc.Status -ne 'Stopped') {
+        Stop-Service -Name $ServiceName -Force -ErrorAction Stop
+      }
+      $delete = Invoke-CimMethod -ClassName Win32_Service -MethodName Delete -Arguments @{} -InputObject (Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'") -ErrorAction Stop
+      if ($delete.ReturnValue -ne 0) { throw "Remocao do servico retornou $($delete.ReturnValue)" }
+      Write-Log 'Rollback do servico concluido.' 'ROLLBACK'
+    } catch {
+      Write-Log ("Rollback do servico falhou: {0}" -f $_.Exception.Message) 'AVISO'
+    }
   }
   if ($CreatedDir -and (Test-Path -LiteralPath $InstallDir)) {
     try {
