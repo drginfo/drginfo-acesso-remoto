@@ -24,7 +24,7 @@ const wchar_t* getWindowClassName();
 
 // DRGINFO_STARTUP_DIAGNOSTIC_V1
 // Diagnostico temporario, sem argumentos ou segredos.
-static void drg_diagnostic(const char* message) {
+void drg_diagnostic(const char* message) {
   char temp[MAX_PATH] = {0};
   DWORD length = GetTempPathA(MAX_PATH, temp);
   if (!length || length >= MAX_PATH) return;
@@ -37,7 +37,18 @@ static void drg_diagnostic(const char* message) {
 
   if (file == INVALID_HANDLE_VALUE) return;
 
-  std::string line = std::to_string(GetCurrentProcessId())
+  SYSTEMTIME now;
+  GetLocalTime(&now);
+  std::string timestamp =
+      std::to_string(now.wYear) + "-" +
+      std::to_string(now.wMonth) + "-" +
+      std::to_string(now.wDay) + " " +
+      std::to_string(now.wHour) + ":" +
+      std::to_string(now.wMinute) + ":" +
+      std::to_string(now.wSecond) + "." +
+      std::to_string(now.wMilliseconds);
+  std::string line = timestamp + " | " +
+                     std::to_string(GetCurrentProcessId())
                    + " | " + message + "\r\n";
   DWORD written = 0;
   WriteFile(file, line.data(),
@@ -214,16 +225,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   } else {
     window_title = app_name;
   }
+  drg_diagnostic("11 CREATE_AND_SHOW_BEGIN");
   if (!window.CreateAndShow(window_title, origin, size, !is_cm_page)) {
+      drg_diagnostic("12 CREATE_AND_SHOW_FAILED");
       return EXIT_FAILURE;
   }
+  drg_diagnostic("13 CREATE_AND_SHOW_OK");
   window.SetQuitOnClose(true);
 
+  drg_diagnostic("14 MESSAGE_LOOP_BEGIN");
   ::MSG msg;
-  while (::GetMessage(&msg, nullptr, 0, 0))
+  BOOL message_result = 0;
+  while ((message_result = ::GetMessage(&msg, nullptr, 0, 0)) > 0)
   {
     ::TranslateMessage(&msg);
     ::DispatchMessage(&msg);
+  }
+  if (message_result == -1) {
+    drg_diagnostic("15 MESSAGE_LOOP_ERROR");
+  } else {
+    drg_diagnostic("15 MESSAGE_LOOP_NORMAL_END");
   }
 
   ::CoUninitialize();

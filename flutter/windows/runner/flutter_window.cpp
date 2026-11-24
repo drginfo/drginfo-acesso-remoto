@@ -19,6 +19,9 @@
 
 #include "win32_desktop.h"
 
+// Instrumentacao temporaria DRGinfo V2.
+extern void drg_diagnostic(const char* message);
+
 namespace {
 
 // If the window is resized between the creation of the Flutter surface and the
@@ -88,21 +91,31 @@ FlutterWindow::FlutterWindow(const flutter::DartProject& project)
 FlutterWindow::~FlutterWindow() {}
 
 bool FlutterWindow::OnCreate() {
+  drg_diagnostic("F01 ONCREATE_BEGIN");
   if (!Win32Window::OnCreate()) {
+    drg_diagnostic("F02 BASE_WINDOW_FAILED");
     return false;
   }
+  drg_diagnostic("F03 BASE_WINDOW_OK");
 
   RECT frame = GetClientArea();
 
   // The size here must match the window dimensions to avoid unnecessary surface
   // creation / destruction in the startup path.
+  drg_diagnostic("F04 FLUTTER_CONTROLLER_BEGIN");
   flutter_controller_ = std::make_unique<flutter::FlutterViewController>(
       frame.right - frame.left, frame.bottom - frame.top, project_);
-  // Ensure that basic setup of the controller was successful.
+  drg_diagnostic("F05 FLUTTER_CONTROLLER_CREATED");
+
   if (!flutter_controller_->engine() || !flutter_controller_->view()) {
+    drg_diagnostic("F06 FLUTTER_ENGINE_OR_VIEW_FAILED");
     return false;
   }
+  drg_diagnostic("F07 FLUTTER_ENGINE_OK");
+
+  drg_diagnostic("F08 REGISTER_PLUGINS_BEGIN");
   RegisterPlugins(flutter_controller_->engine());
+  drg_diagnostic("F09 REGISTER_PLUGINS_OK");
 
   flutter::MethodChannel<> channel(
     flutter_controller_->engine()->messenger(),
@@ -154,17 +167,21 @@ bool FlutterWindow::OnCreate() {
     FlutterGpuTextureRendererPluginCApiRegisterWithRegistrar(
         registry->GetRegistrarForPlugin("FlutterGpuTextureRendererPluginCApi"));
   });
+  drg_diagnostic("F10 SET_CHILD_CONTENT_BEGIN");
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+  drg_diagnostic("F11 SET_CHILD_CONTENT_OK");
 
   // See the comment on kForceRedrawTimerId above.
   flutter_controller_->engine()->SetNextFrameCallback(
       [this]() { first_frame_rendered_ = true; });
   SetTimer(GetHandle(), kForceRedrawTimerId, kForceRedrawIntervalMs, nullptr);
 
+  drg_diagnostic("F12 ONCREATE_OK");
   return true;
 }
 
 void FlutterWindow::OnDestroy() {
+  drg_diagnostic("F13 ONDESTROY");
   KillTimer(GetHandle(), kForceRedrawTimerId);
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
