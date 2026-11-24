@@ -13,11 +13,16 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $AppName = 'DRGinfo Acesso Remoto'
 $Base = Join-Path $env:ProgramData 'DRGinfo\AcessoRemoto'
-$Core = Join-Path $Base 'Instalar-DRGinfo-AcessoRemoto.ps1'
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Pacote independente: usar o motor distribuido ao lado da interface.
+# Fallback apenas para preservar o laboratorio instalado anteriormente.
+$Core = Join-Path $ScriptDir 'Instalar-DRGinfo-AcessoRemoto.ps1'
+if (-not (Test-Path -LiteralPath $Core -PathType Leaf)) {
+  $Core = Join-Path $Base 'Instalar-DRGinfo-AcessoRemoto.ps1'
+}
 $LogFile = Join-Path $Base 'instalacao.log'
 $ReleaseUrl = 'https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip'
 $Sha256 = '3AC5BAC4B6AD211395C8C98FC9BA0E220517105C70F30003A818E36E588E8BA9'
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 # Resolver identidade visual pelo pacote da GUI e, se necessario, pela
 # pasta corporativa persistente (usada na homologacao anterior).
 $Logo = Join-Path $ScriptDir 'logo-drginfo.png'
