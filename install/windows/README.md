@@ -1,3 +1,29 @@
+## Pacote unico do instalador grafico — v1.0.0-gui1 (2026-11-24)
+
+Objetivo: entregar **um ZIP de instalador** com quatro recursos operacionais e um LEIA-ME, sem o binario de 68 MB. O aplicativo e obtido exclusivamente na VPS HTTPS com SHA-256 fixado na hora da instalacao.
+
+- `instalador-drginfo.cmd`: ponto de entrada por duplo clique, pode iniciar como usuario comum
+- `Interface-DRGinfo-AcessoRemoto.ps1`: interface WinForms e elevacao UAC no clique de Instalar
+- `Instalar-DRGinfo-AcessoRemoto.ps1`: backend ja homologado em Windows 11
+- `logo-drginfo.png`: identidade visual oficial
+- `LEIA-ME.txt`: instrucoes para o tecnico
+
+**Geracao em pasta permanente:** executar `Gerar-Pacote-Instalador.ps1` em Windows PowerShell 5.1. O gerador baixa os recursos de revisao Git fixa `0049673ef12bf7973c0c15b74b0919705ee6c260`, confere sintaxe dos PS1, verifica a estrutura PNG, cria um ZIP versionado e grava manifesto SHA256. Esta fase de **montagem** utiliza GitHub, mas o instalador de campo nao baixa o cliente do GitHub.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\ProgramData\DRGinfo\AcessoRemoto\Gerar-Pacote-Instalador.ps1" -Version "1.0.0-gui1"
+```
+
+Saida: `C:\ProgramData\DRGinfo\AcessoRemoto\releases\installer-gui\1.0.0-gui1\DRGinfo-Instalador-Windows-x64.zip` e `release.txt` com SHA256.
+
+**Publicacao:** copiar esse ZIP ao Debian administrativo e executar `install/linux/publicar-instalador-vps.sh` com ZIP e hash gerado. Diretorio VPS: `/srv/drginfo-downloads/rustdesk/drginfo-acesso-remoto/instalador/1.0.0-gui1/`. Nunca sobrescrever releases anteriores.
+
+**Teste em VM limpa:** baixar do dominio HTTPS DRGinfo, comparar SHA256 com manifesto independente, extrair o ZIP inteiro e abrir `instalador-drginfo.cmd` com usuario comum. Confirmar UAC apenas ao clicar Instalar, instalação com credencial admin aprovada, servico automatico e acesso remoto funcional. Em VM ja instalada, somente interface e botao Abrir aplicativo (sem reinstalar).
+
+**Estado:** scripts e empacotador publicados no GitHub; o ZIP do instalador grafico ainda nao foi gerado/publicado na VPS nem homologado em VM limpa. Nao divulgar como release final.
+
+---
+
 ## Correcao 24/11/2026 — Logotipo com usuario comum
 
 A interface procura `logo-drginfo.png` primeiro ao lado do `.ps1` e depois em `C:\ProgramData\DRGinfo\AcessoRemoto\logo-drginfo.png`. Isto evita desaparecer a marca quando o script e executado de `Downloads` com usuario padrao. Na distribuicao final, scripts, logo e motor de instalacao devem ser empacotados e verificados juntos, sem depender do diretorio de trabalho.
