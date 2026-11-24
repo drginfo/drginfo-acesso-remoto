@@ -58,11 +58,23 @@ try {
       throw "Erro de sintaxe no pacote: $file - $($errors[0].Message)"
     }
   }
-  $items.Keys | ForEach-Object {
-    $itemPath = Join-Path $Payload $_
+  @(
+    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui1'
+    '1. Extraia todo este ZIP em uma pasta local.'
+    '2. Execute instalador-drginfo.cmd com duplo clique, inclusive com usuario comum.'
+    '3. A janela exibe logo, estado de instalacao e acesso ao log.'
+    '4. Para instalar, clique Instalar DRGinfo; o Windows pedira UAC/credenciais.'
+    '5. O cliente de 68 MB sera baixado exclusivamente da VPS DRGinfo.'
+    '6. A release de software e provisoria, sem Authenticode; integridade fixada por SHA256.'
+    '7. O instalador nao substitui instalacao existente.'
+    '8. Para integridade do ZIP, compare o hash fornecido pela DRGinfo por canal confiavel.'
+    '9. Nao desabilitar UAC, SmartScreen ou antivirus para continuar.'
+    '10. Homologacao GUI com usuario comum/UAC em VM limpa ainda pendente.'
+  ) | Set-Content -LiteralPath (Join-Path $Payload 'LEIA-ME.txt') -Encoding UTF8
+  Get-ChildItem -LiteralPath $Payload -File | ForEach-Object {
     [PSCustomObject]@{
-      File = $_
-      SHA256 = (Get-FileHash -LiteralPath $itemPath -Algorithm SHA256).Hash
+      File = $_.Name
+      SHA256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
     }
   } | Export-Csv -LiteralPath $Manifest -NoTypeInformation -Encoding UTF8
   Add-Type -AssemblyName System.IO.Compression.FileSystem
