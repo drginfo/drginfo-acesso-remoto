@@ -2634,6 +2634,10 @@ pub fn read_custom_client(config: &str) {
         return;
     };
 
+    // DRGinfo: diagnostico sem expor conteudo assinado, servidor ou chave.
+    // Este ponto so e alcancado apos decodificacao, verificacao Ed25519 e JSON valido.
+    log::info!("DRGINFO_CUSTOM_SIGNATURE_VALID");
+
     if let Some(app_name) = data.remove("app-name") {
         if let Some(app_name) = app_name.as_str() {
             *config::APP_NAME.write().unwrap() = app_name.to_owned();
@@ -2656,6 +2660,15 @@ pub fn read_custom_client(config: &str) {
     for s in keys::KEYS_BUILDIN_SETTINGS {
         buildin_settings.insert(s.replace("_", "-"), s);
     }
+    let has_default_settings = data.contains_key("default-settings");
+    let has_override_settings = data.contains_key("override-settings");
+    log::info!(
+        "DRGINFO_CUSTOM_SECTIONS default={} override={} custom_name={}",
+        has_default_settings,
+        has_override_settings,
+        crate::common::is_custom_client(),
+    );
+
     if let Some(default_settings) = data.remove("default-settings") {
         read_custom_client_advanced_settings(
             default_settings,
@@ -2676,6 +2689,7 @@ pub fn read_custom_client(config: &str) {
             true,
         );
     }
+    log::info!("DRGINFO_CUSTOM_SETTINGS_APPLIED");
     for (k, v) in data {
         if let Some(v) = v.as_str() {
             config::HARD_SETTINGS
