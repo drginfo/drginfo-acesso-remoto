@@ -10,13 +10,13 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$Version = '1.0.0-gui1'
+  [string]$Version = '1.0.0-gui2'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = '0049673ef12bf7973c0c15b74b0919705ee6c260'
+$SourceCommit = 'c14de0df64a32f9c94b2a4314400380efb46195b'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
@@ -59,7 +59,7 @@ try {
     }
   }
   @(
-    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui1'
+    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui2'
     '1. Extraia todo este ZIP em uma pasta local.'
     '2. Execute instalador-drginfo.cmd com duplo clique, inclusive com usuario comum.'
     '3. A janela exibe logo, estado de instalacao e acesso ao log.'
