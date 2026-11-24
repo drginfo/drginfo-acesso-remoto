@@ -88,7 +88,7 @@ $subtitle.ForeColor = [System.Drawing.Color]::FromArgb(55,65,81)
 $form.Controls.Add($subtitle)
 
 $warning = New-Object System.Windows.Forms.Label
-$warning.Text = 'Release provisoria sem assinatura Authenticode. Download HTTPS e SHA-256 fixado.'
+$warning.Text = 'Download seguro pela infraestrutura DRGinfo | Integridade verificada por SHA-256.'
 $warning.SetBounds(22,146,595,39)
 $warning.ForeColor = [System.Drawing.Color]::FromArgb(130,75,0)
 $form.Controls.Add($warning)
