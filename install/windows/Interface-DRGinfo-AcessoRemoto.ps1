@@ -50,27 +50,39 @@ $form.Font = New-Object System.Drawing.Font('Segoe UI',9)
 $header = New-Object System.Windows.Forms.Panel
 $header.Dock = 'Top'
 $header.Height = 105
-$header.BackColor = [System.Drawing.Color]::FromArgb(0,85,166)
+$header.BackColor = [System.Drawing.Color]::White
 $form.Controls.Add($header)
 
 $brand = New-Object System.Windows.Forms.Label
 $brand.Text = 'DRGinfo | ACESSO REMOTO'
-$brand.ForeColor = [System.Drawing.Color]::White
+$brand.ForeColor = [System.Drawing.Color]::FromArgb(0,85,166)
 $brand.Font = New-Object System.Drawing.Font('Segoe UI',18,[System.Drawing.FontStyle]::Bold)
 $brand.SetBounds(22,22,580,40)
 $header.Controls.Add($brand)
 if (Test-Path -LiteralPath $Logo -PathType Leaf) {
   try {
     $picture = New-Object System.Windows.Forms.PictureBox
-    $picture.Image = [System.Drawing.Image]::FromFile($Logo)
+    # Criar uma copia com alpha para pixels brancos, sem modificar o PNG oficial.
+    # Mantem logo e fundo integrados ao painel branco do instalador.
+    $original = [System.Drawing.Image]::FromFile($Logo)
+    try {
+      $bitmap = New-Object System.Drawing.Bitmap($original)
+    } finally { $original.Dispose() }
+    $bitmap.MakeTransparent([System.Drawing.Color]::White)
+    $picture.Image = $bitmap
     $picture.SizeMode = 'Zoom'
-    $picture.BackColor = [System.Drawing.Color]::White
-    $picture.SetBounds(22,12,175,80)
+    $picture.BackColor = [System.Drawing.Color]::Transparent
+    $picture.SetBounds(22,12,185,76)
     $header.Controls.Add($picture)
     $brand.Text = 'ACESSO REMOTO'
-    $brand.SetBounds(215,27,390,40)
+    $brand.SetBounds(225,27,375,40)
   } catch { $brand.Text = 'DRGinfo | ACESSO REMOTO' }
 }
+$headerLine = New-Object System.Windows.Forms.Panel
+$headerLine.BackColor = [System.Drawing.Color]::FromArgb(0,85,166)
+$headerLine.SetBounds(22,95,584,3)
+$header.Controls.Add($headerLine)
+
 $subtitle = New-Object System.Windows.Forms.Label
 $subtitle.Text = 'Instalador corporativo | Windows 10/11 x64 | v1.5.3-drginfo.1'
 $subtitle.SetBounds(22,118,590,23)
@@ -99,6 +111,7 @@ $logs.Multiline = $true
 $logs.ScrollBars = 'Vertical'
 $logs.ReadOnly = $true
 $logs.Font = New-Object System.Drawing.Font('Consolas',8)
+$logs.BackColor = [System.Drawing.Color]::FromArgb(248,250,252)
 $form.Controls.Add($logs)
 
 $install = New-Object System.Windows.Forms.Button
@@ -109,15 +122,45 @@ $install.ForeColor = [System.Drawing.Color]::White
 $install.FlatStyle = 'Flat'
 $form.Controls.Add($install)
 
+$openApp = New-Object System.Windows.Forms.Button
+$openApp.Text = 'Abrir aplicativo'
+$openApp.SetBounds(194,392,138,32)
+$openApp.Enabled = $false
+$form.Controls.Add($openApp)
+
 $openLog = New-Object System.Windows.Forms.Button
 $openLog.Text = 'Abrir log'
-$openLog.SetBounds(194,392,120,32)
+$openLog.SetBounds(344,392,112,32)
 $form.Controls.Add($openLog)
 
 $close = New-Object System.Windows.Forms.Button
 $close.Text = 'Fechar'
 $close.SetBounds(486,392,120,32)
 $form.Controls.Add($close)
+
+function Refresh-InstallState {
+  $targetDir = Join-Path $env:ProgramFiles $AppName
+  $targetExe = Join-Path $targetDir "$AppName.exe"
+  $existing = Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'" -ErrorAction SilentlyContinue
+  if ($existing -or (Test-Path -LiteralPath $targetDir)) {
+    $install.Enabled = $false
+    $install.Text = 'Ja instalado'
+    $openApp.Enabled = Test-Path -LiteralPath $targetExe -PathType Leaf
+    if ($existing -and $existing.State -eq 'Running') {
+      $status.Text = 'Instalacao detectada | Servico DRGinfo: em execucao.'
+    } elseif ($existing) {
+      $status.Text = 'Instalacao detectada | Servico DRGinfo: ' + $existing.State
+    } else {
+      $status.Text = 'Arquivos encontrados. Verificar/reparar antes de instalar.'
+    }
+    return $true
+  }
+  $install.Enabled = $true
+  $install.Text = 'Instalar DRGinfo'
+  $openApp.Enabled = $false
+  $status.Text = 'Pronto para instalar a partir da VPS DRGinfo.'
+  return $false
+}
 
 $script:worker = $null
 $script:startLineCount = 0
@@ -126,6 +169,10 @@ $script:exitCode = $null
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 500
 
+$openApp.Add_Click({
+  $exe = Join-Path (Join-Path $env:ProgramFiles $AppName) "$AppName.exe"
+  if (Test-Path -LiteralPath $exe -PathType Leaf) { Start-Process -FilePath $exe -WorkingDirectory (Split-Path -Parent $exe) }
+})
 $openLog.Add_Click({
   if (Test-Path -LiteralPath $LogFile) {
     Start-Process -FilePath notepad.exe -ArgumentList ('"' + $LogFile + '"')
@@ -173,6 +220,7 @@ $install.Add_Click({
     $progress.Value = 0
     $install.Enabled = $true
     $close.Enabled = $true
+    [void](Refresh-InstallState)
   }
 })
 $timer.Add_Tick({
@@ -195,6 +243,7 @@ $timer.Add_Tick({
     $close.Enabled = $true
     if ($script:exitCode -eq 0) {
       $status.Text = 'Instalacao concluida. Servico registrado e iniciado.'
+      [void](Refresh-InstallState)
       [System.Windows.Forms.MessageBox]::Show('Instalacao concluida. Verifique o acesso remoto no cliente DRGinfo.','DRGinfo') | Out-Null
     } else {
       $progress.Value = 0
@@ -210,6 +259,7 @@ $form.Add_FormClosing({
     [System.Windows.Forms.MessageBox]::Show('A instalacao esta em andamento. Aguarde a conclusao.','DRGinfo') | Out-Null
   }
 })
+$form.Add_Shown({ [void](Refresh-InstallState) })
 [void]$form.ShowDialog()
 $timer.Dispose()
 $form.Dispose()
