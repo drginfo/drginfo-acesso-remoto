@@ -1,3 +1,15 @@
+## Evolucao: Instalavel gui3 e Portable (24/11/2026)
+
+**Instalavel gui3:** `Instalar-DRGinfo-AcessoRemoto.ps1` preserva instalacao e servico homologados; agora copia o desinstalador tecnico de `Desinstalar-DRGinfo-AcessoRemoto.ps1` para `C:\ProgramData\DRGinfo\AcessoRemoto\tools\`, cria entrada HKLM em `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto` com nome, versao, fabricante, diretorio, icone e comando `UninstallString`. Registro so apos servico atingir Running, com rollback da chave ao falhar. Usuário comum pode selecionar Desinstalar e autorizar UAC; dados e logs sao preservados. **Nao atualizar o gui2 in place**: motor atual recusa sobrescrever uma instalacao existente.
+
+**Gerador gui3:** `Gerar-Pacote-Instalador.ps1 -Version 1.0.0-gui3` agora inclui 6 arquivos: interface, motor, desinstalador, iniciador .cmd, logo e LEIA-ME. Revisao de origem fixa `18b4f829c35f8a4724cf58472a0f64d780ce8760`. Gerar em `C:\ProgramData\DRGinfo\AcessoRemoto\releases\installer-gui\1.0.0-gui3`; publicar em novo diretorio da VPS somente apos teste.
+
+**Portable:** `Gerar-Pacote-Portable.ps1` utiliza o mesmo ZIP do aplicativo já homologado na VPS, valida SHA-256 `3AC5BAC4B6AD211395C8C98FC9BA0E220517105C70F30003A818E36E588E8BA9`, valida caminhos e componentes e gera `DRGinfo-AcessoRemoto-Portable-Windows-x64.zip` em `C:\ProgramData\DRGinfo\AcessoRemoto\releases\portable\1.5.3-drginfo.1-portable1`. O pacote nao cria serviço, nem entrada de desinstalacao. O operador extrai tudo e abre `DRGinfo Acesso Remoto.exe`. Apagar a pasta encerra a distribuicao, mas configuracoes do usuario podem permanecer em AppData. **Nao prometer acesso desassistido depois de reiniciar no modo portatil.**
+
+**Testes pendentes:** confirmar em VM instalacao gui3, registro no Windows, desinstalacao GUI/UAC, ausencia de entradas orfas e preservacao dos logs. Para Portable, testar abrir sem admin, ID, conexao assistida, fechamento, ausencia de servico criado e artefatos persistidos no perfil. Para os dois: a assinatura Authenticode comercial ainda nao esta implantada. Nao declarar homologado antes destes testes.
+
+---
+
 ## Interface comercial — revisao gui2 (24/11/2026)
 
 - A mensagem visivel no formulario nao utiliza mais a expressao `release provisoria`; apresenta `Download seguro pela infraestrutura DRGinfo | Integridade verificada por SHA-256.`
