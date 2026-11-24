@@ -56,7 +56,10 @@ pub fn core_main() -> Option<CoreMainAction> {
     if !crate::common::global_init() {
         return None;
     }
-    #[cfg(not(all(target_os = "linux", feature = "drm")))]
+    // Windows DRGinfo edition is fixed at build time: ignore external custom.txt.
+    #[cfg(target_os = "windows")]
+    crate::common::load_embedded_drginfo_client();
+    #[cfg(all(not(target_os = "windows"), not(all(target_os = "linux", feature = "drm"))))]
     crate::load_custom_client();
     #[cfg(windows)]
     if !crate::platform::windows::bootstrap() {
