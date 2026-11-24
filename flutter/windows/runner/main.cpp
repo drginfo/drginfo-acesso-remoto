@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 #include "win32_desktop.h"
 #include "flutter_window.h"
@@ -21,18 +22,47 @@ const std::vector<std::string> parameters_white_list = {"--install", "--cm"};
 
 const wchar_t* getWindowClassName();
 
+// DRGINFO_STARTUP_DIAGNOSTIC_V1
+// Diagnostico temporario, sem argumentos ou segredos.
+static void drg_diagnostic(const char* message) {
+  char temp[MAX_PATH] = {0};
+  DWORD length = GetTempPathA(MAX_PATH, temp);
+  if (!length || length >= MAX_PATH) return;
+
+  std::string path = std::string(temp) + "drginfo-startup.log";
+  HANDLE file = CreateFileA(
+      path.c_str(), FILE_APPEND_DATA,
+      FILE_SHARE_READ | FILE_SHARE_WRITE,
+      nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+  if (file == INVALID_HANDLE_VALUE) return;
+
+  std::string line = std::to_string(GetCurrentProcessId())
+                   + " | " + message + "\r\n";
+  DWORD written = 0;
+  WriteFile(file, line.data(),
+            static_cast<DWORD>(line.size()), &written, nullptr);
+  CloseHandle(file);
+}
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command)
 {
+  drg_diagnostic("01 WINMAIN_ENTER");
   if (auto result = service_control::HandleCommand(command_line)) {
+    drg_diagnostic("02 SERVICE_COMMAND_HANDLED");
     return static_cast<int>(*result);
   }
+  drg_diagnostic("03 LOADING_DLL");
   HINSTANCE hInstance = LoadLibraryA("librustdesk.dll");
   if (!hInstance)
   {
+    drg_diagnostic("04 DLL_LOAD_FAILED");
     std::cout << "Failed to load librustdesk.dll." << std::endl;
     return EXIT_FAILURE;
   }
+  drg_diagnostic("05 DLL_LOADED");
   FUNC_RUSTDESK_CORE_MAIN rustdesk_core_main =
       (FUNC_RUSTDESK_CORE_MAIN)GetProcAddress(hInstance, "rustdesk_core_main_args");
   if (!rustdesk_core_main)
@@ -55,9 +85,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   }
 
   int args_len = 0;
+  drg_diagnostic("06 CORE_MAIN_BEGIN");
   char** c_args = rustdesk_core_main(&args_len);
+  drg_diagnostic("07 CORE_MAIN_RETURNED");
   if (!c_args)
   {
+    drg_diagnostic("08 CORE_RETURNED_NULL");
     std::string args_str = "";
     for (const auto& argument : command_line_arguments) {
       args_str += (argument + " ");
@@ -65,6 +98,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     // std::cout << "RustDesk [" << args_str << "], core returns false, exiting without launching Flutter app." << std::endl;
     return EXIT_SUCCESS;
   }
+  drg_diagnostic("09 CORE_RETURNED_ARGS");
   std::vector<std::string> rust_args(c_args, c_args + args_len);
   free_c_args(c_args, args_len);
   FUNC_RUSTDESK_IS_DISABLE_INSTALLATION rustdesk_is_disable_installation =
@@ -154,6 +188,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   command_line_arguments.insert(command_line_arguments.end(), rust_args.begin(), rust_args.end());
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
+  drg_diagnostic("10 FLUTTER_WINDOW_CONSTRUCT");
   FlutterWindow window(project);
 
   // Get primary monitor's work area.
