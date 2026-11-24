@@ -13,7 +13,7 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$PackageUrl = 'https://downloads.drginfo.com.br/acesso-remoto/windows-x64/DRGinfo-AcessoRemoto-windows-x64.zip',
+  [Parameter(Mandatory=$true)][string]$PackageUrl,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$PackageSha256,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-fA-F]{40,64}$')][string]$PublisherThumbprint,
   [switch]$ValidateOnly
