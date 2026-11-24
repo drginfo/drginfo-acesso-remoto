@@ -188,7 +188,7 @@ try {
       if ($svc -and $svc.Status -ne 'Stopped') {
         Stop-Service -Name $ServiceName -Force -ErrorAction Stop
       }
-      $delete = Invoke-CimMethod -ClassName Win32_Service -MethodName Delete -Arguments @{} -InputObject (Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'") -ErrorAction Stop
+      $delete = Invoke-CimMethod -InputObject (Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'") -MethodName Delete -ErrorAction Stop
       if ($delete.ReturnValue -ne 0) { throw "Remocao do servico retornou $($delete.ReturnValue)" }
       Write-Log 'Rollback do servico concluido.' 'ROLLBACK'
     } catch {
