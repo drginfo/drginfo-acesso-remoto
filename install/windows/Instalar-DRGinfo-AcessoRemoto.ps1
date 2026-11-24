@@ -178,10 +178,42 @@ try {
     Start-Sleep -Seconds 1
   }
   if ($status -ne 'Running') { throw "Servico nao atingiu Running: $status" }
+  # Registro em Aplicativos instalados (ARP) e desinstalador separado
+  # do diretorio do aplicativo para possibilitar exclusao dos binarios.
+  $uninstallSource = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) 'Desinstalar-DRGinfo-AcessoRemoto.ps1'
+  if (-not (Test-Path -LiteralPath $uninstallSource -PathType Leaf)) {
+    throw 'Desinstalador nao acompanha o pacote de instalacao.'
+  }
+  $toolsDir = Join-Path $Root 'tools'
+  New-Item -ItemType Directory -Path $toolsDir -Force | Out-Null
+  $uninstallTarget = Join-Path $toolsDir 'Desinstalar-DRGinfo-AcessoRemoto.ps1'
+  Copy-Item -LiteralPath $uninstallSource -Destination $uninstallTarget -Force
+  $arp = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto'
+  New-Item -Path $arp -Force | Out-Null
+  $uninstallCommand = '"' + "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" + '" -NoProfile -ExecutionPolicy Bypass -File "' + $uninstallTarget + '" -ConfirmRemoval'
+  $fields = @{
+    DisplayName = $AppName
+    DisplayVersion = '1.5.3-drginfo.1'
+    Publisher = 'DRGinfo'
+    InstallLocation = $InstallDir
+    DisplayIcon = $InstalledExe
+    UninstallString = $uninstallCommand
+    QuietUninstallString = $uninstallCommand
+  }
+  foreach ($field in $fields.Keys) { New-ItemProperty -LiteralPath $arp -Name $field -PropertyType String -Value $fields[$field] -Force | Out-Null }
+  New-ItemProperty -LiteralPath $arp -Name 'NoModify' -PropertyType DWord -Value 1 -Force | Out-Null
+  New-ItemProperty -LiteralPath $arp -Name 'NoRepair' -PropertyType DWord -Value 1 -Force | Out-Null
+  Write-Log 'Aplicativo registrado em Aplicativos instalados do Windows.'
   Write-Log 'INSTALACAO CONCLUIDA. Servico automatico em execucao.'
   exit 0
 } catch {
   Write-Log $_.Exception.Message 'ERRO'
+  if ($CreatedDir) {
+    $arp = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto'
+    if (Test-Path -LiteralPath $arp) {
+      try { Remove-Item -LiteralPath $arp -Force -ErrorAction Stop } catch { Write-Log $_.Exception.Message 'AVISO' }
+    }
+  }
   if ($CreatedService) {
     try {
       $svc = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
