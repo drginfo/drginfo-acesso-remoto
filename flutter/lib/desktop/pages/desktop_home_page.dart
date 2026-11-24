@@ -85,10 +85,42 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           alignment: Alignment.center,
           child: loadPowered(context),
         ),
-      Align(
-        alignment: Alignment.center,
-        child: loadLogo(),
-      ),
+      // Identidade oficial DRGinfo, mantida como recurso local do pacote.
+      // BoxFit.contain preserva a proporcao e evita distorcao da marca.
+      if (isWindows)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/drginfo-logo.png',
+                width: 230,
+                height: 78,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'ACESSO REMOTO',
+                style: TextStyle(
+                  color: Color(0xFF0055A6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.8,
+                ),
+              ),
+              const SizedBox(height: 3),
+              const SizedBox(
+                width: 110,
+                child: Divider(color: Color(0xFFF86500), thickness: 2),
+              ),
+            ],
+          ),
+        )
+      else
+        Align(
+          alignment: Alignment.center,
+          child: loadLogo(),
+        ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),
