@@ -18,7 +18,12 @@ $LogFile = Join-Path $Base 'instalacao.log'
 $ReleaseUrl = 'https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip'
 $Sha256 = '3AC5BAC4B6AD211395C8C98FC9BA0E220517105C70F30003A818E36E588E8BA9'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Resolver identidade visual pelo pacote da GUI e, se necessario, pela
+# pasta corporativa persistente (usada na homologacao anterior).
 $Logo = Join-Path $ScriptDir 'logo-drginfo.png'
+if (-not (Test-Path -LiteralPath $Logo -PathType Leaf)) {
+  $Logo = Join-Path $Base 'logo-drginfo.png'
+}
 
 # A GUI pode ser aberta por usuario comum. UAC sera solicitado somente
 # no momento de iniciar a instalacao (processo separado e elevado).
