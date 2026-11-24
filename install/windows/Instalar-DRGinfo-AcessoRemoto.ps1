@@ -56,7 +56,7 @@ function Invoke-SC([string[]]$Arguments) {
   }
 }
 function Assert-ZipEntries([string]$Path) {
-  Add-Type -AssemblyName System.IO.Compression
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
   $zip = [IO.Compression.ZipFile]::OpenRead($Path)
   try {
     if ($zip.Entries.Count -gt 10000) { throw 'Pacote excede o limite de entradas.' }
