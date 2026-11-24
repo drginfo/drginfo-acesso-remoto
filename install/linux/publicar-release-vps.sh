@@ -6,7 +6,7 @@ if (($# != 5)); then
   exit 2
 fi
 host="$1"; docroot="$2"; version="$3"; archive="$4"; expected="$5"
-[[ "$docroot" == /* && "$docroot" != / && "$docroot" != *..* ]] || exit 2
+[[ "$docroot" == '/srv/drginfo-downloads' ]] || { echo 'Docroot invalido: esperado /srv/drginfo-downloads' >&2; exit 2; }
 [[ "$version" =~ ^[a-zA-Z0-9._-]{1,60}$ ]] || exit 2
 [[ "$expected" =~ ^[a-fA-F0-9]{64}$ ]] || exit 2
 [[ -f "$archive" ]] || exit 2
