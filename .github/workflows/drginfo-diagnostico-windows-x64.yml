@@ -1,6 +1,12 @@
 name: DRGinfo - Diagnostico Windows x64
 
 on:
+  push:
+    branches:
+      - fix/drginfo-windows-startup-diagnostics
+    paths:
+      - 'flutter/windows/runner/main.cpp'
+      - '.github/workflows/drginfo-diagnostico-windows-x64.yml'
   workflow_dispatch:
     inputs:
       upload-artifact:
@@ -61,8 +67,8 @@ env:
   #signing keys env variable checks
   ANDROID_SIGNING_KEY: "${{ secrets.ANDROID_SIGNING_KEY }}"
   MACOS_P12_BASE64: "${{ secrets.MACOS_P12_BASE64 }}"
-  UPLOAD_ARTIFACT: "${{ inputs.upload-artifact }}"
-  PUBLISH_UPDATE_METADATA: "${{ inputs.publish-update-metadata }}"
+  UPLOAD_ARTIFACT: "true"
+  PUBLISH_UPDATE_METADATA: "false"
   SIGN_BASE_URL: "${{ secrets.SIGN_BASE_URL }}-2"
 
 jobs:
