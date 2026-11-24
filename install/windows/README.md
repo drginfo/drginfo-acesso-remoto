@@ -1,3 +1,15 @@
+## Privilegios e UAC — revisao 24/11/2026
+
+- `Interface-DRGinfo-AcessoRemoto.ps1` e `instalador-drginfo.cmd` podem abrir com usuario comum, sem solicitacao de UAC antecipada.
+- Na abertura, a interface apenas consulta o servico e verifica se o aplicativo ja esta instalado. Para instalacao existente, botao Instalar desabilitado, Abrir aplicativo habilitado.
+- Ao clicar **Instalar DRGinfo**, a interface confirma a acao e inicia o **motor PowerShell** via `Start-Process -Verb RunAs`; Windows solicita consentimento ou credenciais administrativas no UAC.
+- Nao usa, coleta ou armazena senha de administrador. Se o UAC for cancelado ou indisponivel, nenhuma instalacao e executada.
+- O backend continua exigindo elevacao antes de criar arquivos/servicos. Nao ha como registrar servico Windows com privilegios de usuario comum sem autorizacao administrativa.
+- **Validacao pendente:** testar o fluxo completo de instalacao via GUI em VM limpa com usuario comum e credencial admin autorizada. O nucleo e servico ja foram homologados na VM existente; nao reinstalar por cima.
+- O `-ExecutionPolicy Bypass` e aplicado somente ao processo do script, nao altera a politica global; distribuicao final deve verificar integridade dos scripts antes de executa-los e, se aplicavel, assina-los.
+
+---
+
 ## Interface grafica - revisao visual 24/11/2026
 
 - Fundo branco continuo no painel principal e no cabecalho; detalhes em azul corporativo.
