@@ -10,13 +10,13 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$Version = '1.0.0-gui2'
+  [string]$Version = '1.0.0-gui3'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = 'c14de0df64a32f9c94b2a4314400380efb46195b'
+$SourceCommit = '99202b84e44920bd7db293c940953014c578ca6e'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
@@ -30,6 +30,7 @@ $items = [ordered]@{
   'instalador-drginfo.cmd' = 'install/windows/instalador-drginfo.cmd'
   'Interface-DRGinfo-AcessoRemoto.ps1' = 'install/windows/Interface-DRGinfo-AcessoRemoto.ps1'
   'Instalar-DRGinfo-AcessoRemoto.ps1' = 'install/windows/Instalar-DRGinfo-AcessoRemoto.ps1'
+  'Desinstalar-DRGinfo-AcessoRemoto.ps1' = 'install/windows/Desinstalar-DRGinfo-AcessoRemoto.ps1'
   'logo-drginfo.png' = 'flutter/assets/drginfo-logo.png'
 }
 try {
@@ -46,7 +47,7 @@ try {
   if ($png.Length -lt 8 -or [Convert]::ToBase64String($png,0,8) -ne 'iVBORw0KGgo=') {
     throw 'Logotipo nao e PNG valido.'
   }
-  foreach ($file in @('Interface-DRGinfo-AcessoRemoto.ps1','Instalar-DRGinfo-AcessoRemoto.ps1')) {
+  foreach ($file in @('Interface-DRGinfo-AcessoRemoto.ps1','Instalar-DRGinfo-AcessoRemoto.ps1','Desinstalar-DRGinfo-AcessoRemoto.ps1')) {
     $tokens = $null
     $errors = $null
     [System.Management.Automation.Language.Parser]::ParseFile(
@@ -65,11 +66,11 @@ try {
     '3. A janela exibe logo, estado de instalacao e acesso ao log.'
     '4. Para instalar, clique Instalar DRGinfo; o Windows pedira UAC/credenciais.'
     '5. O cliente de 68 MB sera baixado exclusivamente da VPS DRGinfo.'
-    '6. A release de software e provisoria, sem Authenticode; integridade fixada por SHA256.'
+    '6. A distribuicao usa SHA256 fixado; o Windows pode alertar sobre a ausencia de assinatura de codigo.'
     '7. O instalador nao substitui instalacao existente.'
     '8. Para integridade do ZIP, compare o hash fornecido pela DRGinfo por canal confiavel.'
     '9. Nao desabilitar UAC, SmartScreen ou antivirus para continuar.'
-    '10. Homologacao GUI com usuario comum/UAC em VM limpa ainda pendente.'
+    '10. Modo de instalacao gui2 validado; registro ARP/desinstalador gui3 aguardam homologacao.'
   ) | Set-Content -LiteralPath (Join-Path $Payload 'LEIA-ME.txt') -Encoding UTF8
   Get-ChildItem -LiteralPath $Payload -File | ForEach-Object {
     [PSCustomObject]@{
