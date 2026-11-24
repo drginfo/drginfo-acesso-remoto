@@ -33,6 +33,16 @@ As pastas de release sao persistentes e nao sao apagadas em caso de falha de ins
 
 **O dominio/caminho base constam na documentacao, mas o ZIP DRGinfo personalizado e assinado ainda nao foi publicado/validado. Nao executar instalacao ate confirmar sua URL especifica e o certificado.**
 
+### Preparador de release assinada
+
+Foi adicionado `install/windows/Preparar-Release-Assinada.ps1`: recebe a pasta portatil homologada, exige certificado com EKU Code Signing e chave privada acessivel pelo Windows, assina EXE/DLL principal, verifica Authenticode e produz ZIP + manifesto SHA-256 em `C:\ProgramData\DRGinfo\AcessoRemoto\releases\windows-x64\<versao>`. Nao publica na VPS e nao exporta chaves privadas.
+
+```powershell
+& 'C:\ProgramData\DRGinfo\AcessoRemoto\Preparar-Release-Assinada.ps1' -SourceDirectory 'C:\DRGinfo-Teste' -CertificateThumbprint '<THUMBPRINT-DO-CERTIFICADO-DE-CODE-SIGNING>' -Version '1.5.3-drginfo.1'
+```
+
+A release antiga localizada em `/rustdesk/1.5.3/rustdesk-1.5.3-x86_64.exe` nao deve ser sobrescrita. A publicacao da versao assinada deve adotar caminho separado e versionado na mesma raiz da VPS.
+
 ## Instalacao/validacao em pastas definitivas
 
 Windows PowerShell x64 **como Administrador**, apos disponibilizacao da release assinada:
