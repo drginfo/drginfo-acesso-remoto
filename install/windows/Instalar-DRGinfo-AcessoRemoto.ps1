@@ -200,9 +200,9 @@ try {
     UninstallString = $uninstallCommand
     QuietUninstallString = $uninstallCommand
   }
-  foreach ($field in $fields.Keys) { New-ItemProperty -LiteralPath $arp -Name $field -PropertyType String -Value $fields[$field] -Force | Out-Null }
-  New-ItemProperty -LiteralPath $arp -Name 'NoModify' -PropertyType DWord -Value 1 -Force | Out-Null
-  New-ItemProperty -LiteralPath $arp -Name 'NoRepair' -PropertyType DWord -Value 1 -Force | Out-Null
+  foreach ($field in $fields.Keys) { New-ItemProperty -Path $arp -Name $field -PropertyType String -Value $fields[$field] -Force | Out-Null }
+  New-ItemProperty -Path $arp -Name 'NoModify' -PropertyType DWord -Value 1 -Force | Out-Null
+  New-ItemProperty -Path $arp -Name 'NoRepair' -PropertyType DWord -Value 1 -Force | Out-Null
   Write-Log 'Aplicativo registrado em Aplicativos instalados do Windows.'
   Write-Log 'INSTALACAO CONCLUIDA. Servico automatico em execucao.'
   exit 0
