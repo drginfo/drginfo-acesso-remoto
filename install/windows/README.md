@@ -1,3 +1,12 @@
+## Interface comercial — revisao gui2 (24/11/2026)
+
+- A mensagem visivel no formulario nao utiliza mais a expressao `release provisoria`; apresenta `Download seguro pela infraestrutura DRGinfo | Integridade verificada por SHA-256.`
+- A release atual **nao possui assinatura Authenticode**. Essa limitacao permanece documentada e informada na confirmacao da instalacao; HTTPS e SHA-256 nao substituem assinatura de codigo.
+- Pacote de interface `1.0.0-gui2`, com fonte fixada no commit `c14de0df64a32f9c94b2a4314400380efb46195b` e publicacao em diretorio separado na VPS.
+- Nao sobrescrever o ZIP `1.0.0-gui1` eventualmente existente. Nenhuma alteracao no cliente instalado `1.5.3-drginfo.1`.
+
+---
+
 ## Pacote unico do instalador grafico — v1.0.0-gui1 (2026-11-24)
 
 Objetivo: entregar **um ZIP de instalador** com quatro recursos operacionais e um LEIA-ME, sem o binario de 68 MB. O aplicativo e obtido exclusivamente na VPS HTTPS com SHA-256 fixado na hora da instalacao.
