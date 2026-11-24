@@ -157,8 +157,8 @@ try {
     Name = $ServiceName
     DisplayName = $AppName
     PathName = $binPath
-    ServiceType = [uint32]16
-    ErrorControl = [uint32]1
+    ServiceType = [byte]16
+    ErrorControl = [byte]1
     StartMode = 'Automatic'
     DesktopInteract = $false
     StartName = 'LocalSystem'
