@@ -1,3 +1,7 @@
+## Correcao 24/11/2026 — Logotipo com usuario comum
+
+A interface procura `logo-drginfo.png` primeiro ao lado do `.ps1` e depois em `C:\ProgramData\DRGinfo\AcessoRemoto\logo-drginfo.png`. Isto evita desaparecer a marca quando o script e executado de `Downloads` com usuario padrao. Na distribuicao final, scripts, logo e motor de instalacao devem ser empacotados e verificados juntos, sem depender do diretorio de trabalho.
+
 ## Privilegios e UAC — revisao 24/11/2026
 
 - `Interface-DRGinfo-AcessoRemoto.ps1` e `instalador-drginfo.cmd` podem abrir com usuario comum, sem solicitacao de UAC antecipada.
