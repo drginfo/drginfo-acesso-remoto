@@ -1,3 +1,12 @@
+## Interface grafica - revisao visual 24/11/2026
+
+- Fundo branco continuo no painel principal e no cabecalho; detalhes em azul corporativo.
+- Logo original de `flutter/assets/drginfo-logo.png` exibida na janela sem retangulo branco de contraste; o carregamento do PNG cria copia em memoria e converte branco exato em canal transparente, sem alterar o arquivo original.
+- Na abertura, verifica `DRGinfo Acesso Remoto` no Service Control Manager e a pasta do programa. Quando instalado, mostra o estado do servico, desabilita **Instalar DRGinfo** e habilita **Abrir aplicativo** quando existe o EXE esperado.
+- Continua oferecendo **Abrir log**; nao oferece botao ficticio de Atualizar/Reparar enquanto o modulo nao estiver homologado.
+- Interface alterada, nao implica nova instalacao e nao modifica a release `1.5.3-drginfo.1` da VPS.
+- Teste grafico na VM ainda pendente desta revisao.
+
 ## Interface grafica DRGinfo (primeira versao de homologacao)
 
 - Arquivo: `Interface-DRGinfo-AcessoRemoto.ps1` (Windows Forms, UAC nativo, barra de atividade, acompanhamento de logs).
