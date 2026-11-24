@@ -1,3 +1,21 @@
+## Interface grafica DRGinfo (primeira versao de homologacao)
+
+- Arquivo: `Interface-DRGinfo-AcessoRemoto.ps1` (Windows Forms, UAC nativo, barra de atividade, acompanhamento de logs).
+- Backend: `Instalar-DRGinfo-AcessoRemoto.ps1` **ja homologado**; nao modifica executavel nem o ZIP da VPS.
+- Para mostrar o logotipo oficial na interface, colocar `logo-drginfo.png` ao lado do script (o codigo ja inclui suporte a essa imagem). A interface exibe a identidade DRGinfo em texto quando o recurso nao estiver presente. A imagem oficial esta versionada no projeto em `flutter/assets/drginfo-logo.png`.
+- **Nao instalar de novo na VM ja homologada**: a interface detecta o servico ou a pasta existente e preserva a instalacao.
+- A interface grafica e nova: requer teste visual e funcional antes de ser distribuida aos clientes. A barra em modo indeterminado indica atividade, nao porcentagem medida.
+
+## Assinatura de codigo gratuita: o que existe
+
+- O documento antigo `Dossie-Tecnico-DRGinfo-RustDesk.pdf` registra que a assinatura Authenticode do **RustDesk original 1.5.3** era validada. Nao demonstra que a DRGinfo tinha certificado proprio.
+- A assinatura do `custom.txt` e diferente da assinatura Authenticode de EXE/DLL. O novo cliente dispensa `custom.txt`.
+- `Criar-Certificado-Laboratorio.ps1` permite gerar certificado autoassinado `CodeSigningCert` gratuito, **apenas** no laboratorio e por autorizacao explicita. Exporta somente a parte publica; chave privada nao exportavel fica no Windows.
+- Sem uma cadeia confiavel, a assinatura autoassinada nao sera reconhecida como editor publico confiavel. Nao introduzir esse certificado nas autoridades raiz de clientes sem politica apropriada; isso NAO equivale a EV/OV, nem a reputacao SmartScreen.
+- A release atual `1.5.3-drginfo.1`, publicada na VPS e homologada na VM, **permanece sem assinatura**. O processo de assinatura produz uma **nova** release versionada, sem sobrescrever a homologada.
+
+---
+
 ## Distribuicao provisoria SEM Code Signing (autorizada em 24/11/2026)
 
 A DRGinfo aprovou distribuir a release portatil homologada sem certificado de assinatura de codigo no momento, mantendo HTTPS e hash SHA256 fixado **independente** do arquivo baixado. Isso reduz risco de corrupcao e adulteracao em transporte, mas NAO substitui a autenticidade oferecida por Authenticode, e o SmartScreen podera alertar.
