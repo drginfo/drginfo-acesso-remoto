@@ -300,6 +300,13 @@ jobs:
         shell: bash
         run: echo "SODIUM_LIB_DIR=$VCPKG_ROOT/installed/${{ matrix.job.vcpkg-triplet }}/lib" >> "$GITHUB_ENV"
 
+      - name: Prepare DRGinfo Windows branding assets
+        if: ${{ matrix.job.arch == 'x86_64' }}
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check "Pillow>=10,<12"
+          python tools/generate_drginfo_icons.py
+
       - name: Build rustdesk
         run: |
           # Windows: build RustDesk
