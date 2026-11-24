@@ -3,7 +3,7 @@
 ## Politica definitiva
 
 1. O instalador baixa a distribuicao **exclusivamente** por HTTPS da VPS DRGinfo, nunca do GitHub.
-2. O dominio previsto e `downloads.drginfo.com.br`, que deve ter DNS, certificado TLS e virtual host validados **antes** da primeira instalacao.
+2. O dominio e o repositorio VPS ja constam na documentacao DRGinfo: `https://downloads.drginfo.com.br/rustdesk/1.5.3/rustdesk-1.5.3-x86_64.exe` (cliente RustDesk anterior, **nao** reutilizar como release DRGinfo personalizada). O ZIP novo sera publicado sob um caminho **versionado e separado** em `/rustdesk/`, a ser confirmado apos deploy na VPS.
 3. O pacote ZIP possui SHA-256 **fixado** por release, enviado como parametro; um hash recebido da mesma conexao de download **nao e suficiente** para garantir autenticidade.
 4. O executavel `rustdesk.exe` e `librustdesk.dll` devem possuir assinaturas **Authenticode Valid** da DRGinfo, verificadas por thumbprint de certificado autorizado.
 5. A compilacao de GitHub Actions `45468695045` foi homologada em **modo portatil** e tem o artefato `rustdesk-unsigned-windows-x86_64`. Ele **ainda nao e uma release assinada** e, portanto, o instalador definitivo se recusara a instala-lo.
@@ -19,7 +19,7 @@
 | Arquivos de origem extratidos | `...\packages\<SHA256>\extracted` |
 | Logs | `C:\ProgramData\DRGinfo\AcessoRemoto\instalacao.log` |
 | Inventario SHA256 | `C:\ProgramData\DRGinfo\AcessoRemoto\manifesto-sha256.csv` |
-| Hospedagem VPS | URL publica `https://downloads.drginfo.com.br/acesso-remoto/windows-x64/DRGinfo-AcessoRemoto-windows-x64.zip`; caminho local na VPS depende da configuracao do web server |
+| Hospedagem VPS | `https://downloads.drginfo.com.br/rustdesk/` (origem documental confirmada); URL definitiva da release DRGinfo personalizada somente apos publicacao na VPS |
 
 As pastas de release sao persistentes e nao sao apagadas em caso de falha de instalacao. Sem `%TEMP%` como fonte operacional. O cliente Windows usa configuracao incorporada, sem `custom.txt`.
 
@@ -31,7 +31,7 @@ As pastas de release sao persistentes e nao sao apagadas em caso de falha de ins
 4. Calcular o SHA-256 definitivo do ZIP, salvar em manifesto de release de acesso controlado e disponibilizar o pacote na VPS via deploy atomico.
 5. Confirmar DNS/HTTPS e acesso ao pacote. Publicar SHA-256 e thumbprint para o procedimento de instalacao; nunca publicar chaves privadas.
 
-**Nao ha prova de que o endereco de download ja esteja online. Nao executar instalacao ate o pacote assinado ser publicado.**
+**O dominio/caminho base constam na documentacao, mas o ZIP DRGinfo personalizado e assinado ainda nao foi publicado/validado. Nao executar instalacao ate confirmar sua URL especifica e o certificado.**
 
 ## Instalacao/validacao em pastas definitivas
 
@@ -39,14 +39,15 @@ Windows PowerShell x64 **como Administrador**, apos disponibilizacao da release 
 
 ```powershell
 $Script = 'C:\ProgramData\DRGinfo\AcessoRemoto\Instalar-DRGinfo-AcessoRemoto.ps1'
+$Url = '<URL-HTTPS-VPS-RELEASE-DRGINFO-VERSIONADA>'
 $Hash = '<SHA256-OFICIAL-DO-ZIP-64-HEX>'
 $Thumbprint = '<CERTIFICADO-CODE-SIGNING-40-OU-64-HEX>'
 
 # Validacao sem instalar servico nem alterar Program Files
-& $Script -PackageSha256 $Hash -PublisherThumbprint $Thumbprint -ValidateOnly
+& $Script -PackageUrl $Url -PackageSha256 $Hash -PublisherThumbprint $Thumbprint -ValidateOnly
 
 # So executar depois de aprovar a validacao
-& $Script -PackageSha256 $Hash -PublisherThumbprint $Thumbprint
+& $Script -PackageUrl $Url -PackageSha256 $Hash -PublisherThumbprint $Thumbprint
 ```
 
 O arquivo do script deve ser distribuido por canal administrado/confiavel e ter sua integridade verificada. A validacao de ZIP protege o pacote, mas nao autentica um script adulterado.
