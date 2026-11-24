@@ -8,7 +8,7 @@
   Utiliza SHA256 da release homologada e HTTPS da VPS.
 #>
 [CmdletBinding()]
-param([switch]$Elevated)
+param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $AppName = 'DRGinfo Acesso Remoto'
@@ -20,20 +20,8 @@ $Sha256 = '3AC5BAC4B6AD211395C8C98FC9BA0E220517105C70F30003A818E36E588E8BA9'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Logo = Join-Path $ScriptDir 'logo-drginfo.png'
 
-$principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-  $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $MyInvocation.MyCommand.Path + '" -Elevated'
-  try {
-    Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $arguments -Verb RunAs -ErrorAction Stop
-  } catch {
-    Write-Warning ('Elevacao cancelada ou falhou: ' + $_.Exception.Message)
-    exit 1
-  }
-  exit 0
-}
-if (-not (Test-Path -LiteralPath $Core -PathType Leaf)) {
-  throw "Motor de instalacao nao encontrado: $Core"
-}
+# A GUI pode ser aberta por usuario comum. UAC sera solicitado somente
+# no momento de iniciar a instalacao (processo separado e elevado).
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -192,6 +180,12 @@ $install.Add_Click({
       'DRGinfo Acesso Remoto') | Out-Null
     return
   }
+  if (-not (Test-Path -LiteralPath $Core -PathType Leaf)) {
+    [System.Windows.Forms.MessageBox]::Show(
+      "Motor de instalacao nao encontrado: $Core",
+      'DRGinfo Acesso Remoto') | Out-Null
+    return
+  }
   $answer = [System.Windows.Forms.MessageBox]::Show(
     'Instalar a release DRGinfo aprovada a partir da VPS? Esta versao ainda nao possui assinatura Authenticode.',
     'Confirmar instalacao',
@@ -212,10 +206,15 @@ $install.Add_Click({
   $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $Core +
     '" -PackageUrl "' + $ReleaseUrl + '" -PackageSha256 "' + $Sha256 + '" -AllowUnsigned'
   try {
-    $script:worker = Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $arguments -WindowStyle Hidden -PassThru -ErrorAction Stop
+    # Usuario padrao recebe UAC aqui. O Windows solicita credenciais
+    # administrativas quando necessario; nao armazenamos credenciais.
+    $script:worker = Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $arguments -Verb RunAs -WindowStyle Hidden -PassThru -ErrorAction Stop
     $timer.Start()
   } catch {
-    $status.Text = ('Falha ao iniciar: ' + $_.Exception.Message)
+    $status.Text = 'Instalacao nao iniciada. Elevacao cancelada ou indisponivel.'
+    [System.Windows.Forms.MessageBox]::Show(
+      "A instalacao exige autorizacao administrativa do Windows. Nenhuma alteracao realizada. Detalhes: $($_.Exception.Message)",
+      'DRGinfo Acesso Remoto') | Out-Null
     $progress.Style = 'Blocks'
     $progress.Value = 0
     $install.Enabled = $true
@@ -237,8 +236,8 @@ $timer.Add_Tick({
     $script:completed = $true
     $timer.Stop()
     $progress.Style = 'Blocks'
-    $progress.Value = 100
     $script:exitCode = $script:worker.ExitCode
+    $progress.Value = if ($script:exitCode -eq 0) { 100 } else { 0 }
     $install.Enabled = $true
     $close.Enabled = $true
     if ($script:exitCode -eq 0) {
