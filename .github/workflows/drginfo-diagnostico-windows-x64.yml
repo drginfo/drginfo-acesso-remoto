@@ -124,7 +124,7 @@ jobs:
               platform: x64,
             }
     with:
-      upload-artifact: ${{ inputs.upload-artifact }}
+      upload-artifact: true
       target: ${{ matrix.job.target }}
       configuration: Release
       platform: ${{ matrix.job.platform }}
