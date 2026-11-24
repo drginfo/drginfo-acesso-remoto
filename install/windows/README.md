@@ -1,3 +1,31 @@
+## Distribuicao provisoria SEM Code Signing (autorizada em 24/11/2026)
+
+A DRGinfo aprovou distribuir a release portatil homologada sem certificado de assinatura de codigo no momento, mantendo HTTPS e hash SHA256 fixado **independente** do arquivo baixado. Isso reduz risco de corrupcao e adulteracao em transporte, mas NAO substitui a autenticidade oferecida por Authenticode, e o SmartScreen podera alertar.
+
+**Gerar a release sem recompilar**, na VM Windows homologada:
+
+```powershell
+& 'C:\ProgramData\DRGinfo\AcessoRemoto\Preparar-Release-Provisoria.ps1' -SourceDirectory 'C:\DRGinfo-Teste' -Version '1.5.3-drginfo.1'
+```
+
+O script gera ZIP e release-sha256.txt em `C:\ProgramData\DRGinfo\AcessoRemoto\releases\windows-x64\1.5.3-drginfo.1`. O arquivo antigo `/rustdesk/1.5.3/rustdesk-1.5.3-x86_64.exe` nao sera alterado.
+
+**Publicar na VPS**, a partir do Debian, usando `install/linux/publicar-release-vps.sh`, com o SSH e o caminho real do document root da VPS, sem adivinhar o mapeamento HTTP:
+
+```bash
+bash install/linux/publicar-release-vps.sh USUARIO@VPS /CAMINHO/REAL/DO/DOCROOT 1.5.3-drginfo.1 DRGinfo-AcessoRemoto-windows-x64.zip SHA256_VALIDADO
+```
+
+**Executar instalacao somente depois de verificar publicacao da release na VPS**, baixando de `https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip` e passando `-AllowUnsigned` explicitamente:
+
+```powershell
+& 'C:\ProgramData\DRGinfo\AcessoRemoto\Instalar-DRGinfo-AcessoRemoto.ps1' -PackageUrl 'https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip' -PackageSha256 'SHA256_VALIDADO_64_HEX' -AllowUnsigned -ValidateOnly
+```
+
+Depois da validacao sem efeitos, remover apenas `-ValidateOnly` para instalar. Nao desativar TLS, UAC, antivírus ou SmartScreen para contornar alertas. A release e **provisoria**, nao homologada como instalador comercial.
+
+---
+
 # DRGinfo Acesso Remoto — Distribuicao pela VPS (Windows x64)
 
 ## Politica definitiva
