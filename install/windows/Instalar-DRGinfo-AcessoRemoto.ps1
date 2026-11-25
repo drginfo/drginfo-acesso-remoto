@@ -254,7 +254,7 @@ try {
   }
   if (Test-Path -LiteralPath $StartMenuFolder -PathType Container) {
     try {
-      if (-not @(Get-ChildItem -LiteralPath $StartMenuFolder -Force).Count) {
+      if (@(Get-ChildItem -LiteralPath $StartMenuFolder -Force).Count -eq 0) {
         Remove-Item -LiteralPath $StartMenuFolder -Force -ErrorAction Stop
       }
     } catch { Write-Log $_.Exception.Message 'AVISO' }
