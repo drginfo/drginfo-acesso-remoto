@@ -142,7 +142,10 @@ try {
     if ($item.Name -match '\.(ps1|cmd|bat)$') { continue }
     Copy-Item -LiteralPath $item.FullName -Destination $InstallDir -Recurse -Force
   }
-  Rename-Item -LiteralPath (Join-Path $InstallDir 'rustdesk.exe') -NewName "$AppName.exe"
+  if ($executables[0].Name -eq 'rustdesk.exe') {
+    Rename-Item -LiteralPath (Join-Path $InstallDir 'rustdesk.exe') -NewName "$AppName.exe"
+  }
+  if (-not (Test-Path -LiteralPath $InstalledExe -PathType Leaf)) { throw 'Executavel DRGinfo ausente apos copia.' }
   if (-not $AllowUnsigned) { Assert-Authenticode $InstalledExe $PublisherThumbprint }
   $manifest = Join-Path $Root 'manifesto-sha256.csv'
   Get-ChildItem -LiteralPath $InstallDir -Recurse -File | ForEach-Object {
