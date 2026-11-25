@@ -125,7 +125,7 @@ try {
     Write-Log 'AVISO: executavel nao assinado. HTTPS protege o transporte; SHA256 fixado verifica integridade.' 'AVISO'
   } else {
     if (-not $PublisherThumbprint) { throw 'PublisherThumbprint obrigatorio salvo quando -AllowUnsigned.' }
-    foreach ($binary in @('rustdesk.exe','librustdesk.dll')) {
+    foreach ($binary in @($executables[0].Name,'librustdesk.dll')) {
       Assert-Authenticode (Join-Path $source $binary) $PublisherThumbprint
     }
   }
