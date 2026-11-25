@@ -28,8 +28,8 @@ try {
     $principal = New-Object Security.Principal.WindowsPrincipal($identity)
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $MyInvocation.MyCommand.Path + '" -ConfirmRemoval'
-        Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $arguments -Verb RunAs -Wait -ErrorAction Stop
-        exit 0
+        $child = Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $arguments -Verb RunAs -Wait -PassThru -ErrorAction Stop
+        exit $child.ExitCode
     }
     Add-Type -AssemblyName System.Windows.Forms
     $confirmation = [System.Windows.Forms.MessageBox]::Show(
