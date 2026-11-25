@@ -61,9 +61,13 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "Falha na remocao do servico: $LASTEXITCODE" }
         Log 'Registro do servico removido.'
     }
-    if (Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'" -ErrorAction SilentlyContinue) {
-        throw 'Servico pendente de exclusao. Reinicie e repita a desinstalacao.'
+    $pending = $false
+    for ($wait=0; $wait -lt 10; $wait++) {
+        $pending = [bool](Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'" -ErrorAction SilentlyContinue)
+        if (-not $pending) { break }
+        Start-Sleep -Seconds 1
     }
+    if ($pending) { throw 'Servico pendente de exclusao. Reinicie e repita a desinstalacao.' }
     # Encerrar apenas instancias do executavel instalado nesta pasta.
     Get-CimInstance Win32_Process -Filter "Name='DRGinfo Acesso Remoto.exe'" -ErrorAction SilentlyContinue | ForEach-Object {
         if ($_.ExecutablePath -and $_.ExecutablePath.Equals($exe, [StringComparison]::OrdinalIgnoreCase)) {
