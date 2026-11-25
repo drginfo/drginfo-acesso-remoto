@@ -1,3 +1,15 @@
+## 2026-11-25 — Corrigido erro de empacotamento do build #4
+- Workflow #4: https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45650025503
+- Falha real: etapa 21 `DRGinfo - criar pacote Windows com nome corporativo`.
+- `Get-FileHash` tentou ler `drginfo-windows-x64/manifesto-sha256.csv` enquanto `Export-Csv` o mantinha aberto para escrita. Erro Windows: arquivo usado por outro processo.
+- A compilacao do binario principal foi concluida antes da falha; o artefato comercial nao foi publicado.
+- Correcao: `install/windows/Preparar-Distribuicao-DRGinfo.ps1` exclui o proprio manifesto do inventario SHA-256.
+- Commit do fix: `1e9cafeae5a3dc2576f5a3c85f9874a2433a9f72`.
+- Novo build #5 acionado por commit `46a287a255106968b01614f5c6dd79b9801f0f06`:
+  https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45696065760
+- Status no momento do registro: queued. Nao confundir com sucesso/homologacao.
+- Nenhuma release da VPS alterada por este fix.
+
 # CHANGELOG — DRGinfo Acesso Remoto (fluxo comercial)
 ## 2026-11-25 — gui5, pré-homologação
 - Instalador gui5 usa release-config.psd1 gerado: URL HTTPS, SHA256 e versão obrigatórios.
