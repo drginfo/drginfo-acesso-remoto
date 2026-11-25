@@ -13,6 +13,9 @@ foreach($rel in @('rustdesk.exe','librustdesk.dll','flutter_windows.dll','data\a
 try{
   Copy-Item -LiteralPath $src -Destination $dst -Recurse -ErrorAction Stop
   Rename-Item -LiteralPath (Join-Path $dst 'rustdesk.exe') -NewName 'DRGinfo Acesso Remoto.exe' -ErrorAction Stop
+  $licensePath = Join-Path (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) '..\..') 'LICENCE'
+  if (-not (Test-Path -LiteralPath $licensePath -PathType Leaf)) { throw 'LICENCE AGPL-3.0 ausente; pacote cancelado.' }
+  Copy-Item -LiteralPath $licensePath -Destination (Join-Path $dst 'LICENCE') -ErrorAction Stop
   @('DRGinfo Acesso Remoto - Windows x64','Pacote de homologacao: extrair todo conteudo antes de executar.','Execute DRGinfo Acesso Remoto.exe.','Projeto derivado do RustDesk OSS AGPL-3.0. Consulte LICENCE e codigo-fonte correspondente.','Nomes de bibliotecas internas preservados por compatibilidade.','Build ainda sem assinatura Authenticode.') | Set-Content -LiteralPath (Join-Path $dst 'LEIA-ME-DRGinfo.txt') -Encoding UTF8
   Get-ChildItem -LiteralPath $dst -Recurse -File | ForEach-Object {
     [PSCustomObject]@{Arquivo=$_.FullName.Substring($dst.Length).TrimStart('\');SHA256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}
