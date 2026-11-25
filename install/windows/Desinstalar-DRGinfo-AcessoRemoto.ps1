@@ -75,7 +75,7 @@ try {
         if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
             throw 'Diretorio nao contem o executavel esperado. Remocao cancelada.'
         }
-        Remove-Item -LiteralPath $installDir -Force -Recurse
+        Remove-Item -LiteralPath $installDir -Force -Recurse -ErrorAction Stop
         Log "Arquivos removidos: $installDir"
     }
     $uninstallReg = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto'
