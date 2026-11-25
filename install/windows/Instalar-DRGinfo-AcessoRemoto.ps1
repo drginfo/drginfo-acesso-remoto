@@ -201,9 +201,14 @@ try {
     InstallLocation = $InstallDir
     DisplayIcon = $InstalledExe
     UninstallString = $uninstallCommand
-    QuietUninstallString = $uninstallCommand
+    URLInfoAbout = 'https://drginfo.com.br'
   }
   foreach ($field in $fields.Keys) { New-ItemProperty -Path $arp -Name $field -PropertyType String -Value $fields[$field] -Force | Out-Null }
+  New-ItemProperty -Path $arp -Name 'InstallDate' -PropertyType String -Value (Get-Date -Format 'yyyyMMdd') -Force | Out-Null
+  $estimatedKB = [Math]::Min([int64]::MaxValue, [int64]((Get-ChildItem -LiteralPath $InstallDir -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1KB))
+  if ($estimatedKB -le [uint32]::MaxValue) {
+    New-ItemProperty -Path $arp -Name 'EstimatedSize' -PropertyType DWord -Value ([uint32]$estimatedKB) -Force | Out-Null
+  }
   New-ItemProperty -Path $arp -Name 'NoModify' -PropertyType DWord -Value 1 -Force | Out-Null
   New-ItemProperty -Path $arp -Name 'NoRepair' -PropertyType DWord -Value 1 -Force | Out-Null
   Write-Log 'Aplicativo registrado em Aplicativos instalados do Windows.'
