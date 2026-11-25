@@ -17,7 +17,9 @@ try{
   if (-not (Test-Path -LiteralPath $licensePath -PathType Leaf)) { throw 'LICENCE AGPL-3.0 ausente; pacote cancelado.' }
   Copy-Item -LiteralPath $licensePath -Destination (Join-Path $dst 'LICENCE') -ErrorAction Stop
   @('DRGinfo Acesso Remoto - Windows x64','Pacote de homologacao: extrair todo conteudo antes de executar.','Execute DRGinfo Acesso Remoto.exe.','Projeto derivado do RustDesk OSS AGPL-3.0. Consulte LICENCE e codigo-fonte correspondente.','Nomes de bibliotecas internas preservados por compatibilidade.','Build ainda sem assinatura Authenticode.') | Set-Content -LiteralPath (Join-Path $dst 'LEIA-ME-DRGinfo.txt') -Encoding UTF8
-  Get-ChildItem -LiteralPath $dst -Recurse -File | ForEach-Object {
+  # Nao incluir o proprio manifesto: Export-Csv abre este arquivo para escrita.
+  $manifestPath = Join-Path $dst 'manifesto-sha256.csv'
+  Get-ChildItem -LiteralPath $dst -Recurse -File | Where-Object { $_.FullName -ne $manifestPath } | ForEach-Object {
     [PSCustomObject]@{Arquivo=$_.FullName.Substring($dst.Length).TrimStart('\');SHA256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}
   } | Export-Csv -LiteralPath (Join-Path $dst 'manifesto-sha256.csv') -NoTypeInformation -Encoding UTF8
   Write-Host "PACOTE: $dst"
