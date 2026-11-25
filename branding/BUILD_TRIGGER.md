@@ -15,3 +15,6 @@ Criterios:
 - Manter avisos legais e oferta do codigo-fonte AGPL-3.0.
 
 Build acionado por push deste arquivo nesta branch.
+
+## Rebuild corporativo 2026-11-25
+Gerar artifact DRGinfo-Acesso-Remoto-Windows-x64, exe renomeado, licença AGPL.
