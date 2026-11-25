@@ -60,7 +60,7 @@ Contem o software Windows x64 integral, licenca, manifesto, dependencias,
 ```bash
 SCRIPT="$HOME/DRGinfo/homologacao/1.5.3-drginfo.2/Gerar-Pacotes-Offline-Portatil.sh"
 RELEASE="$HOME/DRGinfo/homologacao/1.5.3-drginfo.2/release/DRGinfo-AcessoRemoto-windows-x64.zip"
-curl -fLSs "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/0303ab41e105c32740c5f21c8fa573174f09cfbc/install/linux/Gerar-Pacotes-Offline-Portatil.sh" -o "$SCRIPT"
+curl -fLSs "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/ddb008391fb7b3e22e613f46ebe371b0a19ac56f/install/linux/Gerar-Pacotes-Offline-Portatil.sh" -o "$SCRIPT"
 bash -n "$SCRIPT"
 bash "$SCRIPT" "$RELEASE" "$HOME/DRGinfo/homologacao/1.5.3-drginfo.2"
 ```
