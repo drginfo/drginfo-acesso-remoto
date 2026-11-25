@@ -1,6 +1,6 @@
 # DRGinfo Acesso Remoto — Instalacao e Desinstalacao (gui4)
 Data: 2026-11-25
-Status: IMPLEMENTADO NO CODIGO; aguardando homologacao Windows.
+Status: GUI4 homologado em instalacao, registro ARP e remocao (25/11/2026). GUI5 em integracao.
 
 ## Identidade
 Produto e executavel: DRGinfo Acesso Remoto / DRGinfo Acesso Remoto.exe
@@ -19,7 +19,7 @@ Se arquivos bloqueados ou servico pendente, reiniciar e repetir. Sem exclusao ag
 
 ## Modos
 gui2: homologado, instalado, publicado na VPS. Nao sobrescrever.
-gui4: codigo preparado, pacote no GitHub ainda nao gerado/publicado/homologado.
+gui4: gerado e homologado em VM: instalação, serviço, entrada ARP, conexão Pronto, desinstalação via Windows e remoção da entrada. Pacote instalado ainda era versão antiga 1.5.3-drginfo.1.
 Versao portatil: homologada; sem servico permanente e sem registro ARP.
 
 ## Dependencia nova compilacao
@@ -39,3 +39,9 @@ imutavel na VPS e atualizar os hashes fixados do pacote. Nao promover sem homolo
 5. Desinstalar pelo Windows: UAC/confirmacao, remocao de servico, arquivos e ARP.
 6. Verificar preservacao de logs e nenhum processo ou servico residual.
 7. Testar nova build isoladamente do servico antigo, sem renomear DLL interna.
+
+## Evidência final 25/11/2026
+Capturas fornecidas pelo operador: Aplicativos instalados exibe DRGinfo Acesso Remoto, fabricante DRGinfo, versao 1.5.3-drginfo.1, tamanho 114 MB; segunda captura apos desinstalacao ja nao apresenta o item. Nao foi apresentado inventario pos-desinstalacao do servico/pasta; esse critério deve ser novamente auditado no gui5.
+
+## Preparação gui5
+O gerador gui5 requer SoftwareUrl, SoftwareSha256 e SoftwareVersion do NOVO ZIP publicado em URL imutavel da VPS; sem estes parametros nao gera instalador. O novo EXE de entrada sera DRGinfo Acesso Remoto.exe; seu pacote inclui LICENCE e manifesto de arquivos. Nao usar os dados do ZIP 1.5.3-drginfo.1 no gui5.
