@@ -13,7 +13,8 @@
 #>
 [CmdletBinding()]
 param(
-  [Parameter(Mandatory=$true)][string]$PackageUrl,
+  [string]$PackageUrl,
+  [string]$PackageFile,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$PackageSha256,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$PackageVersion,
   [ValidatePattern('^[0-9a-fA-F]{40,64}$')][string]$PublisherThumbprint,
@@ -104,21 +105,43 @@ try {
   if (-not [Environment]::Is64BitOperatingSystem -or -not [Environment]::Is64BitProcess) {
     throw 'Windows x64 e PowerShell x64 obrigatorios.'
   }
-  $uri = [Uri]$PackageUrl
-  if ($uri.Scheme -ne 'https' -or $uri.Host -ne 'downloads.drginfo.com.br' -or
-      $uri.Port -ne 443 -or $uri.UserInfo -or $uri.Query -or $uri.Fragment) {
-    throw 'URL nao corresponde ao endereco HTTPS oficial esperado da DRGinfo.'
+  # Exatamente uma origem: HTTPS (online) ou ZIP local assinado pelo manifesto (offline).
+  if ([bool]$PackageUrl -eq [bool]$PackageFile) {
+    throw 'Informe exatamente uma origem: PackageUrl ou PackageFile.'
+  }
+  $uri = $null
+  if ($PackageUrl) {
+    $uri = [Uri]$PackageUrl
+    if ($uri.Scheme -ne 'https' -or $uri.Host -ne 'downloads.drginfo.com.br' -or
+        $uri.Port -ne 443 -or $uri.UserInfo -or $uri.Query -or $uri.Fragment) {
+      throw 'URL nao corresponde ao endereco HTTPS oficial esperado da DRGinfo.'
+    }
+  } else {
+    if (-not (Test-Path -LiteralPath $PackageFile -PathType Leaf)) {
+      throw 'Arquivo de software offline nao encontrado.'
+    }
+    $PackageFile = (Resolve-Path -LiteralPath $PackageFile -ErrorAction Stop).Path
+    if ([IO.Path]::GetExtension($PackageFile) -ne '.zip') { throw 'Pacote offline deve ser ZIP.' }
   }
   [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
   if (-not (Test-Path -LiteralPath $Archive -PathType Leaf)) {
     $partial = Join-Path $ReleaseDir 'package.zip.partial'
     Remove-Item -LiteralPath $partial -Force -ErrorAction SilentlyContinue
-    Write-Log "Baixando release da VPS: $($uri.AbsolutePath)"
-    Invoke-WebRequest -Uri $uri.AbsoluteUri -OutFile $partial -UseBasicParsing -MaximumRedirection 0 -TimeoutSec 180
+    if ($PackageFile) {
+      Write-Log 'Validando software offline sem usar rede.'
+      # Nunca abrir/carregar ou executar binarios do ZIP antes da comparacao SHA-256.
+      if ((Get-FileHash -LiteralPath $PackageFile -Algorithm SHA256).Hash -ne $PackageSha256.ToUpperInvariant()) {
+        throw 'SHA256 do pacote offline diverge do manifesto.'
+      }
+      Copy-Item -LiteralPath $PackageFile -Destination $partial -ErrorAction Stop
+    } else {
+      Write-Log "Baixando release da VPS: $($uri.AbsolutePath)"
+      Invoke-WebRequest -Uri $uri.AbsoluteUri -OutFile $partial -UseBasicParsing -MaximumRedirection 0 -TimeoutSec 180
+    }
     $downloadHash = (Get-FileHash -LiteralPath $partial -Algorithm SHA256).Hash
     if ($downloadHash -ne $PackageSha256.ToUpperInvariant()) {
       Remove-Item -LiteralPath $partial -Force -ErrorAction SilentlyContinue
-      throw 'SHA256 do download nao corresponde ao hash oficial da release.'
+      throw 'SHA256 do pacote recebido nao corresponde ao hash oficial da release.'
     }
     Move-Item -LiteralPath $partial -Destination $Archive
   }
