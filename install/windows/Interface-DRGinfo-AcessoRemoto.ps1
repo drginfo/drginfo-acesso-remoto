@@ -28,6 +28,16 @@ $ReleaseConfig = Import-PowerShellDataFile -LiteralPath $ConfigPath
 $ReleaseUrl = [string]$ReleaseConfig.SoftwareUrl
 $Sha256 = [string]$ReleaseConfig.SoftwareSha256
 $SoftwareVersion = [string]$ReleaseConfig.SoftwareVersion
+$Offline = [bool]$ReleaseConfig.Offline
+$OfflinePackage = Join-Path $ScriptDir 'DRGinfo-AcessoRemoto-windows-x64.zip'
+if ($Offline) {
+  if (-not (Test-Path -LiteralPath $OfflinePackage -PathType Leaf)) {
+    throw 'Pacote offline nao encontrado na pasta do instalador.'
+  }
+  if ((Get-FileHash -LiteralPath $OfflinePackage -Algorithm SHA256).Hash -ne $Sha256.ToUpperInvariant()) {
+    throw 'Pacote offline alterado ou corrompido: SHA256 divergente.'
+  }
+}
 $uri = $null
 if (-not [uri]::TryCreate($ReleaseUrl,[UriKind]::Absolute,[ref]$uri) -or
     $uri.Scheme -ne 'https' -or $uri.Host -ne 'downloads.drginfo.com.br' -or
@@ -228,7 +238,12 @@ $install.Add_Click({
   $progress.MarqueeAnimationSpeed = 25
 
   $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $Core +
-    '" -PackageUrl "' + $ReleaseUrl + '" -PackageSha256 "' + $Sha256 + '" -PackageVersion "' + $SoftwareVersion + '" -AllowUnsigned'
+    '" -PackageSha256 "' + $Sha256 + '" -PackageVersion "' + $SoftwareVersion + '" -AllowUnsigned'
+  if ($Offline) {
+    $arguments += ' -PackageFile "' + $OfflinePackage + '"'
+  } else {
+    $arguments += ' -PackageUrl "' + $ReleaseUrl + '"'
+  }
   try {
     # Usuario padrao recebe UAC aqui. O Windows solicita credenciais
     # administrativas quando necessario; nao armazenamos credenciais.
