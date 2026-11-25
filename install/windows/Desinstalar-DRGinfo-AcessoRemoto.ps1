@@ -15,6 +15,23 @@ $installDir = Join-Path $env:ProgramFiles $serviceName
 $exe = Join-Path $installDir "$serviceName.exe"
 $logDir = Join-Path $env:ProgramData 'DRGinfo\AcessoRemoto'
 $logFile = Join-Path $logDir 'desinstalacao.log'
+$desktopShortcut = Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) "$serviceName.lnk"
+$startMenuFolder = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'DRGinfo'
+$startMenuShortcut = Join-Path $startMenuFolder "$serviceName.lnk"
+
+function Remove-DRGShortcut([string]$LinkPath) {
+    if (-not (Test-Path -LiteralPath $LinkPath -PathType Leaf)) { return }
+    # Nao excluir atalhos personalizados de terceiros: verificar o executavel alvo.
+    $shell = New-Object -ComObject WScript.Shell
+    $link = $shell.CreateShortcut($LinkPath)
+    if (-not $link.TargetPath -or
+        -not $link.TargetPath.Equals($exe, [StringComparison]::OrdinalIgnoreCase)) {
+        Log "Atalho preservado por nao pertencer a instalacao: $LinkPath"
+        return
+    }
+    Remove-Item -LiteralPath $LinkPath -Force -ErrorAction Stop
+    Log "Atalho removido: $LinkPath"
+}
 
 function Log([string]$s) {
     New-Item -ItemType Directory -Force -Path $logDir | Out-Null
@@ -73,6 +90,16 @@ try {
         if ($_.ExecutablePath -and $_.ExecutablePath.Equals($exe, [StringComparison]::OrdinalIgnoreCase)) {
             $stop = Invoke-CimMethod -InputObject $_ -MethodName Terminate -ErrorAction Stop
             if ($stop.ReturnValue -ne 0) { throw 'Falha ao encerrar instancia do aplicativo.' }
+        }
+    }
+    # Remover apenas atalhos corporativos criados para este executavel,
+    # antes de excluir a pasta do aplicativo. A pasta DRGinfo so sera removida se vazia.
+    Remove-DRGShortcut $desktopShortcut
+    Remove-DRGShortcut $startMenuShortcut
+    if (Test-Path -LiteralPath $startMenuFolder -PathType Container) {
+        if (@(Get-ChildItem -LiteralPath $startMenuFolder -Force).Count -eq 0) {
+            Remove-Item -LiteralPath $startMenuFolder -Force -ErrorAction Stop
+            Log 'Pasta DRGinfo vazia removida do Menu Iniciar.'
         }
     }
     if (Test-Path -LiteralPath $installDir) {
