@@ -1,3 +1,17 @@
+## Homologacao funcional — Portable 1.5.3-drginfo.1-portable1 (2026-11-24)
+
+**Aprovado pelo operador na segunda VM Windows:** download/copia e extracao, execucao direta de `DRGinfo Acesso Remoto.exe` com usuario comum e sem instalacao, exibicao do ID e status Pronto, e conexao remota assistida funcional **fim a fim**. O gerador informou que nao alterou servicos ou programas instalados. Teste separado de ausencia de rastros de perfil/registro nao foi realizado; nao interpretar portatil como sem persistencia de configuracoes.
+
+- Artefato: `DRGinfo-AcessoRemoto-Portable-Windows-x64.zip`
+- Diretorio de criacao: `C:\ProgramData\DRGinfo\AcessoRemoto\releases\portable\1.5.3-drginfo.1-portable1\`
+- SHA256 reportado pela geracao: `965EBEFA62D7ED808634B68990D9786C3D4F26B11D3A0E9709958FD86B49669D`
+- Fonte: pacote binario homologado `1.5.3-drginfo.1`; nenhuma recompilacao.
+- Aprovacao: **funcionamento da modalidade portatil**. Publicacao na VPS e conferência HTTPS externa ainda pendentes.
+- Nao implica validacao de acesso desassistido apos reinicio (somente instalavel oferece servico automatico).
+- Mantida limitacao de ausencia de assinatura Authenticode na release atual.
+
+---
+
 ## Evolucao: Instalavel gui3 e Portable (24/11/2026)
 
 **Instalavel gui3:** `Instalar-DRGinfo-AcessoRemoto.ps1` preserva instalacao e servico homologados; agora copia o desinstalador tecnico de `Desinstalar-DRGinfo-AcessoRemoto.ps1` para `C:\ProgramData\DRGinfo\AcessoRemoto\tools\`, cria entrada HKLM em `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto` com nome, versao, fabricante, diretorio, icone e comando `UninstallString`. Registro so apos servico atingir Running, com rollback da chave ao falhar. Usuário comum pode selecionar Desinstalar e autorizar UAC; dados e logs sao preservados. **Nao atualizar o gui2 in place**: motor atual recusa sobrescrever uma instalacao existente.
