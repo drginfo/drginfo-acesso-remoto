@@ -10,13 +10,13 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$Version = '1.0.0-gui3'
+  [string]$Version = '1.0.0-gui4'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = '18b4f829c35f8a4724cf58472a0f64d780ce8760'
+$SourceCommit = 'f1793f7a825a38327248639b4774a49d2a12f23e'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
@@ -60,7 +60,7 @@ try {
     }
   }
   @(
-    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui2'
+    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui4'
     '1. Extraia todo este ZIP em uma pasta local.'
     '2. Execute instalador-drginfo.cmd com duplo clique, inclusive com usuario comum.'
     '3. A janela exibe logo, estado de instalacao e acesso ao log.'
@@ -70,7 +70,7 @@ try {
     '7. O instalador nao substitui instalacao existente.'
     '8. Para integridade do ZIP, compare o hash fornecido pela DRGinfo por canal confiavel.'
     '9. Nao desabilitar UAC, SmartScreen ou antivirus para continuar.'
-    '10. Modo de instalacao gui2 validado; registro ARP/desinstalador gui3 aguardam homologacao.'
+    '10. Instalacao e registro no Windows integrados; testar instalacao e remocao na VM.'
   ) | Set-Content -LiteralPath (Join-Path $Payload 'LEIA-ME.txt') -Encoding UTF8
   Get-ChildItem -LiteralPath $Payload -File | ForEach-Object {
     [PSCustomObject]@{
