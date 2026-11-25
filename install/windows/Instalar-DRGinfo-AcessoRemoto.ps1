@@ -34,6 +34,30 @@ $Extracted = Join-Path $ReleaseDir 'extracted'
 $LogFile = Join-Path $Root 'instalacao.log'
 $CreatedDir = $false
 $CreatedService = $false
+$CreatedShortcuts = New-Object 'System.Collections.Generic.List[string]'
+$DesktopShortcut = Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) "$AppName.lnk"
+$StartMenuFolder = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'DRGinfo'
+$StartMenuShortcut = Join-Path $StartMenuFolder "$AppName.lnk"
+
+function New-DRGShortcut([string]$LinkPath) {
+  if (Test-Path -LiteralPath $LinkPath) {
+    throw "Atalho preexistente; recusando sobrescrever: $LinkPath"
+  }
+  $parent = Split-Path -Parent $LinkPath
+  if (-not (Test-Path -LiteralPath $parent -PathType Container)) {
+    New-Item -ItemType Directory -Path $parent -Force -ErrorAction Stop | Out-Null
+  }
+  # WScript.Shell cria .lnk nativo com o icone embutido no proprio EXE DRGinfo.
+  $shell = New-Object -ComObject WScript.Shell
+  $link = $shell.CreateShortcut($LinkPath)
+  $link.TargetPath = $InstalledExe
+  $link.WorkingDirectory = $InstallDir
+  $link.IconLocation = "$InstalledExe,0"
+  $link.Description = 'DRGinfo Acesso Remoto - suporte autorizado'
+  $link.Save()
+  $CreatedShortcuts.Add($LinkPath)
+  Write-Log "Atalho criado: $LinkPath"
+}
 
 function Write-Log([string]$Message, [string]$Level='INFO') {
   $line = '{0} [{1}] {2}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Level, $Message
@@ -213,10 +237,28 @@ try {
   New-ItemProperty -Path $arp -Name 'NoModify' -PropertyType DWord -Value 1 -Force | Out-Null
   New-ItemProperty -Path $arp -Name 'NoRepair' -PropertyType DWord -Value 1 -Force | Out-Null
   Write-Log 'Aplicativo registrado em Aplicativos instalados do Windows.'
+  # Atalhos para todos os usuarios, mesmo quando a instalacao recebe UAC
+  # de outra conta administrativa (nao usar Desktop do usuario elevado).
+  New-DRGShortcut $DesktopShortcut
+  New-DRGShortcut $StartMenuShortcut
   Write-Log 'INSTALACAO CONCLUIDA. Servico automatico em execucao.'
   exit 0
 } catch {
   Write-Log $_.Exception.Message 'ERRO'
+  # Excluir apenas atalhos criados nesta mesma tentativa.
+  foreach ($shortcut in $CreatedShortcuts) {
+    try {
+      Remove-Item -LiteralPath $shortcut -Force -ErrorAction Stop
+      Write-Log "Rollback do atalho concluido: $shortcut" 'ROLLBACK'
+    } catch { Write-Log $_.Exception.Message 'AVISO' }
+  }
+  if (Test-Path -LiteralPath $StartMenuFolder -PathType Container) {
+    try {
+      if (-not @(Get-ChildItem -LiteralPath $StartMenuFolder -Force).Count) {
+        Remove-Item -LiteralPath $StartMenuFolder -Force -ErrorAction Stop
+      }
+    } catch { Write-Log $_.Exception.Message 'AVISO' }
+  }
   if ($CreatedDir) {
     $arp = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto'
     if (Test-Path -LiteralPath $arp) {
