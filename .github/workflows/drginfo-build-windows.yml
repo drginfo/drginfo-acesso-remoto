@@ -136,7 +136,7 @@ jobs:
               platform: ARM64,
             }
     with:
-      upload-artifact: ${{ inputs.upload-artifact }}
+      upload-artifact: ${{ github.event_name == 'push' || inputs.upload-artifact }}
       target: ${{ matrix.job.target }}
       configuration: Release
       platform: ${{ matrix.job.platform }}
@@ -371,7 +371,7 @@ jobs:
 
       - name: Run the Rust tests
         # x86_64 only: the tests are the same code on arm64, and that runner is the slow one.
-        if: ${{ !inputs.upload-artifact && matrix.job.arch == 'x86_64' }}
+        if: ${{ github.event_name != 'push' && !inputs.upload-artifact && matrix.job.arch == 'x86_64' }}
         shell: bash
         run: |
           # The build's own features, so the tests see the code that ships.
@@ -398,7 +398,7 @@ jobs:
 
       - name: Download RustDeskTempTopMostWindow artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        if: ${{ inputs.upload-artifact }}
+        if: ${{ github.event_name == 'push' || inputs.upload-artifact }}
         with:
           name: ${{ matrix.job.arch == 'aarch64' && 'topmostwindow-artifacts-ARM64' || 'topmostwindow-artifacts-x64' }}
           path: "./rustdesk"
