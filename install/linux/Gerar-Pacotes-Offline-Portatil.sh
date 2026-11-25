@@ -7,7 +7,7 @@ ROOT=$(realpath -- "$2")
 [[ -f "$SRC" && -d "$ROOT" ]] || exit 2
 for cmd in curl unzip zip sha256sum python3; do command -v "$cmd" >/dev/null || { echo "Falta: $cmd"; exit 2; }; done
 EXPECTED='7770f8d6b61217568124bbb2fb96d482621ba52fbf1c8ceff2cd31a2ef776525'
-COMMIT='24ab0aea5c7fece21887a64e9522a3eff90f4628'
+COMMIT='716b7de3985bdc8a2738129eaadc56b21b07e99f'
 OUT="$ROOT/DRGinfo-Pacotes-1.0.0-gui6-offline"
 [[ ! -e "$OUT" ]] || { echo "Release ja existe: $OUT"; exit 3; }
 echo "$EXPECTED  $SRC" | sha256sum -c - >/dev/null
