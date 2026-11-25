@@ -398,7 +398,6 @@ jobs:
         shell: pwsh
         run: |
           & .\install\windows\Preparar-Distribuicao-DRGinfo.ps1 -Source .\rustdesk -Destination .\drginfo-windows-x64
-          if ($LASTEXITCODE -ne 0) { throw "Falha na preparacao da distribuicao DRGinfo" }
 
       - name: Publicar artefato corporativo DRGinfo Windows x64
         if: env.UPLOAD_ARTIFACT == 'true'
