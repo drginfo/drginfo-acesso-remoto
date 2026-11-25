@@ -28,7 +28,8 @@ $ReleaseConfig = Import-PowerShellDataFile -LiteralPath $ConfigPath
 $ReleaseUrl = [string]$ReleaseConfig.SoftwareUrl
 $Sha256 = [string]$ReleaseConfig.SoftwareSha256
 $SoftwareVersion = [string]$ReleaseConfig.SoftwareVersion
-$Offline = [bool]$ReleaseConfig.Offline
+$Offline = $false
+if ($ReleaseConfig.ContainsKey('Offline')) { $Offline = [bool]$ReleaseConfig['Offline'] }
 $OfflinePackage = Join-Path $ScriptDir 'DRGinfo-AcessoRemoto-windows-x64.zip'
 if ($Offline) {
   if (-not (Test-Path -LiteralPath $OfflinePackage -PathType Leaf)) {
