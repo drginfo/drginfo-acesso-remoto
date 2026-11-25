@@ -1,3 +1,15 @@
+## Implementacao da identidade DRGinfo — 2026-11-25
+
+- Fonte quadrada derivada da logo enviada e aprovada pelo usuario, armazenada em `branding/drginfo-square-icon.png.base64` (PNG quadrado compacto de 96x96 px). Para iconografia de alta resolucao, manter tambem original 514x511 fora da build; nao afirmar que esta miniatura substitui o mestre.
+- Gerador reproduzivel: `branding/tools/build-windows-brand-assets.py`, requer Pillow; gera ICO do Runner Windows, ICO Flutter, ICO Rust core/tray, PNGs em `res/` e `flutter/assets/` e SVG Flutter derivado da mesma marca. Registra hashes em `branding/GENERATED-SHA256.txt`.
+- Workflow: `.github/workflows/drginfo-build-windows.yml`, etapa anterior ao build Rust/Flutter, em runner Windows x64; push manual controlado por `branding/BUILD_TRIGGER.md`, publica somente GitHub Actions artifacts.
+- `flutter/windows/runner/main.cpp`: titulo de fallback DRGinfo; `flutter/windows/runner/Runner.rc`: FileDescription DRGinfo.
+- Limites: nenhum hash publicado na VPS foi alterado; e necessario testar artefatos compilados para Windows Explorer, taskbar, Alt-Tab, tray, janelas, notificacoes e acessos fim a fim. A marca e referencias RustDesk exigidas para copyright/AGPL continuam em documentos legais.
+- Mascote: versao com fundo transparente preparada separadamente; nao incorporada ao executavel como icone (a logo quadrada e mais legivel em 16x16/32x32).
+- Estado: NOVO BUILD de validacao solicitado; aguardar verificacao efetiva de job e artefato antes de declarar compilado e homologado.
+
+---
+
 # DRGinfo Acesso Remoto — plano de identidade visual integral
 
 Data: 2026-11-25
