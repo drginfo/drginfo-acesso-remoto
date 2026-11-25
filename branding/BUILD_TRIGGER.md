@@ -18,3 +18,6 @@ Build acionado por push deste arquivo nesta branch.
 
 ## Rebuild corporativo 2026-11-25
 Gerar artifact DRGinfo-Acesso-Remoto-Windows-x64, exe renomeado, licença AGPL.
+
+## Rebuild gui5 - correcao manifesto 2026-11-25
+Correcao 1e9cafeae5a3dc2576f5a3c85f9874a2433a9f72: manifesto excluido da propria enumeracao SHA256. Build para artefato DRGinfo-Acesso-Remoto-Windows-x64, sem publicacao VPS.
