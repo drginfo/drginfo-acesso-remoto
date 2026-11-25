@@ -70,3 +70,14 @@ Base RustDesk OSS GNU AGPL-3.0; o pacote inclui LICENCE no ZIP software.
 Distribuicao exige fonte correspondente, modificacoes, instrucoes de build
 e creditos/licencas de dependencias. Produto ainda nao tem assinatura
 Authenticode; testes antes de publicidade comercial.
+
+## Resultado operacional comunicado — 25/11/2026
+- Instalador offline gui6: **APROVADO EM VM WINDOWS 11**.
+- Usuario confirmou etapas 1 a 6: extracao, execucao, UAC e instalacao sem acesso externo.
+- Atalho da Area de Trabalho e pasta DRGinfo no Menu Iniciar: criados corretamente.
+- Conexao remota fim a fim: OK apos restabelecer conectividade.
+- Desinstalacao: OK.
+- ZIP offline SHA256: `2fd0cc3d5efffe23e45c06ecda5894bf9ff4997c736c0cffca29157180861414`.
+- ZIP portatil SHA256: `cb9f40832afb5d5b10cc19b581dafb8cbdcb7a52631f4280f6b4fec41d319a06`.
+- Portatil: **PENDENTE DE HOMOLOGACAO FUNCIONAL**.
+- Base: relato de testes do operador. Nao houve verificacao remota independente da VM.
