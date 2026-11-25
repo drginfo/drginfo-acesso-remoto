@@ -81,3 +81,13 @@ Authenticode; testes antes de publicidade comercial.
 - ZIP portatil SHA256: `cb9f40832afb5d5b10cc19b581dafb8cbdcb7a52631f4280f6b4fec41d319a06`.
 - Portatil: **PENDENTE DE HOMOLOGACAO FUNCIONAL**.
 - Base: relato de testes do operador. Nao houve verificacao remota independente da VM.
+
+## Homologacao portatil — resultado do operador, 25/11/2026
+- VM Windows 11: copia e extracao do ZIP portatil: OK.
+- Execucao pelo launcher `Abrir-DRGinfo-Portatil.cmd`: OK.
+- Interface com identidade DRGinfo, indicador Pronto e conexao fim a fim: OK.
+- Verificacoes `Get-Service` e HKLM ARP: nenhuma instalacao/servico criado pelo launcher, OK.
+- SHA256 pacote portatil: `cb9f40832afb5d5b10cc19b581dafb8cbdcb7a52631f4280f6b4fec41d319a06`.
+- STATUS: **HOMOLOGADO FUNCIONALMENTE EM VM WINDOWS 11**.
+- Limites: nao comprova ausencia de arquivos/logs no perfil, compatibilidade com todas as versoes Windows, assinatura Authenticode ou aceitacao por politicas de endpoint de terceiros.
+- Instalador offline gui6: ja homologado funcionalmente; online gui5 homologado anteriormente. Online gui6 especifico ainda requer teste proprio se for considerado release comercial.
