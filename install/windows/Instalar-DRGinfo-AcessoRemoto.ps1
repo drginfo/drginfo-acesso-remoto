@@ -109,8 +109,8 @@ try {
     Expand-Archive -LiteralPath $Archive -DestinationPath $work -Force
     Rename-Item -LiteralPath $work -NewName 'extracted'
   }
-  $executables = @(Get-ChildItem -LiteralPath $Extracted -Filter 'rustdesk.exe' -Recurse -File)
-  if ($executables.Count -ne 1) { throw 'Pacote deve conter um unico rustdesk.exe.' }
+  $executables = @(Get-ChildItem -LiteralPath $Extracted -Recurse -File | Where-Object { $_.Name -in @('rustdesk.exe','DRGinfo Acesso Remoto.exe') })
+  if ($executables.Count -ne 1) { throw 'Pacote deve conter exatamente um executavel aprovado.' }
   $source = $executables[0].DirectoryName
   foreach ($relative in @('librustdesk.dll','flutter_windows.dll','data\app.so','data\icudtl.dat','data\flutter_assets')) {
     if (-not (Test-Path -LiteralPath (Join-Path $source $relative))) {
