@@ -15,6 +15,7 @@
 param(
   [Parameter(Mandatory=$true)][string]$PackageUrl,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$PackageSha256,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$PackageVersion,
   [ValidatePattern('^[0-9a-fA-F]{40,64}$')][string]$PublisherThumbprint,
   [switch]$AllowUnsigned,
   [switch]$ValidateOnly
@@ -196,7 +197,7 @@ try {
   $uninstallCommand = '"' + "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" + '" -NoProfile -ExecutionPolicy Bypass -File "' + $uninstallTarget + '" -ConfirmRemoval'
   $fields = @{
     DisplayName = $AppName
-    DisplayVersion = '1.5.3-drginfo.1'
+    DisplayVersion = $PackageVersion
     Publisher = 'DRGinfo'
     InstallLocation = $InstallDir
     DisplayIcon = $InstalledExe
