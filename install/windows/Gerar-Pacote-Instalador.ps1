@@ -10,13 +10,16 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$Version = '1.0.0-gui4'
+  [string]$Version = '1.0.0-gui5',
+  [Parameter(Mandatory=$true)][ValidatePattern('^https://downloads[.]drginfo[.]com[.]br/rustdesk/drginfo-acesso-remoto/[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+[.]zip$')][string]$SoftwareUrl,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Fa-f]{64}$')][string]$SoftwareSha256,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$SoftwareVersion
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = 'f1793f7a825a38327248639b4774a49d2a12f23e'
+$SourceCommit = 'cb0366df9c11d02ac753323f020e80c597d69064'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
@@ -47,6 +50,19 @@ try {
   if ($png.Length -lt 8 -or [Convert]::ToBase64String($png,0,8) -ne 'iVBORw0KGgo=') {
     throw 'Logotipo nao e PNG valido.'
   }
+  # Manifesto embutido no instalador. Nao executar conteudo obtido da rede.
+  # Parametros validados sao valores literais de um PowerShell data file.
+  $ReleaseManifest = Join-Path $Payload 'release-config.psd1'
+  @(
+    '@{'
+    "  SoftwareUrl = '$SoftwareUrl'"
+    "  SoftwareSha256 = '$($SoftwareSha256.ToUpperInvariant())'"
+    "  SoftwareVersion = '$SoftwareVersion'"
+    '}'
+  ) | Set-Content -LiteralPath $ReleaseManifest -Encoding UTF8
+  if ((Get-Content -LiteralPath $ReleaseManifest -Raw) -match '3AC5BAC4B6AD2113') {
+    throw 'Versao anterior detectada; nao promover legado como gui5.'
+  }
   foreach ($file in @('Interface-DRGinfo-AcessoRemoto.ps1','Instalar-DRGinfo-AcessoRemoto.ps1','Desinstalar-DRGinfo-AcessoRemoto.ps1')) {
     $tokens = $null
     $errors = $null
@@ -60,7 +76,7 @@ try {
     }
   }
   @(
-    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui4'
+    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui5'
     '1. Extraia todo este ZIP em uma pasta local.'
     '2. Execute instalador-drginfo.cmd com duplo clique, inclusive com usuario comum.'
     '3. A janela exibe logo, estado de instalacao e acesso ao log.'
@@ -88,8 +104,9 @@ try {
     "SourceCommit=$SourceCommit"
     "Package=$(Split-Path -Path $Zip -Leaf)"
     "PackageSHA256=$sha"
-    "SoftwareSHA256=3AC5BAC4B6AD211395C8C98FC9BA0E220517105C70F30003A818E36E588E8BA9"
-    "SoftwareURL=https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.1/DRGinfo-AcessoRemoto-windows-x64.zip"
+    "SoftwareSHA256=$($SoftwareSha256.ToUpperInvariant())"
+    "SoftwareURL=$SoftwareUrl"
+    "SoftwareVersion=$SoftwareVersion"
     "Authenticode=UNSIGNED_PROVISIONAL"
   ) | Set-Content -LiteralPath $Info -Encoding ASCII
   Write-Host "PACOTE: $Zip"
