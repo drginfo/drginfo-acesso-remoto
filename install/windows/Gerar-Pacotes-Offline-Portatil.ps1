@@ -17,7 +17,7 @@ $ProgressPreference = 'SilentlyContinue'
 $Version = '1.5.3-drginfo.2'
 $InstallerVersion = '1.0.0-gui6-offline'
 $ExpectedHash = '7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525'
-$SourceCommit = '24ab0aea5c7fece21887a64e9522a3eff90f4628'
+$SourceCommit = '716b7de3985bdc8a2738129eaadc56b21b07e99f'
 $BaseUrl = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $SoftwareUrl = "https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/$Version/DRGinfo-AcessoRemoto-windows-x64.zip"
 Add-Type -AssemblyName System.IO.Compression.FileSystem
