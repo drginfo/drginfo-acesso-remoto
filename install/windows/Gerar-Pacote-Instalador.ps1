@@ -10,7 +10,7 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$Version = '1.0.0-gui5',
+  [string]$Version = '1.0.0-gui6',
   [Parameter(Mandatory=$true)][ValidatePattern('^https://downloads[.]drginfo[.]com[.]br/rustdesk/drginfo-acesso-remoto/[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+[.]zip$')][string]$SoftwareUrl,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Fa-f]{64}$')][string]$SoftwareSha256,
   [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$SoftwareVersion
@@ -19,7 +19,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$') { throw 'Versao invalida.' }
-$SourceCommit = 'a3a978d2eebf152922ec280a5d635ad12c78bc3f'
+$SourceCommit = '3b6a15d48e03ccb2d6a10ac9cbb09a147c6566d1'
 $RawBase = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $ReleaseRoot = Join-Path $env:ProgramData "DRGinfo\AcessoRemoto\releases\installer-gui\$Version"
 $Payload = Join-Path $ReleaseRoot 'payload'
@@ -76,7 +76,7 @@ try {
     }
   }
   @(
-    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui5'
+    'DRGinfo Acesso Remoto - Instalador Windows x64 v1.0.0-gui6'
     '1. Extraia todo este ZIP em uma pasta local.'
     '2. Execute instalador-drginfo.cmd com duplo clique, inclusive com usuario comum.'
     '3. A janela exibe logo, estado de instalacao e acesso ao log.'
@@ -86,7 +86,9 @@ try {
     '7. O instalador nao substitui instalacao existente.'
     '8. Para integridade do ZIP, compare o hash fornecido pela DRGinfo por canal confiavel.'
     '9. Nao desabilitar UAC, SmartScreen ou antivirus para continuar.'
-    '10. Instalacao e registro no Windows integrados; testar instalacao e remocao na VM.'
+    '10. Atalhos corporativos na Area de Trabalho publica e Menu Iniciar DRGinfo.'
+    '11. Desinstalacao remove apenas atalhos que apontam para o executavel DRGinfo instalado.'
+    '12. Instalacao e registro no Windows integrados; testar instalacao e remocao na VM.'
   ) | Set-Content -LiteralPath (Join-Path $Payload 'LEIA-ME.txt') -Encoding UTF8
   Get-ChildItem -LiteralPath $Payload -File | ForEach-Object {
     [PSCustomObject]@{
