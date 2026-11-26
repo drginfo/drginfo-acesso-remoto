@@ -184,6 +184,9 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check "Pillow>=10,<12"
           python tools/generate_drginfo_icons.py
+          if (-not (Test-Path -LiteralPath flutter/assets/drginfo-icon.png -PathType Leaf)) { throw 'DRGinfo: icone Flutter ausente' }
+          $flutterCommon = Get-Content -Raw -LiteralPath flutter/lib/common.dart
+          if ($flutterCommon -notmatch 'assets/drginfo-logo.png' -or $flutterCommon -notmatch 'assets/drginfo-icon.png') { throw 'DRGinfo: interface Flutter sem identidade corporativa' }
 
       - name: Restore bridge files
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1

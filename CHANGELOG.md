@@ -7,3 +7,9 @@
 - Acrescentado gate estático de identidade antes da etapa de compilação e documentação de decisão, segurança, inventário, operação e homologação.
 - **Não homologado**: compilação final, ACLs, serviço, assinatura, configuração fim a fim e UI.
 - Nenhuma build Linux/Android autorizada.
+
+## 2026-11-26 — Correção de logo e ícone Flutter Windows
+- Corrigido o componente `loadLogo()` que ainda exibia assets RustDesk, para preferir o logotipo oficial no Windows customizado.
+- Corrigido `loadIcon()` para usar ícone DRGinfo derivado do logotipo aprovado; adicionada geração do asset no build.
+- Gate do workflow falha se estiver ausente o ícone gerado ou referência aos assets DRGinfo.
+- Sem mudanças em servidor, chave, ACLs, instalador homologado e builds Linux/Android.

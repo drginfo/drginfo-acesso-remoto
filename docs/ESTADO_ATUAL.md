@@ -17,3 +17,8 @@ O workflow `.github/workflows/drginfo-diagnostico-windows-x64.yml` precisa publi
 - Revisão e homologação do executável Windows, ícones, metadados, servidor/relay, conexão, atualizações e instalação/desinstalação.
 - Auditoria efetiva de ACL de Program Files e ProgramData em VM; sem evidências, **não declarar seguro/homologado**.
 - Autenticode: artefato unsigned. Publicação para clientes condicionada à decisão de assinatura e registro dos hashes.
+
+## Correção visual 26/11/2026
+- Captura de homologação mostrou interface Pronto e ID, mas logotipo da DRGinfo ausente; causa: `flutter/lib/common.dart` continuava selecionando os assets RustDesk padrão.
+- A interface Windows personalizada passa a carregar `flutter/assets/drginfo-logo.png` no painel e `drginfo-icon.png` gerado do mesmo arquivo aprovado no ícone de UI.
+- A compilação anterior **não está aprovada** como identidade visual final; esta revisão requer novo artefato e conferência visual, sem substituir instalações existentes.

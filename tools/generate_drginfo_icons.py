@@ -34,6 +34,11 @@ for relative in (
     icon.save(target, format="ICO", sizes=sizes)
     print(f"[DRGinfo] icon generated: {relative}")
 
+# Generate Flutter window/icon artwork from the same approved brand image.
+flutter_icon = ROOT / "flutter/assets/drginfo-icon.png"
+icon.save(flutter_icon, format="PNG")
+print(f"[DRGinfo] flutter icon generated: {flutter_icon.relative_to(ROOT)}")
+
 # Generate package PNG icons from the same logo, retaining transparency.
 for relative, size in (
     ("res/32x32.png", 32),

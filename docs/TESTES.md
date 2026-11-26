@@ -14,3 +14,7 @@
 | Backup e rollback | PENDENTE | versão anterior preservada + procedimento |
 
 Não confundir script disponível com execução ou homologação.
+
+## Evidência visual 26/11/2026
+- Windows: imagem do usuário mostrou estado `Pronto`, porém ausência de logotipo corporativo. Portanto, **identidade visual NÃO APROVADA** no build #9.
+- Correção em `flutter/lib/common.dart` e gerador de assets; a existência do código não equivale à aprovação da nova build.

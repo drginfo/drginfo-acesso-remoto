@@ -3836,6 +3836,22 @@ class _LogoState extends State<_Logo> {
 
   @override
   Widget build(BuildContext context) {
+    // DRGinfo Windows branding: never fall back silently to stock RustDesk artwork.
+    if (isWindows && bind.isCustomClient()) {
+      return Container(
+        constraints: const BoxConstraints(maxWidth: 300, maxHeight: 60),
+        margin: const EdgeInsets.only(left: 12, right: 12, top: 12),
+        child: Image.asset(
+          'assets/drginfo-logo.png',
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => const Text(
+            'DRGinfo Acesso Remoto',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
     return FutureBuilder<String?>(
       future: _logoFutureFor(Theme.of(context).brightness),
       builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
@@ -3863,6 +3879,14 @@ class _LogoState extends State<_Logo> {
 Widget loadLogo() => const _Logo();
 
 Widget loadIcon(double size) {
+  if (isWindows && bind.isCustomClient()) {
+    return Image.asset(
+      'assets/drginfo-icon.png',
+      width: size,
+      height: size,
+      errorBuilder: (context, error, stackTrace) => const Icon(Icons.desktop_windows),
+    );
+  }
   return Image.asset('assets/icon.png',
       width: size,
       height: size,
