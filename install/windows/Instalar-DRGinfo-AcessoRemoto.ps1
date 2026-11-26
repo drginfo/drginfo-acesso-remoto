@@ -75,8 +75,8 @@ function Set-DRGManagedAcl([string]$Path) {
     [Security.AccessControl.InheritanceFlags]'ContainerInherit, ObjectInherit'
   } else { [Security.AccessControl.InheritanceFlags]::None }
   foreach ($right in $rights) {
-    $sid = New-Object Security.Principal.SecurityIdentifier($right[0])
-    $rule = New-Object Security.AccessControl.FileSystemAccessRule(
+    $sid = [Security.Principal.SecurityIdentifier]::new([string]$right[0])
+    $rule = [Security.AccessControl.FileSystemAccessRule]::new(
       $sid, [Security.AccessControl.FileSystemRights]$right[1],
       $inherit, [Security.AccessControl.PropagationFlags]::None,
       [Security.AccessControl.AccessControlType]::Allow
