@@ -122,3 +122,42 @@ O operador relatou saída do gerador gui7:
 - `MANIFESTO: C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases\\installer-gui\\1.0.0-gui7\\manifesto-sha256.csv`.
 - Gerador afirmou consolidação; teste UAC em VM limpa ainda pendente.
 - **Status: ZIP gerado segundo operador; hash apenas reportado, aguardando verificação independente, arquivo por arquivo, release-config e validação de integridade do ZIP.** Não distribuir para clientes.
+
+## Adendo de segunda opinião — decisão de negócios e segurança, 26/11/2026
+**Origem:** arquivo enviado pelo proprietário `analise-segunda-opiniao-2026-11-25(1).md` (a análise-base é de 25/11; a decisão inserida é de 26/11). O documento usa como base o commit histórico `04b0faa`, portanto suas observações sobre P1, P2 e P3 não refletem necessariamente os ajustes já incorporados na branch atual.
+
+### Decisão DEC-2026-11-26-01 — não adquirir certificado Authenticode agora
+- **Decisão aprovada pelo proprietário:** concluir a fase do projeto sem certificado de assinatura de código. A decisão é financeira; não equivale a declarar assinatura desnecessária.
+- **Risco residual R02/P1:** executáveis sem Authenticode, alerta de editor desconhecido/SmartScreen e ausência de autenticação criptográfica do editor. Classificação **ACEITO TEMPORARIAMENTE** pelo proprietário. Aceite não dispensa integridade de transporte, pinagem SHA-256 e distribuição controlada.
+- **Controle compensatório obrigatório antes de qualquer entrega:** publicar SHA-256 do ZIP por canal HTTPS independente do download, registrá-lo também em comunicação contratual/e-mail independente e instruir cliente a verificar o valor; impedir substituição silenciosa da versão e arquivar evidência do hash conferido.
+- **Restrição:** `UnsignedPilot` permanece explicitamente vinculado à versão `1.5.3-drginfo.2` e ao SHA-256 `7770f8d6b61217568124bbb2fb96d482621ba52fbf1c8ceff2cd31a2ef776525` no instalador gui7; nenhuma permissão genérica para artefatos futuros. Se for proposta outra release sem assinatura, deve passar por novo aceite de risco, hash próprio e testes.
+- **Gatilhos de revisão:** primeira receita gerada pelo serviço OU exigência contratual de assinatura por cliente, o que ocorrer primeiro. Revisar orçamento, certificado e medidas de distribuição.
+- **Comunicação obrigatória:** informar no termo/treinamento que o Windows pode exibir aviso de editor não identificado; nunca instruir a desativar SmartScreen, antivírus ou UAC.
+- **Limites legais:** aceite técnico/comercial não substitui observância da AGPL-3.0, LGPD, contrato e revisão jurídica. Sem verificação desses pontos não declarar pronto para venda pública.
+
+### Estado reavaliado dos achados P1–P11
+| Item | Reavaliação em 26/11 |
+|---|---|
+| P1 | Risco Authenticode **aceito temporariamente**, gui7 com `UnsignedPilot` restrito por versão e hash; canal independente de hash ainda pendente |
+| P2 | Hardening de ACL aplicado e demonstrado na WIN11PROLAB, inclusive recusa de escrita a usuário comum; regressão gui7 instalação/desinstalação pendente |
+| P3 | Guarda de cliente personalizado inserida em `src/updater.rs` (commit `76bcfee`); binário build #5 permanece anterior à correção, requer **novo build e teste de rede** |
+| P4 | Links externos RustDesk precisam de inspeção/ajuste |
+| P5 | Verificação do operador/secret de assinatura remota no workflow e logs do build #5 ainda pendente |
+| P6 | SBOM/SCA/proveniência pendentes |
+| P7 | Branch candidata atual `feat/drginfo-embedded-config`; registrar linha Android como histórica |
+| P8 | Especificação de consentimento/código temporário/visibilidade e autenticação do técnico pendente |
+| P9 | Pacote de código-fonte correspondente AGPL e procedimentos de oferta pendentes |
+| P10 | Handoff histórico deve receber indicação de obsolescência |
+| P11 | Procedimento de anonimização/rotação de IDs/senhas em capturas pendente |
+
+### Decisão de liberação
+- **GUI7**: somente laboratório até evidência de regressão e hashes independentes.
+- **Piloto pago**: hipótese condicionada a correção/aceite dos demais riscos, termo e contrato, entrega de fonte correspondente, verificação de versão realmente corrigida para P3, avaliações de segurança e LGPD.
+- **Distribuição pública**: não autorizada nesta etapa.
+
+### Próximos passos de maior prioridade
+1. Concluir auditoria independente da gui7: conferir hash `CEE32A62E8719E2715B32AB66A13C9C814FDAAFE88B77C35FDF72376C9CC0483`, arquivos e configuração.
+2. Realizar regressão gui7 em snapshot Windows (instalar, reiniciar, conectar, desinstalar e rejeitar hash adulterado).
+3. Preparar canal HTTPS separado para SHA-256 e instruções de verificação para o cliente.
+4. Entregar fonte correspondente à versão distribuída (AGPL) e atualizar o código compilado para incorporar P3 antes de nova release.
+5. Revisar P4/P5/P6/P8/P11, LGPD e termo antes de qualquer distribuição.
