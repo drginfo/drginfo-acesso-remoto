@@ -77,7 +77,9 @@ env:
   MACOS_P12_BASE64: "${{ secrets.MACOS_P12_BASE64 }}"
   UPLOAD_ARTIFACT: "${{ github.event_name == 'push' || inputs.upload-artifact }}"
   PUBLISH_UPDATE_METADATA: "${{ inputs.publish-update-metadata }}"
-  SIGN_BASE_URL: "${{ secrets.SIGN_BASE_URL }}-2"
+  # P5: assinatura remota herdada bloqueada na homologacao sem certificado.
+  # Nunca encaminhar binarios/chaves a servico externo nao auditado.
+  SIGN_BASE_URL: '-2'
 
 jobs:
   validate-update-metadata-keys:
