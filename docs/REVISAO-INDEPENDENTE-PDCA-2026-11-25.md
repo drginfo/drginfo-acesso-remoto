@@ -94,3 +94,10 @@ Fonte: saída `P2-ACL-Detalhada.txt` comunicada pelo operador em WIN11PROLAB, se
 **Conclusão específica:** implementação e execução do endurecimento de ACL nas pastas exibidas **APROVADAS**. Não significa homologação final de P2 ou aprovação de distribuição comercial.
 
 **Pontos a encerrar:** saída pós-correção de `releases` e dos objetos relevantes; tentativa de criação de arquivo por usuário comum com resultado `Access Denied` (sem privilégio elevado); avaliação de perfis/grupos específicos; teste de regressão de nova instalação/desinstalação gui7. O hash e o binário atual permanecem imutáveis e sem Authenticode.
+
+## P2 — ACL releases e desinstalador (26/11/2026, terceira evidência)
+Fonte: saída `icacls` fornecida pelo operador após execução de `ValidateOnly` em WIN11PROLAB.
+- `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases`: `SYSTEM:(OI)(CI)(F)`; `Administradores:(OI)(CI)(F)`; `Usuários:(OI)(CI)(RX)`. Sucesso: 1 arquivo, 0 falhas.
+- `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\tools\\Desinstalar-DRGinfo-AcessoRemoto.ps1`: `SYSTEM:(F)`; `Administradores:(F)`; `Usuários:(RX)`. Sucesso: 1 arquivo, 0 falhas.
+- Resultado: **ACLs exibidas OK**; sem ACE de gravação concedida a Usuários nesses objetos. Não é medição de permissões efetivas por identidade/associações de grupos, tampouco verificação exaustiva do conteúdo.
+- Gate para encerramento de P2: testar impossibilidade de escrita por uma conta padrão, sem elevar, e regressão da próxima instalação/desinstalação com o instalador corrigido. A release gui6 anterior continua imutável.
