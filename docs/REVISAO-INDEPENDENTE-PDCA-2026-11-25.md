@@ -101,3 +101,8 @@ Fonte: saída `icacls` fornecida pelo operador após execução de `ValidateOnly
 - `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\tools\\Desinstalar-DRGinfo-AcessoRemoto.ps1`: `SYSTEM:(F)`; `Administradores:(F)`; `Usuários:(RX)`. Sucesso: 1 arquivo, 0 falhas.
 - Resultado: **ACLs exibidas OK**; sem ACE de gravação concedida a Usuários nesses objetos. Não é medição de permissões efetivas por identidade/associações de grupos, tampouco verificação exaustiva do conteúdo.
 - Gate para encerramento de P2: testar impossibilidade de escrita por uma conta padrão, sem elevar, e regressão da próxima instalação/desinstalação com o instalador corrigido. A release gui6 anterior continua imutável.
+
+## P2 — Teste negativo com usuário padrão (26/11/2026)
+Evidência comunicada pelo operador a partir de PowerShell sem elevação em `PS C:\\Users\\daniel>`: tentativa de `[System.IO.File]::WriteAllText` em `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\packages\\teste-p2-acl.tmp` resultou em **`P2=OK - acesso de gravacao negado`**. O `catch` digitado posteriormente de forma isolada produziu `CommandNotFoundException`, erro de sintaxe interativa sem relação com o resultado anterior; não é necessário repetir a prova.
+
+**Conclusão do controle de escrita:** aprovado para a identidade padrão testada na pasta `packages`. **P2 permanece pendente exclusivamente do teste de regressão de instalação/desinstalação com novo pacote contendo a correção**; não declarar comercialmente homologado antes disso. Teste de permissões efetivas não representa garantia absoluta sobre todas as identidades e caminhos.
