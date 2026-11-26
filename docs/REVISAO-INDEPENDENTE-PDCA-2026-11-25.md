@@ -161,3 +161,12 @@ O operador relatou saída do gerador gui7:
 3. Preparar canal HTTPS separado para SHA-256 e instruções de verificação para o cliente.
 4. Entregar fonte correspondente à versão distribuída (AGPL) e atualizar o código compilado para incorporar P3 antes de nova release.
 5. Revisar P4/P5/P6/P8/P11, LGPD e termo antes de qualquer distribuição.
+
+## GUI7 — conferência independente comunicada pelo operador (26/11/2026)
+- Ambiente de homologação: WIN11PROLAB.
+- ZIP: `C:\ProgramData\DRGinfo\AcessoRemoto\releases\installer-gui\1.0.0-gui7\DRGinfo-Instalador-Windows-x64.zip`.
+- Hash esperado e conferido pelo script: `CEE32A62E8719E2715B32AB66A13C9C814FDAAFE88B77C35FDF72376C9CC0483`.
+- Operador informou `GUI7_HASH=OK`, `GUI7_ESTRUTURA=OK`, `GUI7_CONFIGURACAO=OK`, `GUI7_PRONTA_PARA_HOMOLOGACAO`.
+- Interpretação: aprovação da verificação de ZIP por SHA256, presença dos arquivos obrigatórios e configuração `UnsignedPilot`/hash de software. **Não equivale a assinatura Authenticode, teste de arquivos internos byte a byte contra manifesto, nem homologação funcional.**
+- Próximo gate: snapshot da VM; desinstalação gui6 com registro de resultado; instalação gui7 (somente laboratório), checagem de ACLs, serviço, reinício, conectividade, rollback e desinstalação.
+- Não publicar nem substituir pacotes anteriores.
