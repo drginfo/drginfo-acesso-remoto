@@ -422,7 +422,13 @@ pub fn set_options(m: HashMap<String, String>) {
     hbb_common::allow_err!(try_set_options(m));
 }
 
-pub fn try_set_options(m: HashMap<String, String>) -> hbb_common::ResultType<()> {
+pub fn try_set_options(mut m: HashMap<String, String>) -> hbb_common::ResultType<()> {
+    #[cfg(target_os = "windows")]
+    for key in ["custom-rendezvous-server", "relay-server", "key", "api-server"] {
+        if m.remove(key).is_some() {
+            log::warn!("DRGINFO_MANAGED_SETTING_REJECTED source=ui-batch key={}", key);
+        }
+    }
     #[cfg(not(any(target_os = "android", target_os = "ios")))]
     {
         if !crate::trusted_devices::config::changes_authentication(&m) {
@@ -458,6 +464,11 @@ pub fn set_auth_option(key: String, value: String) -> hbb_common::ResultType<()>
 
 #[inline]
 pub fn set_option(key: String, value: String) {
+    #[cfg(target_os = "windows")]
+    if crate::common::is_drginfo_protected_server_key(&key) {
+        log::warn!("DRGINFO_MANAGED_SETTING_REJECTED source=ui key={}", key);
+        return;
+    }
     if key == "2fa"
         || key == keys::OPTION_ENABLE_TRUSTED_DEVICES
         || key == keys::OPTION_TRUSTED_DEVICE_EXPIRATION
