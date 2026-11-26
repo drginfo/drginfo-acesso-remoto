@@ -81,3 +81,16 @@ Fonte: saída `P2-ACL-Detalhada.txt` comunicada pelo operador em WIN11PROLAB, se
 - Não há ainda evidências de PS 5.1 executando o instalador alterado ou dos direitos efetivos pós-correção.
 - O pacote `gui6` continua histórico/homologado funcionalmente, mas com a configuração P2 anterior.
 - Para fechar P2, precisam ser anexados relatório `icacls` pós-mudança, teste de escrita negada ao usuário comum, hash do instalador corrigido e logs de regressão.
+
+## P2 — Validação de ACL na WIN11PROLAB (26/11/2026, 08:28 -03:00)
+**Origem:** log `Texto colado(1).txt`, fornecido pelo operador; não houve acesso direto à VM nesta revisão.
+
+1. Operador verificou previamente existência do script corrigido e pacote `packages/7770f8d6.../package.zip`; `Get-FileHash` do pacote correspondeu a `7770f8d6b61217568124bbb2fb96d482621ba52fbf1c8ceff2cd31a2ef776525`.
+2. Backup `icacls /save /T /C` salvo em `C:\ProgramData\DRGinfo\Auditorias\P2-ACL-ANTES.txt`; **299 arquivos/diretórios processados; zero erros**.
+3. Execução do instalador da revisão `7b61be2f029f9685fcc0397f9c5e362fc8c72af5` com `-PackageFile`, `-PackageSha256`, `-PackageVersion 1.5.3-drginfo.2`, `-AllowUnsigned`, `-ValidateOnly`.
+4. Log apresentou `P2: ACLs gerenciadas verificadas`; pacote SHA-256 validado; modo `ValidateOnly` aprovado; `P2_VALIDATE_EXITCODE=0`. A execução **modificou ACLs**, mas não reinstalou o software nem alterou serviço, segundo a semântica documentada desse modo.
+5. `icacls` pós-ação confirmou nas pastas raiz, `packages` e `tools`: SYSTEM `(OI)(CI)(F)`, Administradores `(OI)(CI)(F)`, Usuários `(OI)(CI)(RX)`, sem ACE de gravação para Usuários nos diretórios listados.
+
+**Conclusão específica:** implementação e execução do endurecimento de ACL nas pastas exibidas **APROVADAS**. Não significa homologação final de P2 ou aprovação de distribuição comercial.
+
+**Pontos a encerrar:** saída pós-correção de `releases` e dos objetos relevantes; tentativa de criação de arquivo por usuário comum com resultado `Access Denied` (sem privilégio elevado); avaliação de perfis/grupos específicos; teste de regressão de nova instalação/desinstalação gui7. O hash e o binário atual permanecem imutáveis e sem Authenticode.
