@@ -2519,6 +2519,17 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
+// DRG-WIN-006: corporate network endpoints are managed only by DRGinfo releases.
+// This applies at option-entry points (UI, CLI and IPC), not just visual controls.
+// The embedded public key is not a credential; never embed an administrative secret.
+#[cfg(target_os = "windows")]
+pub fn is_drginfo_protected_server_key(key: &str) -> bool {
+    matches!(
+        key,
+        "custom-rendezvous-server" | "relay-server" | "key" | "api-server"
+    )
+}
+
 // DRGinfo Windows-only: fixed branding and server configuration, no external custom.txt.
 // The embedded rendezvous key is public; never embed private credentials.
 #[cfg(target_os = "windows")]
