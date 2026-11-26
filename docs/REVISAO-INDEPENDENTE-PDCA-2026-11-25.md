@@ -186,3 +186,10 @@ O operador relatou saída do gerador gui7:
 - Registro em Aplicativos instalados exibe `1.5.3-drginfo.2` e editor DRGinfo.
 - **Resultado:** gui7 **instalação gráfica e registro de serviço aprovados**; ainda não há prova de conexão ponta a ponta após gui7, reinício nem desinstalação gui7. O cliente em gui7 mantém binário build #5, anterior à correção P3 em código.
 - **Segurança de evidências:** não versionar imagens originais que exibam senha temporária/ID; solicitar rotação da senha e mascaramento antes de arquivar capturas.
+
+## GUI7 — persistência pós-reinício (26/11/2026)
+Operador informou resultado de `Get-CimInstance Win32_Service -Filter "Name='DRGinfo Acesso Remoto'"` após reiniciar WIN11PROLAB:
+`Name=DRGinfo Acesso Remoto`, `State=Running`, `StartMode=Auto`, `StartName=LocalSystem`.
+**Resultado:** PASS — serviço persiste e inicializa automaticamente após reboot. Prova de conexão remota E2E após GUI7 ainda não fornecida; em seguida verificar desinstalação e encerrar P2.
+
+Observação de privacidade: operador esclareceu que ID mostrado pertence à VM descartável e senha temporária muda após sessão. Ainda assim, não incluir valores em artefatos públicos.
