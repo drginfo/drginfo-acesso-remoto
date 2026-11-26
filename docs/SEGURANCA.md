@@ -11,3 +11,12 @@
 
 ## Bloqueios de aprovação
 Não liberar se faltar marca, configuração embarcada ou proteção contra atualizações. Sem homologação: ACL, serviço, UAC, assinatura, instalação/desinstalação e teste fim a fim permanecem pendentes.
+
+## Revisão estática de alterações de servidor — P4.21, 26/11/2026
+- Build examinada: `e1e7c30a5327af1b4ed600be7b3c54f6ebeda253`.
+- `src/common.rs::load_embedded_drginfo_client()` insere `custom-rendezvous-server`, `relay-server` e `key` em `config::OVERWRITE_SETTINGS`.
+- `src/ui_interface.rs::is_option_fixed()` consulta `OVERWRITE_SETTINGS`, mas `set_option()` também transmite opções por IPC; a mera existência desse método não prova mudança efetiva dos valores fixos.
+- `flutter/lib/common.dart::setServerConfig()` inclui tentativa de definir ID/relay/API/key via `mainSetOption`.
+- `src/core_main.rs` contém comandos administrativos `--option` e `--config`; `--option` consulta `is_cli_setting_change_disabled()` e exige instalação/administração para acessar IPC. O ramo `--config` depende de privilégios administrativos e caminho de configuração reconhecido.
+- **Resultado:** canais de escrita persistem; a imutabilidade efetiva e a precedência dos valores embarcados no serviço ainda NÃO foram demonstradas; não rotular como bypass comprovado nem como bloqueio definitivo comprovado.
+- **Recomendação para fase de produto:** impor política de bloqueio de mudança de rendezvous/relay/chave em camada central de aplicação/IPC e limitar a UI para edição DRGinfo; preservar opções comuns do usuário. Requer decisão de escopo e futura alteração versionada, não modificar a build homologada nesta etapa.
