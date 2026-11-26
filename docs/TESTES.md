@@ -52,3 +52,13 @@ Não confundir script disponível com execução ou homologação.
 - **ACLs AppData: APROVADAS no escopo efetivamente coletado**, sem necessidade de alterar permissões.
 - Limites: somente metadados ACL; não foram lidos segredos, logs nem conteúdo TOML; não cobre todos os perfis, arquivos do serviço em caminhos diferentes ou eventual configuração global.
 - Diretório de auditoria legado identificado com nome RustDesk dentro de Local/DRGinfo: padronização futura, sem exclusão automática.
+
+## Revisão estática — servidor corporativo e atualizações, 26/11/2026
+- Revisão analisada: build Windows #10, commit `e1e7c30a5327af1b4ed600be7b3c54f6ebeda253`; nenhuma nova compilação e nenhuma alteração na VM.
+- `src/core_main.rs`: no Windows, após `global_init()`, chama `load_embedded_drginfo_client()` (em vez do carregamento de `custom.txt`).
+- `src/common.rs`: `load_embedded_drginfo_client()` atribui `APP_NAME=DRGinfo Acesso Remoto`, `custom-rendezvous-server` e `relay-server` para `drgvps.drginfo.com.br`, e `key` com chave pública do servidor. Requer revisão separada das possibilidades de alteração em tempo de execução da UI e demais rotas CLI.
+- `src/common.rs`: `check_software_update()` retorna para cliente customizado; `do_check_software_update()` retorna antes de consulta oficial para cliente customizado.
+- `src/updater.rs`: `check_update()` retorna antes de consulta/download ao detectar cliente customizado; caminho root/macOS também o impede.
+- `flutter/lib/common.dart`: `checkUpdate()` não inicia consulta pela UI do cliente customizado; `flutter/lib/desktop/pages/desktop_home_page.dart` não exibe card de atualização RustDesk quando `bind.isCustomClient()`.
+- **Revisão estática dos controles citados: APROVADA**. Não alegar prova de ausência de todo o tráfego de rede do fornecedor sem auditoria de tráfego; essa verificação permanece fora do escopo.
+- Pendências: revisar política de mudanças de configuração via UI/CLI (se for requisito de imutabilidade), autenticação e links corporativos; não alterar a build homologada sem controle de versão.
