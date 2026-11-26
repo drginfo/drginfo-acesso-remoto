@@ -46,3 +46,14 @@ Relato do operador, auditoria somente leitura (arquivo `DRGinfo-Auditoria-Window
 - `C:\\ProgramData\\DRGinfo\\AcessoRemoto`: `BUILTIN\\Usuários:(I)(CI)(WD,AD,WEA,WA)`, herdado e propagável a contêineres filhos. **Potencial de escrita não privilegiada** em subdiretórios/arquivos, dependente de herança, ACEs adicionais e uso pelo processo SYSTEM.
 - **P2 = ABERTO / NECESSITA TRIAGEM DIRECIONADA**. Evidência insuficiente para declarar exploração ou segurança da cadeia de arquivos de ProgramData. Não modificar DACLs sem inventário, avaliação de compatibilidade e rollback.
 - Próxima coleta: inspeção somente leitura dos subdiretórios packages/tools, arquivos release/manifestos/logs e ACL do próprio serviço (SDDL via sc.exe sdshow), com saída redigida para segunda avaliação.
+
+## Segunda coleta P2 — 26/11/2026 07:59:13 -03:00
+Fonte: saída `P2-ACL-Detalhada.txt` comunicada pelo operador em WIN11PROLAB, sem coleta direta da VM por este revisor.
+
+- `ProgramData\\DRGinfo\\AcessoRemoto`, `packages`, `releases` e `tools` apresentam `BUILTIN\\Usuários:(I)(CI)(WD,AD,WEA,WA)` — ACE herdada de escrita/criação para diretórios e descendentes; verificar ACEs em arquivos individualmente antes de concluir permissões efetivas.
+- `instalacao.log` e `manifesto-sha256.csv`: Usuários apenas RX (não é evidência de gravação por usuário nesses arquivos).
+- SDDL do serviço: `SY` e `BA` possuem direitos de controle; `IU` e `SU` recebem consulta/leitura, sem `DC`, `WD` ou `WO` de alteração; o descritor de segurança do serviço não indica permissão administrativa para usuário comum.
+- `Program Files\\DRGinfo Acesso Remoto`: Usuários apenas RX. O executável conferiu com SHA256 do build #5, não assinado.
+- O código em `Instalar-DRGinfo-AcessoRemoto.ps1` usa `packages/<sha>/package.zip`, `packages/<sha>/extracted` e `tools/Desinstalar-DRGinfo-AcessoRemoto.ps1` durante instalação/remoção com elevação. A criação dos diretórios ocorre antes da confirmação de administrador; recomenda-se corrigir a ordem e fixar ACLs antes do uso dos pacotes. O hash do ZIP reduz adulteração do arquivo, mas não cobre toda a árvore extraída em toda reutilização.
+- **Veredito P2: RISCO REAL DE CONFIGURAÇÃO / ABERTO PARA CORREÇÃO DE ACL E FLUXO DE INSTALAÇÃO.** Ainda não há demonstração de exploração, nem análise dos objetos descendentes e permissões efetivas.
+- **Plano corretivo:** proteger a raiz e os diretórios operacionais com ACEs explícitas para SYSTEM/Administradores e leitura para Usuários; preservar backup da DACL e rollback; corrigir fonte do instalador para não recriar estrutura insegura; validar serviço, remoção e permissões em VM. Não aplicar `icacls /reset` indiscriminadamente nem remover ACLs de perfis do aplicativo.
