@@ -1279,7 +1279,7 @@ pub fn get_api_server(api: String, custom: String) -> String {
     // an explicitly configured, reviewed release.
     #[cfg(target_os = "windows")]
     {
-        let _ = (api, custom);
+        let _ = (&api, &custom);
         return String::new();
     }
     #[cfg(not(target_os = "windows"))]
