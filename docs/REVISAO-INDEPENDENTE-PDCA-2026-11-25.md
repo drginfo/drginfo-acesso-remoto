@@ -193,3 +193,10 @@ Operador informou resultado de `Get-CimInstance Win32_Service -Filter "Name='DRG
 **Resultado:** PASS — serviço persiste e inicializa automaticamente após reboot. Prova de conexão remota E2E após GUI7 ainda não fornecida; em seguida verificar desinstalação e encerrar P2.
 
 Observação de privacidade: operador esclareceu que ID mostrado pertence à VM descartável e senha temporária muda após sessão. Ainda assim, não incluir valores em artefatos públicos.
+
+## GUI7 — conexão ponta a ponta validada (26/11/2026)
+- Operador comunicou `Conexão_gui7=ok` após instalação gui7 e reinicialização da WIN11PROLAB.
+- **Resultado: PASS — conexão remota E2E**, evidência declarada pelo operador; sem dados de sessão incluídos por privacidade.
+- Resultado cumulativo gui7: integridade ZIP verificada; instalação GUI, serviço, atalhos e ARP observados; reinício com serviço `Running/Auto/LocalSystem`; conexão E2E confirmada.
+- **Último gate de regressão P2:** desinstalação gui7; depois verificar serviço, executável, chave ARP, atalhos Desktop/Menu Iniciar; preservar diretório ProgramData e evidências para auditoria.
+- O resultado gui7 ainda **não** significa que o aplicativo foi recompilado com a correção P3 nem que todos os riscos de distribuição foram encerrados.
