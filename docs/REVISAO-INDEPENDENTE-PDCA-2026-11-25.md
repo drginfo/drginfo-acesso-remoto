@@ -200,3 +200,17 @@ Observação de privacidade: operador esclareceu que ID mostrado pertence à VM 
 - Resultado cumulativo gui7: integridade ZIP verificada; instalação GUI, serviço, atalhos e ARP observados; reinício com serviço `Running/Auto/LocalSystem`; conexão E2E confirmada.
 - **Último gate de regressão P2:** desinstalação gui7; depois verificar serviço, executável, chave ARP, atalhos Desktop/Menu Iniciar; preservar diretório ProgramData e evidências para auditoria.
 - O resultado gui7 ainda **não** significa que o aplicativo foi recompilado com a correção P3 nem que todos os riscos de distribuição foram encerrados.
+
+## Encerramento de P2 / GUI7 — 26/11/2026
+O operador da WIN11PROLAB comunicou `GUI7_DESINSTALACAO=OK`, após teste da rotina de desinstalação em Aplicativos instalados. O script de verificação só retorna OK quando todos os seguintes itens estão ausentes:
+- Serviço `DRGinfo Acesso Remoto`
+- Diretório `C:\Program Files\DRGinfo Acesso Remoto`
+- Registro ARP `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DRGinfoAcessoRemoto`
+- Atalho em `Public\Desktop`
+- Atalho em `ProgramData\Microsoft\Windows\Start Menu\Programs\DRGinfo`
+
+**Resultado do teste de regressão:** PASS. A sequência documentada foi SHA256/estrutura/config da gui7, instalação via GUI, logs de ACL hardening, persistência pós-reboot `Running/Auto/LocalSystem`, sessão remota fim a fim, desinstalação e inspeção dos cinco itens acima. A tentativa de escrita em `packages` por usuário padrão foi previamente negada. O teste de integridade do pacote utilizou o ZIP gui7 SHA256 `CEE32A62E8719E2715B32AB66A13C9C814FDAAFE88B77C35FDF72376C9CC0483`.
+
+**P2: ENCERRADO / APROVADO no escopo homologado WIN11PROLAB.** Não é certificação independente contra qualquer cenário de escalonamento de privilégios ou prova das ACLs de todas as futuras instalações. Gui6 histórico permanece imutável; gui7 não publicada. O executável `1.5.3-drginfo.2` do build #5 ainda não incorpora a correção P3 em `src/updater.rs`, e Authenticode permanece não assinado por decisão documentada de aceite de risco.
+
+**Próximos gates:** publicar SHA256 independente (P1 mitigação), novo build de aplicativo incorporando P3, revisão P4/P5/P6/P8/P9/P11, AGPL/LGPD e critérios de liberação controlada. Não afirmar produto pronto para venda pública.
