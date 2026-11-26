@@ -57,3 +57,27 @@ Fonte: saída `P2-ACL-Detalhada.txt` comunicada pelo operador em WIN11PROLAB, se
 - O código em `Instalar-DRGinfo-AcessoRemoto.ps1` usa `packages/<sha>/package.zip`, `packages/<sha>/extracted` e `tools/Desinstalar-DRGinfo-AcessoRemoto.ps1` durante instalação/remoção com elevação. A criação dos diretórios ocorre antes da confirmação de administrador; recomenda-se corrigir a ordem e fixar ACLs antes do uso dos pacotes. O hash do ZIP reduz adulteração do arquivo, mas não cobre toda a árvore extraída em toda reutilização.
 - **Veredito P2: RISCO REAL DE CONFIGURAÇÃO / ABERTO PARA CORREÇÃO DE ACL E FLUXO DE INSTALAÇÃO.** Ainda não há demonstração de exploração, nem análise dos objetos descendentes e permissões efetivas.
 - **Plano corretivo:** proteger a raiz e os diretórios operacionais com ACEs explícitas para SYSTEM/Administradores e leitura para Usuários; preservar backup da DACL e rollback; corrigir fonte do instalador para não recriar estrutura insegura; validar serviço, remoção e permissões em VM. Não aplicar `icacls /reset` indiscriminadamente nem remover ACLs de perfis do aplicativo.
+
+## P2 — implementação de proteção de ACL no instalador (26/11/2026)
+- Fonte: `install/windows/Instalar-DRGinfo-AcessoRemoto.ps1`.
+- Commit inicial `ab2c9c68512d452956749b5f131e70ca4f9f6d76`; correção de construtores .NET em `7b61be2f029f9685fcc0397f9c5e362fc8c72af5`.
+- Mudança 1: exige administrador e Windows x64 ANTES de criar as pastas ou gravar logs.
+- Mudança 2: restringe ACL das pastas gerenciadas ao escopo `%ProgramData%\\DRGinfo\\AcessoRemoto`, sem alterar `C:\\ProgramData` global ou perfis.
+- Mudança 3: usa SIDs invariantes do Windows `S-1-5-18` SYSTEM, `S-1-5-32-544` Administradores (FullControl) e `S-1-5-32-545` Usuários (ReadAndExecute), sem dependência de idioma.
+- Mudança 4: protege a raiz e os subdiretórios `packages`, `releases`, `tools` e a pasta do pacote antes de abrir ZIP, extrair, usar DLL ou registrar serviço. Também ajusta os objetos já presentes nessa árvore, recusando reparse points.
+- Estado: **IMPLEMENTADO EM FONTE, NÃO VALIDADO EM VM**. Pode haver incompatibilidade com arquivos ou ferramentas que dependam de gravação sem elevação. Não executar em cliente real antes de teste.
+
+### Plano de teste controlado P2 — QA Windows 11
+1. Capturar snapshot de VM; exportar DACL do diretório gerenciado antes do teste com `icacls "C:\\ProgramData\\DRGinfo\\AcessoRemoto" /save "%TEMP%\\drginfo-acl-previo.txt" /T`, com arquivo protegido e leitura humana do resultado.
+2. Obter versão de pacote nova (gui7 ou superior) que incorpore o instalador no commit corrigido, sem sobrescrever `gui6` ou os ZIPs homologados.
+3. Conferir hash/SHA do script, passar pelo parser PS 5.1 e inspecionar o diff da versão.
+4. Instalar em VM limpa/snapshot e validar `icacls` da raiz, `packages`, `releases`, `tools`, arquivos e subpastas. Confirmar ausência de escrita por conta padrão, inclusive criação de subdiretórios.
+5. Validar serviço `LocalSystem`, conexões reais, atalhos, ARP, desinstalação e logs.
+6. Repetir a instalação em VM com diretório antigo do gui6 e confirmar que a migração de permissões e o rollback funcionam sem perder registros.
+7. Em falha: interromper publicação, retornar snapshot; usar backup de ACL apenas se o rollback for necessário, com avaliação do administrador.
+
+### Limites e acompanhamento
+- Nenhuma alteração de ACL foi aplicada nesta conversa à VM ou à VPS.
+- Não há ainda evidências de PS 5.1 executando o instalador alterado ou dos direitos efetivos pós-correção.
+- O pacote `gui6` continua histórico/homologado funcionalmente, mas com a configuração P2 anterior.
+- Para fechar P2, precisam ser anexados relatório `icacls` pós-mudança, teste de escrita negada ao usuário comum, hash do instalador corrigido e logs de regressão.
