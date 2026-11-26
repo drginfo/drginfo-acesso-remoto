@@ -423,6 +423,16 @@ pub fn core_main() -> Option<CoreMainAction> {
             }
             return None;
         } else if args[0] == "--import-config" {
+            // DRG-WIN-006: importing arbitrary TOML bypasses UI/IPC managed-server
+            // checks and may replace security settings. Block this legacy bulk
+            // import on Windows until an allowlisted importer is implemented.
+            #[cfg(target_os = "windows")]
+            {
+                log::warn!("DRGINFO_MANAGED_SETTING_REJECTED source=cli-import-config");
+                println!("Configuration import is disabled in the DRGinfo Windows edition.");
+                return None;
+            }
+            #[cfg(not(target_os = "windows"))]
             if args.len() == 2 {
                 let filepath;
                 let path = std::path::Path::new(&args[1]);
