@@ -38,3 +38,11 @@ Não liberar se faltar marca, configuração embarcada ou proteção contra atua
 - **Pendente:** `Data::SyncConfig(Some(...))` aplica objetos `Config`/`Config2` por rota alternativa sem filtro corporativo explícito; NÃO alterar cegamente porque pode envolver sincronismo de autenticação e dados necessários ao serviço. Requer inspeção do submódulo `hbb_common` na revisão travada pelo repositório e entendimento de `trusted_devices::config::set_config`.
 - **Pendente:** verificar configuração efetiva na inicialização e precedência do servidor fixo versus nome do EXE; evitar regressões na conexão.
 - Nenhuma compilação nem teste Windows executado nesta etapa; build #10 homologada mantida para rollback.
+
+## DRG-WIN-006 — Sincronização Config2 protegida (26/11/2026, P4.26)
+- Inspecionado o fluxo real `src/ipc.rs::Data::SyncConfig(Some(...))`, `src/ipc.rs::sync_security_config_from_server()`, `src/trusted_devices/config.rs::{sync_config,set_config,set_config2,effective_options}`.
+- `Config2.options` também é gravado durante sincronização IPC, independentemente do filtro de `Data::Options`.
+- `effective_options()` incorpora `DEFAULT_SETTINGS`, depois opções persistidas e, por último, `OVERWRITE_SETTINGS`; isso indica prioridade para configurações incorporadas nessa função, mas não comprova todas as rotas de conexão.
+- Aplicado em `src/trusted_devices/config.rs` filtro Windows `strip_managed_endpoint_options` antes de persistência em `sync_config` e `set_config2`, removendo somente quatro chaves gerenciadas (ID/relay/chave/API) de `Config2.options`; os outros campos continuam sendo sincronizados e `sync_trusted_devices()` permanece inalterado.
+- Limites: a sincronização de objeto `Config` (que pode conter dados de conexão em campos próprios), gravações diretas a arquivos e precedência de leitura efetiva ainda exigem inspeção completa. Não afirmar proteção integral apenas por esta mudança.
+- **Status:** fonte alterado, sem compilação, testes automatizados ou homologação Windows. Build #10 intacta; rollback obrigatório.
