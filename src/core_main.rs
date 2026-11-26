@@ -501,6 +501,13 @@ pub fn core_main() -> Option<CoreMainAction> {
             }
             return None;
         } else if args[0] == "--config" {
+            // DRG-WIN-006: no imported server reassignment in the DRGinfo Windows edition.
+            #[cfg(target_os = "windows")]
+            {
+                log::warn!("DRGINFO_MANAGED_SETTING_REJECTED source=cli-config");
+                println!("Server configuration is managed exclusively by DRGinfo releases.");
+                return None;
+            }
             if args.len() == 2 && !args[0].contains("host=") {
                 if crate::platform::is_installed() && is_root() {
                     // encrypted string used in renaming exe.
@@ -526,6 +533,12 @@ pub fn core_main() -> Option<CoreMainAction> {
             }
             return None;
         } else if args[0] == "--option" {
+            #[cfg(target_os = "windows")]
+            if args.len() >= 3 && crate::common::is_drginfo_protected_server_key(&args[1]) {
+                log::warn!("DRGINFO_MANAGED_SETTING_REJECTED source=cli-option key={}", args[1]);
+                println!("Server configuration is managed exclusively by DRGinfo releases.");
+                return None;
+            }
             if is_cli_setting_change_disabled() {
                 println!("Settings are disabled!");
                 return None;
