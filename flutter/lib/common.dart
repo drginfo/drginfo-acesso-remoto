@@ -3590,6 +3590,11 @@ class _CountDownButtonState extends State<_CountDownButton> {
 
 importConfig(List<TextEditingController>? controllers, List<RxString>? errMsgs,
     String? text) {
+  // DRG-WIN-006: managed server settings cannot be imported by users.
+  if (isWindows && isCustomClient) {
+    showToast('Configuração do servidor gerenciada exclusivamente pela DRGinfo.');
+    return null;
+  }
   text = text?.trim();
   if (text != null && text.isNotEmpty) {
     try {
@@ -3623,6 +3628,11 @@ Future<bool> setServerConfig(
   List<RxString>? errMsgs,
   ServerConfig config,
 ) async {
+  // DRG-WIN-006: never return success for a server change rejected by Rust.
+  // Keep controllers untouched so that the UI does not display unsaved values.
+  if (isWindows && isCustomClient) {
+    return false;
+  }
   String removeEndSlash(String input) {
     if (input.endsWith('/')) {
       return input.substring(0, input.length - 1);
