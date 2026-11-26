@@ -38,3 +38,9 @@ Não confundir script disponível com execução ou homologação.
 - **Ainda não avaliado:** DACL do objeto serviço, ACL de registro do serviço, arquivos de perfil AppData, contas de usuário/autenticação, exposição de logs, política de atualizações/telemetria e demais riscos de aplicação. LocalSystem demanda atenção como risco residual de privilégio.
 - Authenticode NotSigned: exceção de homologação explicitamente aceita, não equivalendo a assinatura e não autorizando distribuição irrestrita.
 - Diretórios históricos de pacotes/releases existentes em ProgramData, protegidos; retenção a revisar sem exclusão automática.
+
+## DACL de serviço e modalidade do instalador — 26/11/2026
+- Evidência de `sc.exe sdshow "DRGinfo Acesso Remoto"` fornecida pelo operador: `D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)`.
+- DACL do objeto serviço: SYSTEM e Administradores possuem privilégios de gerenciamento; IU/SU possuem consulta/leitura e não possuem SERVICE_CHANGE_CONFIG (DC), SERVICE_START (RP), SERVICE_STOP (WP), WRITE_DAC (WD), WRITE_OWNER (WO) ou DELETE (SD). **Aprovado segundo SDDL fornecido**.
+- Escopo restrito à DACL do serviço; SACL de auditoria não é concessão de acesso.
+- A homologação de instalação foi executada diretamente pelo motor PowerShell `Instalar-DRGinfo-AcessoRemoto.ps1`. A interface gráfica do instalador **não foi utilizada e permanece pendente de homologação**, sem evidência de falha da GUI.
