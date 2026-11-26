@@ -106,3 +106,11 @@ Fonte: saída `icacls` fornecida pelo operador após execução de `ValidateOnly
 Evidência comunicada pelo operador a partir de PowerShell sem elevação em `PS C:\\Users\\daniel>`: tentativa de `[System.IO.File]::WriteAllText` em `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\packages\\teste-p2-acl.tmp` resultou em **`P2=OK - acesso de gravacao negado`**. O `catch` digitado posteriormente de forma isolada produziu `CommandNotFoundException`, erro de sintaxe interativa sem relação com o resultado anterior; não é necessário repetir a prova.
 
 **Conclusão do controle de escrita:** aprovado para a identidade padrão testada na pasta `packages`. **P2 permanece pendente exclusivamente do teste de regressão de instalação/desinstalação com novo pacote contendo a correção**; não declarar comercialmente homologado antes disso. Teste de permissões efetivas não representa garantia absoluta sobre todas as identidades e caminhos.
+
+## Gui7 — pacote de regressão P2, preparação 26/11/2026
+- Fonte do gerador `install/windows/Gerar-Pacote-Instalador.ps1` ajustada no commit `6cdaf7bcc8380d880fbe3c4060379ff449cda1fb`; **somente release `1.0.0-gui7`**.
+- Arquivos do payload baixados a partir do commit imutável `1cb50f277eb33cb497b7d8e364a2de3ce0f71624`, que inclui correção P2 do motor e ajuste P1 da interface. Não utiliza a versão histórica gui6.
+- Integridade: pacote de software fixado ao SHA256 `7770f8d6b61217568124bbb2fb96d482621ba52fbf1c8ceff2cd31a2ef776525`, versão `1.5.3-drginfo.2` e URL oficial. `UnsignedPilot = $true` é exigido para este único binário legado em laboratório; demais versões não são aceitas.
+- Saída esperada (gerador executado pelo operador em PowerShell 5.1 elevado): `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases\\installer-gui\\1.0.0-gui7\\DRGinfo-Instalador-Windows-x64.zip`, `release.txt` e `manifesto-sha256.csv`.
+- **Não gerado por este revisor**: execução Windows, ZIP e SHA256 final dependem da VM; não declarar pacote publicado nem testado. Gui6 permanece imutável.
+- Validação gui7 requer snapshot; eventual desinstalação do gui6 somente após snapshot; execução gui7, inspeção ACLs, serviço/atalhos, E2E, desinstalação/rollback; documentação das evidências.
