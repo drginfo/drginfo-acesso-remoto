@@ -1925,13 +1925,16 @@ class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!hideServer)
+              // DRG-WIN-006: the Windows DRGinfo server is release-managed.
+              // Do not offer a dialog whose writes the core rejects.
+              if (!hideServer && !(isWindows && isCustomClient))
                 listTile(
                   icon: Icons.dns_outlined,
                   title: 'ID/Relay Server',
                   onTap: () => showServerSettings(gFFI.dialogManager, setState),
                 ),
-              if (!hideProxy && !hideServer) divider,
+              if (!hideProxy && !hideServer && !(isWindows && isCustomClient))
+                divider,
               if (!hideProxy)
                 listTile(
                   icon: Icons.network_ping_outlined,
