@@ -44,3 +44,11 @@ Não confundir script disponível com execução ou homologação.
 - DACL do objeto serviço: SYSTEM e Administradores possuem privilégios de gerenciamento; IU/SU possuem consulta/leitura e não possuem SERVICE_CHANGE_CONFIG (DC), SERVICE_START (RP), SERVICE_STOP (WP), WRITE_DAC (WD), WRITE_OWNER (WO) ou DELETE (SD). **Aprovado segundo SDDL fornecido**.
 - Escopo restrito à DACL do serviço; SACL de auditoria não é concessão de acesso.
 - A homologação de instalação foi executada diretamente pelo motor PowerShell `Instalar-DRGinfo-AcessoRemoto.ps1`. A interface gráfica do instalador **não foi utilizada e permanece pendente de homologação**, sem evidência de falha da GUI.
+
+## Auditoria AppData — 26/11/2026, WIN11PROLAB
+- Evidência recebida: `DRGinfo-Auditoria-AppData.txt`, 312 linhas, data de coleta 2026-11-26 14:49:36 -03:00; arquivo completo permanece com operador, não publicar caminhos pessoais no Git.
+- 51 objetos, 153 ACEs `Allow` explícitas no relatório e **zero erros**. Todas as ACEs são `FullControl` herdado, distribuídas igualmente entre `NT AUTHORITY\\SYSTEM`, `BUILTIN\\Administrators` e SID/nome do usuário titular do perfil; nenhuma ACE para grupos amplos como Everyone/Users/Authenticated Users no escopo coletado.
+- Pastas abrangidas: Roaming do aplicativo, `config/*.toml`, logs, e Local/DRGinfo/RustDesk/Auditoria do usuário da sessão.
+- **ACLs AppData: APROVADAS no escopo efetivamente coletado**, sem necessidade de alterar permissões.
+- Limites: somente metadados ACL; não foram lidos segredos, logs nem conteúdo TOML; não cobre todos os perfis, arquivos do serviço em caminhos diferentes ou eventual configuração global.
+- Diretório de auditoria legado identificado com nome RustDesk dentro de Local/DRGinfo: padronização futura, sem exclusão automática.
