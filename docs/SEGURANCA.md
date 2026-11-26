@@ -30,3 +30,11 @@ Não liberar se faltar marca, configuração embarcada ou proteção contra atua
 - Rejeições de alterações são registradas sem valor/segredo, no padrão `DRGINFO_MANAGED_SETTING_REJECTED`.
 - Escopo: controles de entrada UI/CLI/IPC na edição Windows e configuração corporativa estática via `OVERWRITE_SETTINGS`. NÃO é prova contra modificação binária por administrador local, alteração de memória, substituição do serviço ou todas as outras rotas internas. Revisar precedência e interceptações adicionais antes de classificar a configuração como imutável.
 - **Status:** código alterado, inspeção estática pontual concluída, compilação/validação funcional e teste de regressão PENDENTES. Não substituir a build #10 nem distribuir o código não homologado; preservar rollback.
+
+## DRG-WIN-006 — Fechamento de importação TOML por CLI (26/11/2026)
+- Commit de fonte: `08be7b3e3651f19b64eb4b87d59d421edd9c975d`, `src/core_main.rs`.
+- No Windows, `--import-config` retorna antes de chamar `import_config()`, registra tentativa rejeitada sem incluir dados do arquivo e não escreve configurações. Nas demais plataformas o fluxo permanece intacto.
+- Decisão de segurança provisória: desabilitar importação TOML em bloco na edição Windows, inclusive preferências, até existir importador com lista permissiva e testes de preservação de campos. Isso impede esse desvio da política corporativa.
+- **Pendente:** `Data::SyncConfig(Some(...))` aplica objetos `Config`/`Config2` por rota alternativa sem filtro corporativo explícito; NÃO alterar cegamente porque pode envolver sincronismo de autenticação e dados necessários ao serviço. Requer inspeção do submódulo `hbb_common` na revisão travada pelo repositório e entendimento de `trusted_devices::config::set_config`.
+- **Pendente:** verificar configuração efetiva na inicialização e precedência do servidor fixo versus nome do EXE; evitar regressões na conexão.
+- Nenhuma compilação nem teste Windows executado nesta etapa; build #10 homologada mantida para rollback.
