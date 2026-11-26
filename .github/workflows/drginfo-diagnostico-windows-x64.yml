@@ -375,6 +375,21 @@ jobs:
           name: ${{ matrix.job.arch == 'aarch64' && 'topmostwindow-artifacts-ARM64' || 'topmostwindow-artifacts-x64' }}
           path: "./rustdesk"
 
+      # DRGinfo: preserve the corporate Windows distribution used by the homologation build.
+      - name: DRGinfo - criar pacote Windows com nome corporativo
+        if: env.UPLOAD_ARTIFACT == 'true'
+        shell: pwsh
+        run: |
+          & .\install\windows\Preparar-Distribuicao-DRGinfo.ps1 -Source .\rustdesk -Destination .\drginfo-windows-x64
+
+      - name: Publicar artefato corporativo DRGinfo Windows x64
+        if: env.UPLOAD_ARTIFACT == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DRGinfo-Acesso-Remoto-Windows-x64
+          path: drginfo-windows-x64
+          if-no-files-found: error
+
       - name: Upload unsigned
         if: env.UPLOAD_ARTIFACT == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
