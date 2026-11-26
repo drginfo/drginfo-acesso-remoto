@@ -1273,6 +1273,16 @@ pub fn get_custom_rendezvous_server(custom: String) -> String {
 
 #[inline]
 pub fn get_api_server(api: String, custom: String) -> String {
+    // DRG-WIN-006: this OSS Windows edition has no authenticated DRGinfo API.
+    // Do not infer an HTTP API endpoint from the rendezvous host and do not
+    // fall back to the upstream RustDesk API. A future corporate API requires
+    // an explicitly configured, reviewed release.
+    #[cfg(target_os = "windows")]
+    {
+        let _ = (api, custom);
+        return String::new();
+    }
+    #[cfg(not(target_os = "windows"))]
     if Config::no_register_device() {
         return "".to_owned();
     }
