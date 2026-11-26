@@ -114,3 +114,11 @@ Evidência comunicada pelo operador a partir de PowerShell sem elevação em `PS
 - Saída esperada (gerador executado pelo operador em PowerShell 5.1 elevado): `C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases\\installer-gui\\1.0.0-gui7\\DRGinfo-Instalador-Windows-x64.zip`, `release.txt` e `manifesto-sha256.csv`.
 - **Não gerado por este revisor**: execução Windows, ZIP e SHA256 final dependem da VM; não declarar pacote publicado nem testado. Gui6 permanece imutável.
 - Validação gui7 requer snapshot; eventual desinstalação do gui6 somente após snapshot; execução gui7, inspeção ACLs, serviço/atalhos, E2E, desinstalação/rollback; documentação das evidências.
+
+## GUI7 — resultado de geração informado pela VM (26/11/2026)
+O operador relatou saída do gerador gui7:
+- `PACOTE: C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases\\installer-gui\\1.0.0-gui7\\DRGinfo-Instalador-Windows-x64.zip`.
+- SHA256 reportado: `CEE32A62E8719E2715B32AB66A13C9C814FDAAFE88B77C35FDF72376C9CC0483`.
+- `MANIFESTO: C:\\ProgramData\\DRGinfo\\AcessoRemoto\\releases\\installer-gui\\1.0.0-gui7\\manifesto-sha256.csv`.
+- Gerador afirmou consolidação; teste UAC em VM limpa ainda pendente.
+- **Status: ZIP gerado segundo operador; hash apenas reportado, aguardando verificação independente, arquivo por arquivo, release-config e validação de integridade do ZIP.** Não distribuir para clientes.
