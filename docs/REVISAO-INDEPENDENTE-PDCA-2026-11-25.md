@@ -175,3 +175,14 @@ O operador relatou saída do gerador gui7:
 - Operador informou `GUI6_REMOVIDA=OK`, a partir de inspeção de ausência do serviço Windows `DRGinfo Acesso Remoto` e da pasta `C:\Program Files\DRGinfo Acesso Remoto` na WIN11PROLAB.
 - Estado: gui6 removida conforme controle definido. Snapshot ainda não comprovado por saída; confirmar antes da instalação. Preservar `ProgramData` e o ZIP gui7 já verificado.
 - Próximo passo: executar `instalador-drginfo.cmd` do diretório `releases\installer-gui\1.0.0-gui7\payload` e coletar status; registrar testes de UAC, log, serviço e ACL em sequência.
+
+## GUI7 — instalação gráfica concluída, evidências de 26/11/2026 08:50 (-03:00)
+**Origem:** quatro capturas da WIN11PROLAB e log de instalação transmitidos pelo operador. Capturas incluem ID e senha temporária em uma tela do aplicativo: **não replicar os valores em documentação nem anexar imagem sem mascarar; rotacionar senha exibida**.
+
+- Interface gráfica com identidade DRGinfo, mensagem `Instalacao detectada | Servico DRGinfo: em execucao` e progresso concluído.
+- Log: `08:50:29 P2: ACLs gerenciadas verificadas`; SHA-256 do software `7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525` conferido; modo de cliente sem assinatura reconhecido e previamente aceito para piloto; release validada.
+- Log: `08:50:31` criação do serviço `Win32_Service.Create` e início; `08:50:36` registro em Aplicativos instalados, atalhos públicos `Desktop` e `Menu Iniciar`; `INSTALACAO CONCLUIDA. Servico automatico em execucao.`
+- Tela do aplicativo aberta com interface DRGinfo e estado `Pronto`; configuração do servidor ID/Relay e chave pública presentes; campo API vazio apresenta aviso do cliente. **Não assumir exigência de API funcional apenas pelo aviso; verificar funcionalidade e modelo do servidor antes de mudar**.
+- Registro em Aplicativos instalados exibe `1.5.3-drginfo.2` e editor DRGinfo.
+- **Resultado:** gui7 **instalação gráfica e registro de serviço aprovados**; ainda não há prova de conexão ponta a ponta após gui7, reinício nem desinstalação gui7. O cliente em gui7 mantém binário build #5, anterior à correção P3 em código.
+- **Segurança de evidências:** não versionar imagens originais que exibam senha temporária/ID; solicitar rotação da senha e mascaramento antes de arquivar capturas.
