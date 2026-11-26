@@ -80,3 +80,11 @@ Não confundir script disponível com execução ou homologação.
 - Verificação estática textual e de referências concluída; **não equivale a `cargo check`, `cargo test`, Flutter analyzer nem build**. Testes específicos já adicionados ainda não executados.
 - Riscos residuais: `setServerConfig()` do Flutter pode informar sucesso mesmo quando o núcleo recusa alterações gerenciadas; interface deve impedir edição/importação dessas chaves para evitar falso feedback. O `api-server` retorna vazio na edição Windows, o que intencionalmente desativa recursos de conta dependentes de API. Revisar regressões em homologação.
 - A build #10 existente permanece sendo a única build homologada; nenhuma nova compilação foi **solicitada** nesta etapa. Antes de fazer nova build, verificar runs anteriores e confirmar que não existe build disparada por commits antigos.
+
+## P4.31 — Bloqueio da edição de servidor na UI Flutter (26/11/2026)
+- `flutter/lib/desktop/pages/desktop_setting_page.dart`: opção de abrir `ID/Relay Server` ocultada quando `isWindows && isCustomClient`, mantendo opções de proxy/WebSocket e preferências comuns.
+- `flutter/lib/common.dart::importConfig()`: na mesma edição, recusa importação de configuração de servidor e informa ao usuário que somente a DRGinfo gerencia esse recurso.
+- `flutter/lib/common.dart::setServerConfig()`: retorna `false` antes de alterar controladores/UI ou emitir `mainSetOption`, evitando confirmação falsa de gravação por chamadas alternativas.
+- Outros sistemas operacionais e o RustDesk sem customização continuam utilizando o caminho original.
+- Commits: `53f3bdbde8c41b50770bae723bcf8b5b93493118` e `4c4130802519c2ff6565ad854e4893ed63faf698`.
+- **Pendências:** Flutter analyzer/compilação não executados; verificar que todas as entradas da caixa de servidor foram cobertas, inclusive deep links. A regra de proteção efetiva continua em Rust; ocultar UI não é um limite de segurança isolado. A build #10 permanece homologada no escopo anterior, inalterada.
