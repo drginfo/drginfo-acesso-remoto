@@ -43,8 +43,24 @@ pub async fn update_auth<T: Send + 'static>(
     .await
 }
 
+// DRG-WIN-006: Config2 is also persisted through SyncConfig, bypassing Data::Options.
+// Strip managed endpoint keys, but preserve authentication fields and trusted-device grants.
+#[cfg(target_os = "windows")]
+fn strip_managed_endpoint_options(config2: &mut Config2) {
+    for key in ["custom-rendezvous-server", "relay-server", "key", "api-server"] {
+        if config2.options.remove(key).is_some() {
+            hbb_common::log::warn!(
+                "DRGINFO_MANAGED_SETTING_REJECTED source=config2-sync key={}",
+                key
+            );
+        }
+    }
+}
+
 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos", test))]
-pub fn sync_config(value: Config, options: Config2) -> ResultType<()> {
+pub fn sync_config(value: Config, mut options: Config2) -> ResultType<()> {
+    #[cfg(target_os = "windows")]
+    strip_managed_endpoint_options(&mut options);
     let _storage = super::storage()?;
     Config::set(value);
     Config2::set(options.clone());
@@ -268,7 +284,9 @@ pub fn set_config(value: Config) -> ResultType<bool> {
     change(affected, || Ok(Config::set(value)))
 }
 
-pub fn set_config2(value: Config2) -> ResultType<bool> {
+pub fn set_config2(mut value: Config2) -> ResultType<bool> {
+    #[cfg(target_os = "windows")]
+    strip_managed_endpoint_options(&mut value);
     policy::change_options(effective_options(value.options.clone()), || {
         Ok(Config2::set(value))
     })
