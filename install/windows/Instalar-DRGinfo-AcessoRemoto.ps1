@@ -40,6 +40,65 @@ $DesktopShortcut = Join-Path ([Environment]::GetFolderPath('CommonDesktopDirecto
 $StartMenuFolder = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'DRGinfo'
 $StartMenuShortcut = Join-Path $StartMenuFolder "$AppName.lnk"
 
+# P2: proteger dados executados/copied sob elevacao. SIDs independentes do idioma.
+# Apenas diretorios internos deste produto: nunca alterar a ACL de ProgramData,
+# de outros produtos ou de perfis de usuarios.
+function Assert-SafeManagedPath([string]$Path) {
+  $full = [IO.Path]::GetFullPath($Path).TrimEnd('\')
+  $base = [IO.Path]::GetFullPath($Root).TrimEnd('\')
+  if (-not ($full.Equals($base,[StringComparison]::OrdinalIgnoreCase) -or
+      $full.StartsWith($base + '\',[StringComparison]::OrdinalIgnoreCase))) {
+    throw "P2: caminho fora do escopo gerenciado: $Path"
+  }
+  if (Test-Path -LiteralPath $Path) {
+    $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+    if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+      throw "P2: link/reparse point proibido em pasta gerenciada: $Path"
+    }
+  }
+}
+function Set-DRGManagedAcl([string]$Path) {
+  Assert-SafeManagedPath $Path
+  if (-not (Test-Path -LiteralPath $Path)) { return }
+  $isDir = Test-Path -LiteralPath $Path -PathType Container
+  $acl = Get-Acl -LiteralPath $Path -ErrorAction Stop
+  # A raiz e os subobjetos nao podem herdar permissoes de escrita
+  # concedidas por pastas ancestrais.
+  $acl.SetAccessRuleProtection($true,$false)
+  foreach ($entry in @($acl.Access)) { [void]$acl.RemoveAccessRuleSpecific($entry) }
+  $rights = @(
+    @('S-1-5-18','FullControl'),
+    @('S-1-5-32-544','FullControl'),
+    @('S-1-5-32-545','ReadAndExecute')
+  )
+  $inherit = if ($isDir) {
+    [Security.AccessControl.InheritanceFlags]'ContainerInherit, ObjectInherit'
+  } else { [Security.AccessControl.InheritanceFlags]::None }
+  foreach ($right in $rights) {
+    $sid = New-Object Security.Principal.SecurityIdentifier($right[0])
+    $rule = New-Object Security.AccessControl.FileSystemAccessRule(
+      $sid, [Security.AccessControl.FileSystemRights]$right[1],
+      $inherit, [Security.AccessControl.PropagationFlags]::None,
+      [Security.AccessControl.AccessControlType]::Allow
+    )
+    $acl.AddAccessRule($rule)
+  }
+  Set-Acl -LiteralPath $Path -AclObject $acl -ErrorAction Stop
+}
+function Protect-DRGManagedTree([string]$Path) {
+  Assert-SafeManagedPath $Path
+  if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
+    New-Item -ItemType Directory -Path $Path -Force -ErrorAction Stop | Out-Null
+  }
+  # Corrigir a raiz antes de enumerar ou consumir qualquer conteudo existente.
+  Set-DRGManagedAcl $Path
+  # Reparar somente objetos subordinados ao staging gerenciado.
+  # Recusar symlinks/junctions para nao atingir diretorios externos.
+  foreach ($item in Get-ChildItem -LiteralPath $Path -Recurse -Force -ErrorAction Stop) {
+    Set-DRGManagedAcl $item.FullName
+  }
+}
+
 function New-DRGShortcut([string]$LinkPath) {
   if (Test-Path -LiteralPath $LinkPath) {
     throw "Atalho preexistente; recusando sobrescrever: $LinkPath"
@@ -96,8 +155,6 @@ function Assert-ZipEntries([string]$Path) {
   } finally { $zip.Dispose() }
 }
 try {
-  New-Item -ItemType Directory -Path $Root, $ReleaseDir -Force | Out-Null
-  Write-Log 'Iniciando validacao da distribuicao Windows x64 da DRGinfo.'
   $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
   if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     throw 'Executar o Windows PowerShell x64 como Administrador.'
@@ -105,6 +162,14 @@ try {
   if (-not [Environment]::Is64BitOperatingSystem -or -not [Environment]::Is64BitProcess) {
     throw 'Windows x64 e PowerShell x64 obrigatorios.'
   }
+  # Nao criar diretorios / gravar logs antes de validar elevacao.
+  New-Item -ItemType Directory -Path $Root -Force | Out-Null
+  Protect-DRGManagedTree $Root
+  Protect-DRGManagedTree (Join-Path $Root 'packages')
+  Protect-DRGManagedTree (Join-Path $Root 'releases')
+  Protect-DRGManagedTree (Join-Path $Root 'tools')
+  Protect-DRGManagedTree $ReleaseDir
+  Write-Log 'P2: ACLs gerenciadas verificadas. Inicio de validacao Windows x64.'
   # Exatamente uma origem: HTTPS (online) ou ZIP local assinado pelo manifesto (offline).
   if ([bool]$PackageUrl -eq [bool]$PackageFile) {
     throw 'Informe exatamente uma origem: PackageUrl ou PackageFile.'
@@ -267,7 +332,14 @@ try {
   Write-Log 'INSTALACAO CONCLUIDA. Servico automatico em execucao.'
   exit 0
 } catch {
-  Write-Log $_.Exception.Message 'ERRO'
+  # A falha pode ocorrer antes da criacao segura do arquivo de log.
+  if (Test-Path -LiteralPath $Root -PathType Container) {
+    try { Write-Log $_.Exception.Message 'ERRO' } catch {
+      Write-Error ("Falha na instalacao: {0}" -f $_.Exception.Message) -ErrorAction Continue
+    }
+  } else {
+    Write-Error ("Falha na instalacao: {0}" -f $_.Exception.Message) -ErrorAction Continue
+  }
   # Excluir apenas atalhos criados nesta mesma tentativa.
   foreach ($shortcut in $CreatedShortcuts) {
     try {
