@@ -36,3 +36,13 @@ Fonte da análise: `analise-segunda-opiniao-2026-11-25.md` recebido pelo proprie
 Nenhuma VPS/VM foi acessada nesta rodada; não se confirmaram ACLs reais, arquivos ZIP físicos, configuração de GitHub secrets, assinatura ou condições de privacidade. O revisor externo também marcou esses itens não verificados. Não há parecer jurídico definitivo. A modalidade offline gui6 e o portátil foram homologados funcionalmente na VM pelo operador, mas **não passaram nova auditoria completa de segurança**.
 
 **Decisão:** correções iniciais e documentação OK; **liberação comercial irrestrita NÃO OK** até a resolução dos bloqueadores acima.
+
+## Evidência P2 — WIN11PROLAB, 26/11/2026 07:55:35 -03:00
+Relato do operador, auditoria somente leitura (arquivo `DRGinfo-Auditoria-Windows-20261126-075535.md`):
+- Software 1.5.3-drginfo.2, EXE SHA256 `58FC2C5E09782543951E42E3A7E06B9AA26AB57DF7EFE4E651A3596AA7CE3454` — confere com a release conhecida.
+- Authenticode `NotSigned`; serviço `DRGinfo Acesso Remoto` `Running`, `Auto`, `LocalSystem` e caminho entre aspas em `C:\\Program Files\\DRGinfo Acesso Remoto\\DRGinfo Acesso Remoto.exe --service`.
+- Registro ARP e atalhos Desktop e Menu Iniciar presentes.
+- `C:\\Program Files\\DRGinfo Acesso Remoto`: grupo Usuários apenas RX / GR,GE, sem ACE de escrita explícita no diretório listado. Provisoriamente adequado para executável de serviço; DACLs de arquivos e ACLs do próprio serviço ainda não conferidas.
+- `C:\\ProgramData\\DRGinfo\\AcessoRemoto`: `BUILTIN\\Usuários:(I)(CI)(WD,AD,WEA,WA)`, herdado e propagável a contêineres filhos. **Potencial de escrita não privilegiada** em subdiretórios/arquivos, dependente de herança, ACEs adicionais e uso pelo processo SYSTEM.
+- **P2 = ABERTO / NECESSITA TRIAGEM DIRECIONADA**. Evidência insuficiente para declarar exploração ou segurança da cadeia de arquivos de ProgramData. Não modificar DACLs sem inventário, avaliação de compatibilidade e rollback.
+- Próxima coleta: inspeção somente leitura dos subdiretórios packages/tools, arquivos release/manifestos/logs e ACL do próprio serviço (SDDL via sc.exe sdshow), com saída redigida para segunda avaliação.
