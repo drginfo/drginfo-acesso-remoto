@@ -2530,6 +2530,21 @@ pub fn is_drginfo_protected_server_key(key: &str) -> bool {
     )
 }
 
+#[cfg(all(test, target_os = "windows"))]
+mod drginfo_managed_server_tests {
+    use super::is_drginfo_protected_server_key;
+
+    #[test]
+    fn only_corporate_server_options_are_protected() {
+        for key in ["custom-rendezvous-server", "relay-server", "key", "api-server"] {
+            assert!(is_drginfo_protected_server_key(key), "{key} must be managed");
+        }
+        for key in ["lang", "theme", "image-quality", "audio-input", "stop-service"] {
+            assert!(!is_drginfo_protected_server_key(key), "{key} must remain user-configurable");
+        }
+    }
+}
+
 // DRGinfo Windows-only: fixed branding and server configuration, no external custom.txt.
 // The embedded rendezvous key is public; never embed private credentials.
 #[cfg(target_os = "windows")]
