@@ -2247,9 +2247,9 @@ pub fn is_win_10_or_greater() -> bool {
 }
 
 pub fn bootstrap() -> bool {
-    if let Ok(lic) = get_license_from_exe_name() {
-        *config::EXE_RENDEZVOUS_SERVER.write().unwrap() = lic.host.clone();
-    }
+    // DRG-WIN-006: an EXE filename must never override the embedded DRGinfo
+    // rendezvous endpoint (EXE_RENDEZVOUS_SERVER has highest upstream priority).
+    *config::EXE_RENDEZVOUS_SERVER.write().unwrap() = String::new();
 
     #[cfg(debug_assertions)]
     {
