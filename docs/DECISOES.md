@@ -22,3 +22,11 @@
 
 ## DRG-WIN-004 — Escopo
 Windows x64 primeiro; Linux/Android somente depois de Windows integralmente homologado. Sem aprovação implícita de uma nova release.
+
+## DRG-WIN-005 — Assinatura Authenticode adiada na fase de homologação
+**Decisão do responsável, 26/11/2026:** não adquirir certificado de assinatura de código antes de existir demanda comercial/clientes que justifique o custo.
+**Onde:** instalador Windows, que dispõe do parâmetro explícito `-AllowUnsigned`, e processo de homologação.
+**Como:** instalação exclusivamente na VM de laboratório com aceite explícito de artefato não assinado, SHA-256 calculado do ZIP efetivamente usado, origem e commit registrados. Sem desabilitar SmartScreen/Defender globalmente nem contornar políticas corporativas.
+**Por quê:** preservar capital de giro e concluir o produto sem despesa prematura.
+**Risco residual:** SHA-256 verifica integridade relativa ao hash de referência, mas não autentica o publicador; alertas SmartScreen e dificuldades de distribuição podem ocorrer.
+**Limite:** autorização para laboratório não é autorização automática de distribuição comercial. Reavaliar assinatura e controles antes de fornecer a terceiros.
