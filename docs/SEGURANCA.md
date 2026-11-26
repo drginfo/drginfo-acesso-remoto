@@ -20,3 +20,13 @@ Não liberar se faltar marca, configuração embarcada ou proteção contra atua
 - `src/core_main.rs` contém comandos administrativos `--option` e `--config`; `--option` consulta `is_cli_setting_change_disabled()` e exige instalação/administração para acessar IPC. O ramo `--config` depende de privilégios administrativos e caminho de configuração reconhecido.
 - **Resultado:** canais de escrita persistem; a imutabilidade efetiva e a precedência dos valores embarcados no serviço ainda NÃO foram demonstradas; não rotular como bypass comprovado nem como bloqueio definitivo comprovado.
 - **Recomendação para fase de produto:** impor política de bloqueio de mudança de rendezvous/relay/chave em camada central de aplicação/IPC e limitar a UI para edição DRGinfo; preservar opções comuns do usuário. Requer decisão de escopo e futura alteração versionada, não modificar a build homologada nesta etapa.
+
+## DRG-WIN-006 — Implementação inicial em fonte (26/11/2026)
+- Implementação feita na branch de desenvolvimento; NÃO incorporada ao executável homologado da build #10.
+- `src/common.rs`: função Windows `is_drginfo_protected_server_key()` com quatro opções gerenciadas: `custom-rendezvous-server`, `relay-server`, `key` e `api-server`.
+- `src/ui_interface.rs`: `set_option()` rejeita mudança individual; `try_set_options()` remove chaves gerenciadas de mapas completos antes de IPC.
+- `src/ipc.rs`: `set_option()` e `set_options()` rejeitam/removem alterações locais; o receptor `Data::Options(Some(...))` também filtra essas chaves antes da atualização persistente.
+- `src/core_main.rs`: comandos Windows `--config` e `--option CHAVE VALOR` recusam alteração de endpoint gerenciado. Mudanças legítimas exigem uma nova release da DRGinfo; **não foi implementado painel administrativo remoto**.
+- Rejeições de alterações são registradas sem valor/segredo, no padrão `DRGINFO_MANAGED_SETTING_REJECTED`.
+- Escopo: controles de entrada UI/CLI/IPC na edição Windows e configuração corporativa estática via `OVERWRITE_SETTINGS`. NÃO é prova contra modificação binária por administrador local, alteração de memória, substituição do serviço ou todas as outras rotas internas. Revisar precedência e interceptações adicionais antes de classificar a configuração como imutável.
+- **Status:** código alterado, inspeção estática pontual concluída, compilação/validação funcional e teste de regressão PENDENTES. Não substituir a build #10 nem distribuir o código não homologado; preservar rollback.
