@@ -2519,6 +2519,22 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
+// DRGinfo Windows-only: fixed branding and server configuration, no external custom.txt.
+// The embedded rendezvous key is public; never embed private credentials.
+#[cfg(target_os = "windows")]
+pub fn load_embedded_drginfo_client() {
+    const APP_NAME: &str = "DRGinfo Acesso Remoto";
+    const SERVER: &str = "drgvps.drginfo.com.br";
+    const SERVER_PUBLIC_KEY: &str = "2Rm++xgYmpHzELoyqD0WfbZU6Zp5XASuhiRaLJPEOVc=";
+
+    *config::APP_NAME.write().unwrap() = APP_NAME.to_owned();
+    let mut settings = config::OVERWRITE_SETTINGS.write().unwrap();
+    settings.insert("custom-rendezvous-server".to_owned(), SERVER.to_owned());
+    settings.insert("relay-server".to_owned(), SERVER.to_owned());
+    settings.insert("key".to_owned(), SERVER_PUBLIC_KEY.to_owned());
+    log::info!("DRGINFO_EMBEDDED_CONFIG_APPLIED app=DRGinfo server_configured=true");
+}
+
 pub fn load_custom_client() {
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
