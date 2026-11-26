@@ -214,3 +214,10 @@ O operador da WIN11PROLAB comunicou `GUI7_DESINSTALACAO=OK`, após teste da roti
 **P2: ENCERRADO / APROVADO no escopo homologado WIN11PROLAB.** Não é certificação independente contra qualquer cenário de escalonamento de privilégios ou prova das ACLs de todas as futuras instalações. Gui6 histórico permanece imutável; gui7 não publicada. O executável `1.5.3-drginfo.2` do build #5 ainda não incorpora a correção P3 em `src/updater.rs`, e Authenticode permanece não assinado por decisão documentada de aceite de risco.
 
 **Próximos gates:** publicar SHA256 independente (P1 mitigação), novo build de aplicativo incorporando P3, revisão P4/P5/P6/P8/P9/P11, AGPL/LGPD e critérios de liberação controlada. Não afirmar produto pronto para venda pública.
+
+## P3 / P5 — rebuild solicitado por GitHub Actions, 26/11/2026
+- Releitura do código atual: `src/updater.rs` contém bloqueio de cliente customizado no início de `check_update(manually)`, antes de `do_check_software_update()`. Também existe guarda no método macOS `check_update_as_root()`.
+- P5: workflow `.github/workflows/drginfo-build-windows.yml` recebeu `SIGN_BASE_URL: '-2'` (commit `e7386923e56bd8ed6dcb14caba885452f7826587`). As etapas legadas de assinatura remota são condicionadas a `env.SIGN_BASE_URL != '-2'` e portanto ficam desativadas no build desta revisão. Nenhum segredo de assinatura é solicitado por esta alteração.
+- Build disparado por alteração de `branding/BUILD_TRIGGER.md` na branch `feat/drginfo-embedded-config`, commit `d4ca6d4cc280ab37a4702d900cb3c944500dd59a`, conforme filtro `on.push.paths` do workflow.
+- **Status CI: solicitado, execução e conclusão ainda NÃO verificadas nesta sessão.** Nenhum artefato novo baixado, validado ou publicado na VPS; não alterar gui7 existente.
+- Próximo controle de qualidade: confirmar run associado ao commit, jobs Windows x64, artifact DRGinfo-Acesso-Remoto-Windows-x64, SHA256 e comportamento de update em VM após build.
