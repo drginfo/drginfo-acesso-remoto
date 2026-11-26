@@ -170,3 +170,8 @@ O operador relatou saída do gerador gui7:
 - Interpretação: aprovação da verificação de ZIP por SHA256, presença dos arquivos obrigatórios e configuração `UnsignedPilot`/hash de software. **Não equivale a assinatura Authenticode, teste de arquivos internos byte a byte contra manifesto, nem homologação funcional.**
 - Próximo gate: snapshot da VM; desinstalação gui6 com registro de resultado; instalação gui7 (somente laboratório), checagem de ACLs, serviço, reinício, conectividade, rollback e desinstalação.
 - Não publicar nem substituir pacotes anteriores.
+
+## GUI7 — pré-requisito da reinstalação (26/11/2026)
+- Operador informou `GUI6_REMOVIDA=OK`, a partir de inspeção de ausência do serviço Windows `DRGinfo Acesso Remoto` e da pasta `C:\Program Files\DRGinfo Acesso Remoto` na WIN11PROLAB.
+- Estado: gui6 removida conforme controle definido. Snapshot ainda não comprovado por saída; confirmar antes da instalação. Preservar `ProgramData` e o ZIP gui7 já verificado.
+- Próximo passo: executar `instalador-drginfo.cmd` do diretório `releases\installer-gui\1.0.0-gui7\payload` e coletar status; registrar testes de UAC, log, serviço e ACL em sequência.
