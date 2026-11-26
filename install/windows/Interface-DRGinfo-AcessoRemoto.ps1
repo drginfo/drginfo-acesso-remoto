@@ -30,6 +30,23 @@ $Sha256 = [string]$ReleaseConfig.SoftwareSha256
 $SoftwareVersion = [string]$ReleaseConfig.SoftwareVersion
 $Offline = $false
 if ($ReleaseConfig.ContainsKey('Offline')) { $Offline = [bool]$ReleaseConfig['Offline'] }
+# Assinatura obrigatoria por padrao. Apenas piloto tecnicamente identificado
+# pode executar a release legada nao assinada enquanto aguarda certificado OV.
+$UnsignedPilot = $false
+if ($ReleaseConfig.ContainsKey('UnsignedPilot')) {
+  $UnsignedPilot = [bool]$ReleaseConfig['UnsignedPilot']
+}
+if ($UnsignedPilot -and ($SoftwareVersion -ne '1.5.3-drginfo.2' -or
+  $Sha256 -ne '7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525')) {
+  throw 'UnsignedPilot permitido somente para a release legada explicitamente fixada.'
+}
+$PublisherThumbprint = ''
+if ($ReleaseConfig.ContainsKey('PublisherThumbprint')) {
+  $PublisherThumbprint = [string]$ReleaseConfig['PublisherThumbprint']
+}
+if (-not $UnsignedPilot -and $PublisherThumbprint -notmatch '^[A-Fa-f0-9]{40,64}$') {
+  throw 'Certificado Authenticode exigido para distribuicao regular. PublisherThumbprint ausente.'
+}
 $OfflinePackage = Join-Path $ScriptDir 'DRGinfo-AcessoRemoto-windows-x64.zip'
 if ($Offline) {
   if (-not (Test-Path -LiteralPath $OfflinePackage -PathType Leaf)) {
@@ -243,7 +260,12 @@ $install.Add_Click({
   $progress.MarqueeAnimationSpeed = 25
 
   $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $Core +
-    '" -PackageSha256 "' + $Sha256 + '" -PackageVersion "' + $SoftwareVersion + '" -AllowUnsigned'
+    '" -PackageSha256 "' + $Sha256 + '" -PackageVersion "' + $SoftwareVersion + '"'
+  if ($UnsignedPilot) {
+    $arguments += ' -AllowUnsigned'
+  } else {
+    $arguments += ' -PublisherThumbprint "' + $PublisherThumbprint + '"'
+  }
   if ($Offline) {
     $arguments += ' -PackageFile "' + $OfflinePackage + '"'
   } else {
