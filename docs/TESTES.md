@@ -62,3 +62,12 @@ Não confundir script disponível com execução ou homologação.
 - `flutter/lib/common.dart`: `checkUpdate()` não inicia consulta pela UI do cliente customizado; `flutter/lib/desktop/pages/desktop_home_page.dart` não exibe card de atualização RustDesk quando `bind.isCustomClient()`.
 - **Revisão estática dos controles citados: APROVADA**. Não alegar prova de ausência de todo o tráfego de rede do fornecedor sem auditoria de tráfego; essa verificação permanece fora do escopo.
 - Pendências: revisar política de mudanças de configuração via UI/CLI (se for requisito de imutabilidade), autenticação e links corporativos; não alterar a build homologada sem controle de versão.
+
+## Revisão P4.23 — Bloqueio de configurações corporativas, 26/11/2026
+- Revisão dos caminhos atuais em `src/common.rs`, `src/ui_interface.rs`, `src/ipc.rs` e `src/core_main.rs`, branch `fix/drginfo-windows-startup-diagnostics`.
+- O recebedor IPC `Data::Options(Some(...))` rejeita chaves corporativas antes da persistência via `trusted_devices::config::update_options`; as rotas de envio UI/CLI/IPC têm filtros adicionais.
+- Os mapas de opções são substituições completas, portanto a filtragem de chaves corporativas remove valores dessas chaves dos mapas de opções locais/IPC. Não se deve interpretar isso como preservação byte a byte do TOML anterior. Os valores corporativos devem continuar efetivos via `OVERWRITE_SETTINGS`; precedência e sincronização real ainda exigem teste de regressão.
+- Adicionado teste unitário Windows em `src/common.rs`: quatro chaves protegidas rejeitadas como gerenciadas e cinco preferências comuns não bloqueadas. **Teste incluído, NÃO EXECUTADO** nesta etapa.
+- A revisão pontual não substitui a verificação de todas as origens alternativas (`Config::set_options` diretas, sincronismo, importação, perfil, inicialização de processos); não alegar imutabilidade total antes de análise/execução.
+- Critérios antes da aprovação: compilação Windows; preservar conexão ao servidor DRGinfo, relay e chave pública após reinício; confirmar bloqueio pela UI/CLI/IPC; confirmar que mudanças comuns permanecem funcionais; confirmar tentativa de redirecionamento não altera a conexão; nenhum segredo nos logs; rollback da build #10.
+- **Status: revisão estática pontual e teste fonte registrados; build e testes funcionais pendentes. Não foi iniciada compilação GitHub Actions.**
