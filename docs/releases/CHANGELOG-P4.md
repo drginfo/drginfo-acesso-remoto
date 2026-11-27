@@ -1,3 +1,8 @@
+## 2026-11-27 — Botão Fechar da GUI online P4 aprovado
+- Operador confirmou **OK** após acionar o botão `Fechar` do instalador GUI online, com a P4 já instalada.
+- Testes aprovados da GUI online nesse cenário: abertura e identidade DRGinfo, detecção de instalação existente, `Abrir aplicativo`, `Abrir log`, exibição de ID/Pronto/logotipos e `Fechar`.
+- Escopo de homologação: **controles da GUI online com aplicação existente**, sem executar nova instalação.
+- **Pendência principal:** ciclo de instalação nova pela interface gráfica online com download HTTPS/UAC/serviço e desinstalação posterior, em condição controlada. Preservar logs e usar snapshot existente antes de remover serviço funcional.
 ## 2026-11-27 — GUI ONLINE P4: interface e integração com instalação existente aprovadas
 - Operador confirmou: **GUI=OK; detecção de instalação=OK; botão Abrir aplicação=OK; botão Abrir log=OK; Pronto=OK; ID=OK; Logos=OK**.
 - Teste realizado com o pacote `DRGinfo-Instalador-Windows-x64.zip` da release `1.0.0-p4-online-lab1`, inicialmente informado com SHA-256 `0C55846BD82AC030FB51BC7A65478696385F9E281A66E2E2244F1E8C6A6CEDDB`.
