@@ -1,3 +1,11 @@
+## 2026-11-27 — GUI offline P4: aprovação funcional; cache não isolado
+- Operador informou: interface, logotipos, links, instalação, acesso remoto fim a fim, ícones, aplicativos, Menu Iniciar e Adicionar/Remover Programas: **todos OK**.
+- Log 13:37:41–13:37:45: ACLs verificadas; hash P4 SHA-256 `926FAA9759236E18D4F5791A4A3BE76F0C96973676904F6F5FE08D8AA50B533A` validado; serviço criado/iniciado; registro ARP e atalhos criados; instalação concluída.
+- Log informa executável **não assinado**: liberação comercial assinada segue pendente.
+- **Limitação de evidência:** linha `Validando software offline sem usar rede.` não aparece; o ZIP do teste online permanecia no cache de `ProgramData`, logo o motor pode ter reutilizado o ZIP e não aberto `PackageFile`. Não declarar instalação offline sem cache/rede comprovada.
+- **Fecho de evidência:** executar um último ensaio com VM sem rede, aplicação desinstalada e cache de SHA isolado reversivelmente; verificar log `Validando software offline sem usar rede.`, hash e instalação completa.
+- Estado: instalador gráfico offline **aprovado funcionalmente**; independência de cache/rede **não demonstrada**.
+
 ## 2026-11-27 — GUI online P4: download da VPS e SHA-256 conferidos
 - Operador forneceu log da instalação nova: `2026-11-27 13:14:21 [INFO] Baixando release da VPS: /rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip`.
 - `2026-11-27 13:14:38 [INFO] Pacote SHA256 validado: 926FAA9759236E18D4F5791A4A3BE76F0C96973676904F6F5FE08D8AA50B533A`.
