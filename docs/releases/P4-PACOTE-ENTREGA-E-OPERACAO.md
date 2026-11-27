@@ -29,7 +29,7 @@ Data: 2026-11-27. **Estado: homologação funcional CONCLUÍDA; distribuição p
 
 ## Critérios comerciais e de suporte
 1. Divulgação a clientes **somente com aviso de binário não assinado** e orientação de hash/HTTPS, evitando prometer publisher verificado.
-2. Entregar avisos AGPL e acesso ao Corresponding Source **da build correspondente** — pendente de correlação em `P4-RASTREABILIDADE-BINARIO.md`.
+2. Entregar avisos AGPL e acesso ao Corresponding Source **da build correspondente** — correlação agora comprovada: commit `5bbef89a64c707a67a8ff4b5de9c228eb732dc79`, GitHub Actions #45929565631, artefato 15169411324, SHA-256 coincidente. Preservar fontes completas e conferir licenças de dependências (ver `P4-RASTREABILIDADE-BINARIO.md`).
 3. Publicar e confirmar política de privacidade e página Sobre com atribuição RustDesk; registrar URL final antes da divulgação.
 4. Contrato/termo de suporte deve definir autorização expressa para acesso remoto, responsabilidades e canal para revogação do acesso.
 5. Controles mínimos de distribuição: hashes por pacote, changelog, registros das versões, backup dos artefatos, validação dos links e testes de download com máquina limpa; não bloquear exigências de segurança do cliente.
@@ -37,4 +37,4 @@ Data: 2026-11-27. **Estado: homologação funcional CONCLUÍDA; distribuição p
 7. Não misturar builds futuras Linux/Android nem alterar branch padrão do GitHub sem homologação independente.
 
 ## Registro final de decisão
-Homologação funcional encerrada. A comercialização de **serviços de suporte com software livre** é tecnicamente viável, mas a DRGinfo **não deve descrever o pacote como integralmente liberado para distribuição irrestrita** antes de resolver e comprovar código-fonte correspondente, avisos de licença e informações de privacidade. Não é necessário recompilar para produzir essas evidências, salvo se o artefato original não puder ser vinculado ao código existente.
+Homologação funcional encerrada. A comercialização de **serviços de suporte com software livre** é tecnicamente viável, mas a DRGinfo **não deve descrever o pacote como integralmente liberado para distribuição irrestrita** antes de disponibilizar os avisos de licença, verificar disponibilidade do código-fonte completo correspondente e comprovar a publicação das informações de privacidade. **A revisão exata e a integridade do artefato já estão comprovadas.** Não é necessário recompilar para produzir essas evidências, salvo se o artefato original não puder ser vinculado ao código existente.
