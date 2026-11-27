@@ -1,3 +1,10 @@
+## 2026-11-27 — Verificação final do serviço Windows P4 (confirmada pelo operador)
+- Consulta `Get-CimInstance Win32_Service` para `DRGinfo Acesso Remoto`: **State=Running; StartMode=Auto; StartName=LocalSystem**.
+- PathName: `"C:\Program Files\DRGinfo Acesso Remoto\DRGinfo Acesso Remoto.exe" --service`.
+- Atalho Menu Iniciar e entrada Adicionar/Remover Programas confirmados visualmente pelo operador.
+- Homologação funcional da instalação técnica + serviço + reboot + acesso fim a fim: **APROVADA na VM**.
+- Pendências separadas: gerar e testar pacotes GUI online/offline/portátil, assinatura Authenticode comercial, desinstalação de P4/rollback e revisão dos requisitos de segurança.
+
 ## 2026-11-27 — Homologação de instalação P4 com persistência (evidência informada pelo operador)
 - Ambiente: VM Windows 11 após desinstalação controlada da build #18; serviço anterior, executável, registro e atalhos removidos; logs, manifesto e cache em ProgramData preservados.
 - Artefato P4: `DRGinfo-Acesso-Remoto-Windows-x64.zip`, SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`. Auditoria interna: 108 de 108 hashes válidos e nenhum arquivo fora do manifesto.
