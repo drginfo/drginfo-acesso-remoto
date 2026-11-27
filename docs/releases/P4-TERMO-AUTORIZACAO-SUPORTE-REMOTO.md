@@ -6,7 +6,7 @@ Este instrumento deve ser preenchido e aceito por representante legitimado do cl
 
 ## 1. Identificação
 
-**Prestadora:** DRGinfo — consultoria & suporte. Razão social/CNPJ: **[PREENCHER]**.
+**Prestadora:** **DRGinfo Serviços de Informática Ltda.**, CNPJ **09.605.741/0001-70**, Av. Dom Hélder Câmara, 6644, sala 0211, Pilares, Rio de Janeiro/RJ, CEP 20771-005. Contatos: **sac@drginfo.com.br** (atendimento) e **privacidade@drginfo.com.br** (privacidade).
 
 **Cliente/contratante:** **[RAZÃO SOCIAL OU NOME]**, CPF/CNPJ **[PREENCHER]**.
 
@@ -76,11 +76,13 @@ O presente termo **não afasta direitos do titular de dados nem substitui contra
 
 **Assinatura ou aceite eletrônico rastreável:** **[PREENCHER]**.
 
-**Canal de revogação / suporte:** **[PREENCHER]**.
+**Canal de revogação / suporte:** **sac@drginfo.com.br** ou outro canal formal previsto no contrato/chamado.
 
 ## Orientação interna à DRGinfo (não integrar automaticamente ao termo assinado)
 
 - Arquivar o aceite com trilha de auditoria e vincular ao ticket/contrato; evitar publicar documentos de clientes no GitHub.
 - Para contrato recorrente, registrar inventário de equipamentos, escopo, horário e possibilidade de acesso não assistido em anexo separado.
 - Antes de operar, revisar requisitos do cliente sobre acesso administrativo, segregação de técnicos, monitoramento e desligamento de credenciais.
-- Confirmar nome empresarial, CNPJ, canal de contato e vigência, e submeter o modelo a revisão contratual adequada.
+- Nome empresarial, CNPJ e canais DRGinfo foram recuperados da política oficial existente; conferir apenas dados do cliente, escopo e vigência, e submeter o modelo a revisão contratual adequada.
+- **Política de privacidade oficial preexistente:** https://drginfo.com.br/privacidade-acesso-remoto/ (versão de 26/11/2026). Os registros de sessão têm prazo declarado de **90 dias**; contratos/atendimentos seguem a legislação e o contrato. Não criar nem substituir política paralela.
+- A política descreve confirmação local por sessão; prever acesso não assistido **somente quando realmente habilitado, compatível com a informação ao cliente e autorizado expressamente**, com adequação da política se houver divergência.
