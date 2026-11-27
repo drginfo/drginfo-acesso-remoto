@@ -1,3 +1,11 @@
+## 2026-11-27 — Instalação nova via GUI ONLINE P4: testes funcionais aprovados
+- Antes da execução: aplicação P4 desinstalada pelo desinstalador oficial, serviço/pasta/ARP/atalho ausentes e logs preservados.
+- Cache P4 `packages/926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a` renomeado reversivelmente para `.backup-preteste-online`, impedindo reaproveitamento direto do ZIP no caminho original.
+- Operador confirmou: **interface, logotipos, links, instalação, conexão remota fim a fim, ícones/aplicativo, Menu Iniciar e Adicionar/Remover Programas = OK**.
+- **Aprovado funcionalmente:** nova instalação pelo instalador gráfico online com aplicação ausente.
+- **Evidências ainda a conferir:** linha de log do download da VPS, SHA após instalação e elevação UAC (não explicitamente relatada no retorno).
+- **Próximo teste:** desinstalar e homologar instalação nova pela GUI offline, preservando logs e backups; não repetir testes de portable já aprovados.
+
 ## 2026-11-27 — Botão Fechar da GUI online P4 aprovado
 - Operador confirmou **OK** após acionar o botão `Fechar` do instalador GUI online, com a P4 já instalada.
 - Testes aprovados da GUI online nesse cenário: abertura e identidade DRGinfo, detecção de instalação existente, `Abrir aplicativo`, `Abrir log`, exibição de ID/Pronto/logotipos e `Fechar`.
