@@ -1,3 +1,8 @@
+## 2026-11-27 — Botão Abrir aplicativo na GUI offline aprovado
+- Operador confirmou **OK** após acionar `Abrir aplicativo` no instalador GUI offline com P4 já instalada.
+- Resultado: aplicativo principal iniciado corretamente a partir da interface do instalador.
+- Escopo: validação da ação de abrir a aplicação existente; não abrange execução de nova instalação, UAC ou desinstalação.
+
 ## 2026-11-27 — Interface gráfica do instalador OFFLINE aprovada visualmente
 - Evidência: captura de tela enviada pelo operador, GUI aberta na VM com P4 previamente instalada; teste realizado a partir de PowerShell de usuário comum conforme orientação operacional (confirmação independente do nível de privilégio/UAC ainda não registrada).
 - Identidade corporativa DRGinfo (logotipo, cabeçalho ACESSO REMOTO e layout), indicação de `v1.5.3-drginfo.p4` e texto de modo offline aparecem corretamente.
