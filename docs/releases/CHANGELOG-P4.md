@@ -1,3 +1,14 @@
+## 2026-11-27 — Homologação de instalação P4 com persistência (evidência informada pelo operador)
+- Ambiente: VM Windows 11 após desinstalação controlada da build #18; serviço anterior, executável, registro e atalhos removidos; logs, manifesto e cache em ProgramData preservados.
+- Artefato P4: `DRGinfo-Acesso-Remoto-Windows-x64.zip`, SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`. Auditoria interna: 108 de 108 hashes válidos e nenhum arquivo fora do manifesto.
+- Motor de instalação: `install/windows/Instalar-DRGinfo-AcessoRemoto.ps1` obtido do commit `5bbef89a64c707a67a8ff4b5de9c228eb732dc79`; procedimento `-PackageFile`, `-PackageSha256`, `-PackageVersion 1.5.3-drginfo.p4`, `-AllowUnsigned`.
+- `-ValidateOnly`: APROVADO com ACL gerenciada, verificação SHA-256 e cache permanente; nenhuma instalação/criação de serviço nessa pré-validação.
+- **APROVADO PELO OPERADOR NA INSTALAÇÃO:** instalação concluída, ID, estado Pronto, links DRGinfo, logotipos e acesso remoto fim a fim.
+- **APROVADO PELO OPERADOR APÓS REINICIALIZAÇÃO:** ID, estado Pronto, links DRGinfo, logotipos e acesso remoto fim a fim.
+- **Ainda sem comprovação nesta rodada:** estado explícito `Running/Automatic` via consulta de serviço após reboot, teste do instalador gráfico online, empacotamento offline/portátil final, desinstalação da P4, assinatura Authenticode e testes de regressão adversariais.
+- **Escopo:** homologação funcional da instalação técnica e do uso remoto nesta VM; não confundir com aprovação de distribuição comercial ou assinatura.
+- Não executar outra compilação para gerar as modalidades: reutilizar os mesmos bytes do ZIP após conferência SHA-256.
+
 ## 2026-11-27 — Homologação funcional P4 portátil (evidência informada pelo operador)
 - Artefato `DRGinfo-Acesso-Remoto-Windows-x64.zip`; SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
 - Auditoria inicial ZIP: 109 entradas, integridade aprovada, componentes essenciais presentes; ausência de `rustdesk.exe` legado.
