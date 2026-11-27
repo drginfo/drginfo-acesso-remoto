@@ -1,3 +1,15 @@
+## 2026-11-27 — Auditoria estrutural dos pacotes offline e portátil APROVADA
+- Ambiente: PowerShell Windows 5.1 na VM de homologação; saída recebida do operador em **2026-11-27 08:37:59**.
+- Auditor: `tools/Auditar-Pacotes-P4.ps1` corrigido no commit `4433251b05b22932266e8408ba276b8d2f4951b9`.
+- **SHA-256 offline conferido:** `A64327D732CA7C81736242CB995BD26626DBF23A8B059D5DFDF8ED910F35E49B`.
+- **SHA-256 portátil conferido:** `46DEDF2D9497E940D2A35FFB81A142EAA6CAACFC57361500AB5505BBD1CFFC2D`.
+- **Manifesto offline:** 8/8 arquivos. Interface GUI, motor, logotipo e ZIP original P4 confirmados.
+- **Manifesto portátil:** 111/111 arquivos. Executável, DLLs, dados e arquivo LICENCE confirmados.
+- Resultado registrado: `RESULTADO=APROVADO_ESTRUTURALMENTE; HOMOLOGACAO_GUI_PENDENTE`.
+- Relatório local: `C:\DRGinfo-P4-Teste\DRGinfo-Pacotes-1.0.0-p4-lab1\AUDITORIA-PACOTES-DRGinfo-P4.txt`.
+- **Importante:** aprovacao estrutural nao constitui homologação funcional dos instaladores GUI, nem assinatura do executável.
+- Incidentes corrigidos no auditor: falso positivo para separador de path Windows e parâmetro `Select-Object -CaseSensitive` não suportado em Windows PowerShell 5.1; nenhum artefato P4 precisou ser recompilado.
+
 ## 2026-11-27 — Geração dos dois pacotes P4 em VM (evidência informada pelo operador)
 - Gerador `install/windows/Gerar-Pacotes-Offline-Portatil.ps1` executado em modo de laboratório, sem recompilação e sem substituir o serviço P4 instalado.
 - Artefato de referência: `DRGinfo-Acesso-Remoto-Windows-x64.zip`, SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
