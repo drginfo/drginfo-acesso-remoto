@@ -1,3 +1,11 @@
+## 2026-11-27 — GUI online P4: download da VPS e SHA-256 conferidos
+- Operador forneceu log da instalação nova: `2026-11-27 13:14:21 [INFO] Baixando release da VPS: /rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip`.
+- `2026-11-27 13:14:38 [INFO] Pacote SHA256 validado: 926FAA9759236E18D4F5791A4A3BE76F0C96973676904F6F5FE08D8AA50B533A`.
+- `2026-11-27 13:14:47 [INFO] INSTALACAO CONCLUIDA. Servico automatico em execucao.`.
+- `Get-FileHash` no ZIP recuperado em `ProgramData/.../packages/<sha>/package.zip`: SHA-256 idêntico à referência P4.
+- Conclusão: **fluxo online confirmado com download real e integridade**, juntamente aos testes funcionais e conexão fim a fim já informados pelo operador.
+- **Pendente separado:** confirmação explícita do UAC e instalação nova pela GUI offline.
+
 ## 2026-11-27 — Instalação nova via GUI ONLINE P4: testes funcionais aprovados
 - Antes da execução: aplicação P4 desinstalada pelo desinstalador oficial, serviço/pasta/ARP/atalho ausentes e logs preservados.
 - Cache P4 `packages/926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a` renomeado reversivelmente para `.backup-preteste-online`, impedindo reaproveitamento direto do ZIP no caminho original.
