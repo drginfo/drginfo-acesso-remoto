@@ -28,10 +28,17 @@ if [[ -f '.github/workflows/drginfo-diagnostico-windows-x64.yml' ]] && grep -Fq 
 else
   erro 'Workflow manual não identificado'
 fi
-# Impedir o uso da nova revisão com instaladores fixados em software antigo.
+# Confirmar que a nova revisão recebe dados de release explicitos.
+exige install/windows/Gerar-Pacote-Instalador.ps1 '[string]$SourceCommit,' 'Online: commit de origem obrigatorio'
+exige install/windows/Gerar-Pacote-Instalador.ps1 '[string]$SoftwareSha256,' 'Online: hash obrigatorio'
+exige install/windows/Gerar-Pacote-Instalador.ps1 '[switch]$UnsignedLab,' 'Online: excecao de laboratorio explicita'
+exige install/windows/Gerar-Pacotes-Offline-Portatil.ps1 '[string]$ExpectedHash,' 'Offline/portatil: SHA obrigatorio'
+exige install/windows/Gerar-Pacotes-Offline-Portatil.ps1 '[string]$SourceCommit,' 'Offline/portatil: commit obrigatorio'
+exige install/windows/Interface-DRGinfo-AcessoRemoto.ps1 "ReleaseChannel -eq 'producao'" 'GUI: modo producao com protecao de assinatura'
+exige install/windows/Interface-DRGinfo-AcessoRemoto.ps1 'Manifesto sem commit de origem valido' 'GUI: recusa manifesto sem commit'
 for f in install/windows/Gerar-Pacote-Instalador.ps1 install/windows/Gerar-Pacotes-Offline-Portatil.ps1 install/windows/Interface-DRGinfo-AcessoRemoto.ps1; do
   if grep -Eq '1[.]5[.]3-drginfo[.]2|7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525' "$f"; then
-    bloqueio "Instalador legado vinculado à versão/hash antigos: $f"
+    erro "Referencias legadas remanescentes no gerador: $f"
   fi
 done
 if ((falhas)); then
