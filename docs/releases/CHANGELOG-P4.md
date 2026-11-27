@@ -1,3 +1,10 @@
+## 2026-11-27 — Interface gráfica do instalador OFFLINE aprovada visualmente
+- Evidência: captura de tela enviada pelo operador, GUI aberta na VM com P4 previamente instalada; teste realizado a partir de PowerShell de usuário comum conforme orientação operacional (confirmação independente do nível de privilégio/UAC ainda não registrada).
+- Identidade corporativa DRGinfo (logotipo, cabeçalho ACESSO REMOTO e layout), indicação de `v1.5.3-drginfo.p4` e texto de modo offline aparecem corretamente.
+- Estado apresentado: `Instalacao detectada | Servico DRGinfo: em execucao.`; botão `Ja instalado` indisponível para disparar instalação; opções `Abrir aplicativo`, `Abrir log` e `Fechar` visíveis.
+- Resultado: **GUI offline — aparência e reconhecimento de instalação existente aprovados**.
+- Limite: não houve clique em instalar nem teste de elevação UAC, instalação GUI em VM limpa ou ciclo de desinstalação da P4. Não declarar essas etapas homologadas.
+
 ## 2026-11-27 — Auditoria estrutural dos pacotes offline e portátil APROVADA
 - Ambiente: PowerShell Windows 5.1 na VM de homologação; saída recebida do operador em **2026-11-27 08:37:59**.
 - Auditor: `tools/Auditar-Pacotes-P4.ps1` corrigido no commit `4433251b05b22932266e8408ba276b8d2f4951b9`.
