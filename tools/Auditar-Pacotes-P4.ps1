@@ -106,8 +106,11 @@ try {
         }
         Normalize-ZipPath $name
       })
-      if (@($names | Select-Object -Unique -CaseSensitive).Count -ne $names.Count) {
-        throw "Entradas duplicadas apos normalizacao: $label"
+      $seenPaths = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+      foreach ($name in $names) {
+        if (-not $seenPaths.Add($name)) {
+          throw "Entradas duplicadas apos normalizacao: $label : $name"
+        }
       }
       Assert-Manifest $archive
       if ($label -eq 'OFFLINE') {
