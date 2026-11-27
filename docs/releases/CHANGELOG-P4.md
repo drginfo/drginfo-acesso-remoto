@@ -1,3 +1,13 @@
+## 2026-11-27 — Geração dos dois pacotes P4 em VM (evidência informada pelo operador)
+- Gerador `install/windows/Gerar-Pacotes-Offline-Portatil.ps1` executado em modo de laboratório, sem recompilação e sem substituir o serviço P4 instalado.
+- Artefato de referência: `DRGinfo-Acesso-Remoto-Windows-x64.zip`, SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
+- Instalador offline: `C:\DRGinfo-P4-Teste\DRGinfo-Pacotes-1.0.0-p4-lab1\DRGinfo-Instalador-Offline-Windows-x64.zip`, SHA-256 **informado pelo gerador** `A64327D732CA7C81736242CB995BD26626DBF23A8B059D5DFDF8ED910F35E49B`.
+- Portátil: `C:\DRGinfo-P4-Teste\DRGinfo-Pacotes-1.0.0-p4-lab1\DRGinfo-Portatil-Windows-x64.zip`, SHA-256 **informado pelo gerador** `46DEDF2D9497E940D2A35FFB81A142EAA6CAACFC57361500AB5505BBD1CFFC2D`.
+- Manifesto do gerador: `C:\DRGinfo-P4-Teste\DRGinfo-Pacotes-1.0.0-p4-lab1\release.txt`.
+- **Estado:** geração concluída; verificação independente dos pacotes e testes GUI ainda pendentes.
+- `SourceCommit` do manifesto do pacote identifica o commit `30f4da7f3a48e7a062db20469a83fe102e7758bc` usado para obter scripts/logo do empacotador. **Não confundir com comprovação do commit de compilação do executável**, que exige verificação separada do run GitHub Actions.
+- Auditor de pacotes de laboratório versionado em `tools/Auditar-Pacotes-P4.ps1`: valida SHA externo, cobertura do manifesto interno e ZIP de software embarcado sem executar o aplicativo.
+
 ## 2026-11-27 — Verificação final do serviço Windows P4 (confirmada pelo operador)
 - Consulta `Get-CimInstance Win32_Service` para `DRGinfo Acesso Remoto`: **State=Running; StartMode=Auto; StartName=LocalSystem**.
 - PathName: `"C:\Program Files\DRGinfo Acesso Remoto\DRGinfo Acesso Remoto.exe" --service`.
