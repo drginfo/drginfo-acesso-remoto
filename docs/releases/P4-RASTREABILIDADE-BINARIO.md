@@ -2,6 +2,9 @@
 
 Data: 2026-11-27. **Status: commit da compilação, artefato e SHA-256 comprovados diretamente nos registros do GitHub Actions.**
 
+## Comparação com o commit pai
+A comparação GitHub `18c15907e63a263d0ee9ae35904e85f7778766fd...5bbef89a64c707a67a8ff4b5de9c228eb732dc79` retornou 1 commit à frente e **apenas** `docs/releases/DRGINFO-P4-PLANO-RELEASE.md` modificado. Assim, o build foi disparado em `5bbef89`, com código de execução idêntico ao pai `18c1590` nessa comparação. O link público deve continuar apontando ao commit exato da execução: `5bbef89...`.
+
 ## Cadeia de evidências verificadas
 - Produto: `DRGinfo Acesso Remoto 1.5.3-drginfo.p4`, Windows x64.
 - **Código-fonte imutável (commit build):** [`5bbef89a64c707a67a8ff4b5de9c228eb732dc79`](https://github.com/drginfo/drginfo-acesso-remoto/tree/5bbef89a64c707a67a8ff4b5de9c228eb732dc79).
