@@ -1,3 +1,10 @@
+## 2026-11-27 — Conexão remota fim a fim do pacote portátil P4 APROVADA
+- Operador confirmou **OK** após conexão de outro computador ao ID exibido pelo portátil extraído de `DRGinfo-Portatil-Windows-x64.zip`, com visualização e controle da área de trabalho e encerramento normal da conexão conforme teste solicitado.
+- Serviço instalado permanecia em estado `Stopped` para evitar duas instâncias simultâneas.
+- Resultado: **pacote portátil P4 homologado funcionalmente** em abertura, ID, estado Pronto, identidade visual e conexão remota fim a fim.
+- Restauração do serviço instalado após encerrar o portátil: **pendente de confirmação do operador**.
+- Não confundir com verificação de ausência de artefatos no perfil Windows; o software pode criar logs/configurações durante execução portátil.
+
 ## 2026-11-27 — Pacote portátil de distribuição P4: abertura e prontidão aprovadas
 - Serviço instalado `DRGinfo Acesso Remoto` interrompido para evitar instâncias simultâneas; estado reportado: `Stopped`, inicialização `Automatic`.
 - Operador extraiu `DRGinfo-Portatil-Windows-x64.zip` em `C:\DRGinfo-P4-Teste\Portatil-Teste` e abriu `Abrir-DRGinfo-Portatil.cmd` na console da VM.
