@@ -1,3 +1,8 @@
+## 2026-11-27 — Botão Abrir log na GUI offline aprovado
+- Operador confirmou **OK** após acionar `Abrir log` no instalador gráfico offline P4.
+- Resultado: visualização do log de instalação pelo botão da interface funcionou conforme esperado.
+- Escopo: validação da ação de abrir log; sem reinstalação, UAC ou alteração do serviço.
+
 ## 2026-11-27 — Botão Abrir aplicativo na GUI offline aprovado
 - Operador confirmou **OK** após acionar `Abrir aplicativo` no instalador GUI offline com P4 já instalada.
 - Resultado: aplicativo principal iniciado corretamente a partir da interface do instalador.
