@@ -2,7 +2,9 @@
 
 **Data:** 2026-11-27
 **Versão:** 1.5.3-drginfo.p4
-**Situação:** DESENVOLVIMENTO E HOMOLOGAÇÃO FUNCIONAL WINDOWS CONCLUÍDOS. Distribuição sem assinatura, com ressalvas de segurança e conformidade abaixo.
+**Situação:** DESENVOLVIMENTO E HOMOLOGAÇÃO FUNCIONAL WINDOWS CONCLUÍDOS; **HOMOLOGADO PARA PILOTO CONTROLADO**. Distribuição comercial irrestrita depende de release formal, termo de autorização, revisão de privacidade e condições de licença; assinatura digital adiada.
+
+**Reconciliação dos testes posteriores ao mapa preliminar:** ver `P4-RECONCILIACAO-E-CRITERIOS-DE-LIBERACAO.md`. Os testes de instalação nova e desinstalação da P4 foram realizados em 27/11, embora constassem como pendentes no mapa anterior. UAC não possui confirmação explícita separada na evidência enviada.
 
 ## Evidências de homologação
 - Interface DRGinfo, logotipos, ícones, links e estado `Pronto`: aprovados pelo operador.
@@ -32,6 +34,12 @@
 - HTTPS e SHA-256 protegem/verificam transporte e integridade do pacote, mas não substituem assinatura do editor.
 - Não pedir ao cliente que desabilite globalmente SmartScreen, antivírus ou políticas da organização.
 - Reavaliar certificado quando houver receita para financiá-lo; executar validação de assinatura e distribuição quando adotado.
+
+## Identidade do código versus revisão documental
+- O build foi disparado em `5bbef89...`; seu pai `18c15907e63a263d0ee9ae35904e85f7778766fd` tem código de execução equivalente: o único arquivo alterado no commit foi `docs/releases/DRGINFO-P4-PLANO-RELEASE.md`, confirmado por comparação de commits no GitHub.
+- A identidade do ZIP foi comprovada pelo SHA-256, não apenas pelo tamanho.
+- Nome canônico futuro: `DRGinfo-Acesso-Remoto-Windows-x64.zip`; nome atual na VPS: `DRGinfo-AcessoRemoto-windows-x64.zip`. Preservar link antigo até publicação/migração.
+- Zero GitHub Releases identificadas na consulta; a futura pré-release deverá conter os quatro ZIPs auditados. **Nenhuma release foi criada neste fechamento.**
 
 ## Encerramento e limites
 **Encerradas:** alterações de código da Windows P4, builds e homologação funcional, rastreabilidade do ZIP, correção do link de código-fonte na página Sobre conforme captura do operador, documentação.
