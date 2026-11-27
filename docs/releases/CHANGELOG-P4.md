@@ -1,3 +1,10 @@
+## 2026-11-27 — GUI ONLINE P4: interface e integração com instalação existente aprovadas
+- Operador confirmou: **GUI=OK; detecção de instalação=OK; botão Abrir aplicação=OK; botão Abrir log=OK; Pronto=OK; ID=OK; Logos=OK**.
+- Teste realizado com o pacote `DRGinfo-Instalador-Windows-x64.zip` da release `1.0.0-p4-online-lab1`, inicialmente informado com SHA-256 `0C55846BD82AC030FB51BC7A65478696385F9E281A66E2E2244F1E8C6A6CEDDB`.
+- Resultado: **interface gráfica do pacote online aprovada no cenário de aplicativo já instalado**; integração com aplicativo, logs e apresentação corporativa verificadas.
+- Pendentes: instalação nova via botão da GUI online (download real da VPS, UAC, criação de serviço e atalhos), validação da ação Fechar online e homologação comercial (assinatura).
+- Não repetir testes funcionais P4 já concluídos sem necessidade.
+
 ## 2026-11-27 — Instalador gráfico ONLINE P4 gerado em laboratório
 - Operador confirmou execução concluída de `install/windows/Gerar-Pacote-Instalador.ps1`, com código e logotipo obtidos da revisão fixada `440cbab70fe4e2e330d2f47c546a0bbe11f4741e`.
 - `Version=1.0.0-p4-online-lab1`, `SoftwareVersion=1.5.3-drginfo.p4`, `UnsignedLab`.
