@@ -1,3 +1,12 @@
+## 2026-11-27 — Publicação HTTPS do ZIP de software P4 confirmada
+- Transferência da versão homologada do notebook Debian para VPS por SSH/SCP concluída (100%, aproximadamente 34 MiB).
+- Diretório real: `/srv/drginfo-downloads/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip`.
+- SHA-256 calculado na VPS: `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`, idêntico ao pacote homologado.
+- Caddy existente: site `downloads.drginfo.com.br`, `root * /srv/drginfo-downloads`, `file_server`; nenhuma alteração/reload exigidos.
+- Consulta HTTP HEAD relatada pelo operador: **HTTP/2 200**, `content-type: application/zip`, `content-length: 35565328`, `accept-ranges: bytes`, HSTS e `X-Content-Type-Options: nosniff`.
+- URL: `https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip`.
+- Resultado: **publicação e disponibilidade HTTPS aprovadas**. Geração e teste da GUI online continuam pendentes.
+
 ## 2026-11-27 — Serviço instalado restaurado após teste do portátil
 - Após encerramento do uso do pacote portátil, o operador confirmou a saída de `Get-CimInstance Win32_Service` para `DRGinfo Acesso Remoto`:
   - `State=Running`
