@@ -1,7 +1,7 @@
 # DRGinfo Acesso Remoto P4 — Página Sobre e acesso ao código-fonte
 
 **Data:** 27/11/2026
-**Status:** documentação de entrega preparada e homologação Windows concluída; correlação de binário e código-fonte comprovada; publicação autenticada no site ainda precisa confirmação.
+**Status:** documentação de entrega preparada e homologação Windows concluída; correlação de binário e código-fonte comprovada; o operador confirmou publicação e enviou captura do trecho de licença com link correto; a auditoria do conteúdo integral não foi realizada.
 **Versão:** `1.5.3-drginfo.p4`.
 **Licença:** GNU AGPL-3.0 com preservação dos avisos RustDesk OSS.
 
@@ -19,7 +19,7 @@ O aplicativo destina-se a suporte remoto autorizado. A instalação e utilizaç�
 
 - **NÃO** apontar a build #18 `fdd7525551d8f06a76ffe65241f7ebbfa26596e3` como código correspondente à P4.
 - A referência imutável da revisão de build foi encontrada; preservar e disponibilizar o Corresponding Source completo, incluindo scripts e dependências exigíveis pela AGPL.
-- Não afirmar que a página está publicada ou que a política de privacidade está disponível em WordPress antes de conferência autenticada.
+- A página Sobre e a política de privacidade foram declaradas publicadas pelo operador; captura do trecho Sobre comprova o link correto. Conteúdo jurídico integral da política e arquivo HTML local ainda requerem conferência.
 - Realizar backup da página e preservar blocos/CSS da versão existente antes de aplicar.
 - Conferir avisos legais na interface e atribuição original RustDesk.
 - Leia também `P4-CONFORMIDADE-LICENCA-PRIVACIDADE.md` e `P4-PACOTE-ENTREGA-E-OPERACAO.md`.
@@ -30,4 +30,4 @@ GUI online, GUI offline sem rede, portabilidade, serviço automático, branding,
 
 ## Notebook
 
-Após estas alterações documentais, sincronizar a branch com `git fetch` seguido de `git pull --ff-only` apenas em árvore limpa. A sincronização registrada anteriormente, no commit `694de34582b6cfcbd57dd83dc13f3bb1b639fec1`, **não inclui** os commits documentais posteriores.
+O notebook foi sincronizado até `80426ecb71b3df82f6f859272cf93c9f7448c14e` conforme saída apresentada; novos commits documentais exigem nova atualização `git pull --ff-only` em árvore limpa. Sincronizar também o HTML local efetivamente usado na publicação se estiver sob controle de versão.
