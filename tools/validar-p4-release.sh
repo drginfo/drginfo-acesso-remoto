@@ -5,10 +5,8 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 falhas=0
-bloqueios=0
 ok() { printf '[OK] %s\n' "$*"; }
 erro() { printf '[FALHA] %s\n' "$*" >&2; falhas=$((falhas+1)); }
-bloqueio() { printf '[BLOQUEADO] %s\n' "$*" >&2; bloqueios=$((bloqueios+1)); }
 exige() {
   local path="$1" literal="$2" desc="$3"
   if [[ ! -f "$path" ]]; then erro "$desc: arquivo ausente $path"
@@ -45,8 +43,4 @@ if ((falhas)); then
   printf 'RESULTADO: FALHA_ESTÁTICA (%d achados)\n' "$falhas" >&2
   exit 1
 fi
-if ((bloqueios)); then
-  printf 'RESULTADO: CÓDIGO_P4_PREVALIDADO; RELEASE_NÃO_APTA (%d bloqueios de empacotamento)\n' "$bloqueios" >&2
-  exit 2
-fi
-printf 'RESULTADO: PREVALIDACAO_ESTÁTICA_OK (ainda requer build, testes e auditoria de pacotes).\n'
+printf 'RESULTADO: PREVALIDACAO_ESTATICA_OK; RELEASE_NAO_HOMOLOGADA: requer compilacao, hash externo e testes Windows.\n'
