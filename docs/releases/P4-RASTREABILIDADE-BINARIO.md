@@ -1,28 +1,31 @@
-# DRGinfo Acesso Remoto Windows P4 — Proveniência do binário
+# DRGinfo Acesso Remoto Windows P4 — Proveniência do binário (VERIFICADA)
 
-Data: 2026-11-27. Status: **homologação funcional concluída; vínculo imutável entre ZIP e revisão do compilador NÃO comprovado**.
+Data: 2026-11-27. **Status: commit da compilação, artefato e SHA-256 comprovados diretamente nos registros do GitHub Actions.**
 
-## Identificação imutável comprovada
-- Produto: DRGinfo Acesso Remoto 1.5.3-drginfo.p4, Windows x64.
-- ZIP distribuído: `DRGinfo-Acesso-Remoto-Windows-x64.zip`; na VPS, objeto publicado sob o nome `DRGinfo-AcessoRemoto-windows-x64.zip`.
-- SHA-256 do conteúdo ZIP aprovado e baixado da VPS na VM: `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
-- URL do ZIP da VPS: https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip
-- Branch de manutenção documental P4: `release/drginfo-windows-p4-links-docs`. **Não identificar o HEAD atual como commit do executável.**
-- O commit `fdd7525551d8f06a76ffe65241f7ebbfa26596e3` pertence à build #18, **não à P4**.
-- Submódulo no checkout do operador em 2026-11-27: `libs/hbb_common` em `450cc1d7b729cfa8d19b5a7527c9cc2fe54cf5eb`. Não supor que essa foi a versão exata utilizada no build do executável.
+## Cadeia de evidências verificadas
+- Produto: `DRGinfo Acesso Remoto 1.5.3-drginfo.p4`, Windows x64.
+- **Código-fonte imutável (commit build):** [`5bbef89a64c707a67a8ff4b5de9c228eb732dc79`](https://github.com/drginfo/drginfo-acesso-remoto/tree/5bbef89a64c707a67a8ff4b5de9c228eb732dc79).
+- **Execução GitHub Actions:** [#45929565631](https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45929565631), concluída com sucesso, iniciada em `2026-11-27T02:38:56Z`.
+- **Workflow:** `DRGinfo - Diagnostico Windows x64`; branch da execução `release/drginfo-windows-p4-links-docs`.
+- **Job de build Windows x64:** `x86_64-pc-windows-msvc`, ID `140279629862`, sucesso.
+- **Artefato oficial da execução:** `DRGinfo-Acesso-Remoto-Windows-x64`, ID `15169411324`, tamanho **35.565.328 bytes**, não expirado na conferência.
+- **SHA-256 do artefato registrado pelo GitHub Actions:** `sha256:926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
+- **SHA-256 do ZIP instalado e homologado na VM:** `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a` — correspondência **exata**.
+- **Submódulo comprovado na árvore imutável do commit do build:** `libs/hbb_common`, modo gitlink `160000`, SHA `450cc1d7b729cfa8d19b5a7527c9cc2fe54cf5eb`.
+- **Lockfiles no commit:** `Cargo.lock` SHA blob `72edd2e10e5ac24ad90f252c4f2c055fa51841ca`; `flutter/pubspec.lock` SHA blob `4130a49b5f593f49aa4ab6f837f1e36947a30bd8`.
+- **Licença na árvore do build:** `LICENCE` (AGPL-3.0) blob `0ad25db4bd1d86c452db3f9602ccdbe172438f52`.
+- **ZIP publicado na VPS:** https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip, hash reproduzido na VM.
+- **Execução anterior descartada:** [#45886911372](https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45886911372), commit `fdd7525551d8f06a76ffe65241f7ebbfa26596e3`, **build #18, não P4**.
 
-## Investigação realizada
-- Workflow de build identificado: `.github/workflows/drginfo-diagnostico-windows-x64.yml` (acionamento manual `workflow_dispatch`, checkout de submódulos recursivo).
-- Documentos de branch, scripts do instalador, logs de Windows e hash ZIP conferidos.
-- O acesso disponível ao GitHub Actions neste ambiente **não apresentou lista de runs com head_sha e artefato ZIP correlacionado**. A pesquisa de commits não comprova a associação byte-a-byte.
-- **Ainda requer evidência independente:** run_id, head_sha, job, nome e hash do artefato da execução, versão dos submódulos e dependências; correlacionar o ZIP baixado ao build, considerando renomeações/reempacotamentos.
+## Links públicos para o código da versão exata
+- Código-fonte: https://github.com/drginfo/drginfo-acesso-remoto/tree/5bbef89a64c707a67a8ff4b5de9c228eb732dc79
+- Arquivo-fonte ZIP GitHub da revisão: https://github.com/drginfo/drginfo-acesso-remoto/archive/5bbef89a64c707a67a8ff4b5de9c228eb732dc79.zip
+- Submódulo (referência): https://github.com/rustdesk/hbb_common/tree/450cc1d7b729cfa8d19b5a7527c9cc2fe54cf5eb (confirmar URL de origem em `.gitmodules` e acessibilidade antes de reproduzir)
+- Histórico da compilação: https://github.com/drginfo/drginfo-acesso-remoto/actions/runs/45929565631
+- Texto integral da licença: https://github.com/drginfo/drginfo-acesso-remoto/blob/5bbef89a64c707a67a8ff4b5de9c228eb732dc79/LICENCE
 
-## Procedimento seguro de identificação (sem recompilar)
-1. Na interface GitHub, abrir Actions > `DRGinfo - Diagnostico Windows x64` > execução que gerou o ZIP P4.
-2. Registrar URL da execução, Run ID, Commit (head_sha), nome do artefato, conclusão e logs da etapa de upload; se disponível, baixar o artefato original.
-3. Calcular `Get-FileHash -Algorithm SHA256` no **ZIP original da compilação**, comparando ao SHA de release. Se houve reempacotamento, comparar arquivos internos e guardar manifesto de hashes e cadeia de transformação.
-4. Consultar `git ls-tree <head_sha> libs/hbb_common` e as versões/lockfiles no commit original.
-5. Criar tag imutável `drginfo-windows-v1.5.3-p4-source` **apenas depois** de comprovada a correspondência; publicar URL do commit/tag na página Sobre e nas instruções da release.
+## Reprodutibilidade e AGPL
+A associação `head_sha ↔ artefato GitHub ↔ SHA-256 do ZIP homologado` ficou **comprovada**. Isso identifica o código correspondente e a configuração versionada da build. Não é uma auditoria completa de reprodutibilidade determinística nem prova automática de cumprimento de todos os termos AGPL e licenças transitivas. Preservar código-fonte correspondente, scripts de construção e instalação, dependências e informações de licenças para destinatários da aplicação. Verificar se há avisos legais adequados nas interfaces e se `.gitmodules` aponta para código acessível; distribuir pacote de fontes com submódulos quando necessário.
 
-## Condição de liberação
-O repositório geral disponível e a licença AGPL são evidências positivas, mas **não substituem o acesso ao Corresponding Source da versão exata**, inclusive scripts de build/instalação e dependências relevantes, conforme GNU AGPL-3.0. **Não afirmar conformidade plena nem fechar este requisito sem correlação verificável.**
+## Política de mudança
+Não substituir este commit pelo HEAD atual da branch, que avançou com documentação. Não confundir o commit de empacotamento dos instaladores GUI com a compilação do aplicativo. Nenhuma recompilação foi necessária ou iniciada nesta investigação.
