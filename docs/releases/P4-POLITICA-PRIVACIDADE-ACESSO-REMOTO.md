@@ -1,73 +1,56 @@
-# Política de privacidade — DRGinfo Acesso Remoto
+# DRGinfo Acesso Remoto — Referência à política de privacidade OFICIAL existente
 
-**Versão do texto:** 1.0 — 27/11/2026 | **Aplicação:** DRGinfo Acesso Remoto, Windows P4 1.5.3-drginfo.p4.
+**Reconciliado em:** 27/11/2026. **Política oficial do aplicativo:** última atualização em **26/11/2026**.
 
-**Status editorial:** texto consolidado para revisão e publicação no site. **Não afirmar que substituiu automaticamente a política já publicada no WordPress**; a página existente não foi integralmente auditada. Campos e decisões operacionais em aberto estão identificados ao final.
+> **DOCUMENTO DE REFERÊNCIA, NÃO NOVA POLÍTICA.** A política de privacidade do DRGinfo Acesso Remoto **já foi preparada e publicada no WordPress pela DRGinfo**. Não duplicar, substituir ou reescrever o texto publicado por um modelo genérico. Esta página Markdown registra os termos recuperados do HTML original `privacidade-drginfo-acesso-remoto.html` e indica pontos que exigem compatibilização operacional, sem alterar o site.
 
-## 1. Quem somos e como falar conosco
+**Endereço informado da página oficial:** https://drginfo.com.br/privacidade-acesso-remoto/
 
-O **DRGinfo Acesso Remoto** é uma solução de suporte remoto oferecida pela **DRGinfo — consultoria & suporte**, baseada em personalização do RustDesk OSS. A DRGinfo pode atuar como **operadora** dos dados do cliente empresarial quando executa instruções desse cliente e como **controladora** em relação a dados de seus próprios contatos, contratos, faturamento, atendimentos, autenticação e segurança. A função concreta depende da atividade e das determinações legais e contratuais.
+## Identificação da política oficial
 
-Site institucional: https://drginfo.com.br/ .
+- **Controladora dos dados próprios do serviço:** DRGinfo Serviços de Informática Ltda., **CNPJ 09.605.741/0001-70**.
+- **Endereço informado:** Av. Dom Hélder Câmara, 6644, sala 0211, Pilares, Rio de Janeiro/RJ, CEP 20771-005.
+- **Canal de privacidade:** privacidade@drginfo.com.br.
+- **Encarregado (DPO) indicado:** Daniel Ramos Gonçalves.
+- **Atendimento geral:** sac@drginfo.com.br.
+- **Site:** https://drginfo.com.br/.
+- **Política institucional geral:** https://drginfo.com.br/politica-de-privacidade/.
 
-**Contato para privacidade e exercício de direitos:** [PREENCHER CANAL EFETIVO: e-mail ou formulário institucional]. Não divulgar endereço ou contato inventado.
+## Tratamento descrito no texto original
 
-## 2. Finalidades e categorias de dados
+A política descreve identificador/nome da máquina, versão do programa, horários/duração/identificação de sessão, endereços IP, dados técnicos de diagnóstico e e-mail de contato. Registra que imagem de tela, teclado e arquivos são tratados apenas em tempo real durante o atendimento, **sem gravação de conteúdo da tela pelo aplicativo** conforme afirmação da política.
 
-Conforme o uso efetivo do aplicativo e os recursos habilitados na sessão, poderão ser tratados dados técnicos e de atendimento como identificadores de dispositivo e sessão, endereço IP, data e horário, estado da conexão, eventos de autenticação, registros de auditoria e diagnóstico. Durante uma sessão autorizada, o técnico poderá ter acesso ao conteúdo visível na tela do computador, a informações manipuladas pelo usuário e, se habilitado e autorizado, a transferência de arquivos, área de transferência ou outras funções de suporte.
+A DRGinfo figura como **operadora** de dados nos computadores de empresas clientes segundo instruções e contrato; é **controladora** em relação aos dados próprios necessários à administração de seus serviços.
 
-**O acesso não representa autorização para copiar indiscriminadamente arquivos ou conteúdos pessoais.** O suporte será limitado à finalidade informada e autorizada.
+A política indica as finalidades/bases legais: execução de contrato para suporte, consentimento indicado para confirmação de sessão, legítimo interesse para registros/prevenção de abusos (mediante avaliação documentada) e obrigações legais, conforme aplicabilidade.
 
-Esta lista identifica categorias *potenciais* e não declara que todos esses dados sejam coletados, armazenados ou retidos pelo software em todas as configurações. A configuração efetiva do cliente, servidor, logs, recursos habilitados e eventuais integrações devem ser verificadas antes da publicação definitiva.
+## Hospedagem e transferência internacional
 
-## 3. Bases legais e autorização para atendimento
+O HTML oficial indica provedor **peramix**, servidores em **Dallas, Estados Unidos**, e transferência internacional de dados com observância dos arts. 33 a 36 da LGPD. Não substituir isso por `localização a confirmar` em outra política. A efetiva utilização do provedor/região e o mecanismo jurídico de transferência internacional devem permanecer rastreáveis documentalmente.
 
-As bases legais variam segundo a operação e o papel de cada parte e poderão incluir execução de contrato, cumprimento de obrigação legal ou regulatória, legítimo interesse quando cabível e outras hipóteses legalmente adequadas. **Autorização técnica de acesso remoto não substitui a identificação de base legal de tratamento de dados** e consentimento não deve ser tratado como única base automática para todo processamento.
+## Retenção — prazo JÁ ESTABELECIDO
 
-O técnico só poderá iniciar ou manter atendimento em equipamento de terceiro mediante autorização válida do titular responsável ou administrador legitimado, observadas as condições contratuais e políticas do cliente.
+| Categoria | Período informado na política publicada |
+|---|---|
+| **Registros de sessão** (ID, data, hora, duração e IP) | **90 dias** |
+| Registros de contrato e de atendimento | Conforme legislação e contrato aplicáveis |
 
-## 4. Como o acesso remoto funciona
+O texto prevê eliminação ou anonimização após os períodos respectivos. **A declaração de 90 dias é um compromisso da política; a execução automática dessa retenção no servidor/logs ainda requer evidência operacional específica.** Não insinuar que o prazo estava indefinido.
 
-A solução pode usar infraestrutura de sinalização e retransmissão para estabelecer sessões entre dispositivos autorizados. A comunicação pode envolver dados técnicos estritamente necessários ao estabelecimento da conexão. **Não é possível afirmar, apenas com a homologação da P4, que nunca há acesso, armazenamento, retransmissão ou tratamento de conteúdo por servidores**; isso depende da arquitetura e configuração em produção.
+## Segurança, autorizações e atualizações conforme a política
 
-A DRGinfo deve informar ao cliente, antes do uso, os servidores envolvidos, provedores/suboperadores relevantes, localização do tratamento quando conhecida, medidas de segurança e eventuais transferências internacionais. **Não afirmar ausência de transferência internacional sem inventário técnico.**
+O HTML descreve: conexões cifradas, senhas temporárias por sessão, confirmação antes de conexão, aviso visível, autenticação administrativa por chave SSH e segundo fator, backups e acesso restrito. Descreve também distribuição de novas versões pela DRGinfo, sem atualização manual pela interface, com avisos ao e-mail cadastrado.
 
-## 5. Compartilhamento e acesso
+**Compatibilização necessária:** a P4 tem serviço Windows persistente e foi considerada para suporte não assistido. Se a operação realmente permitir conexão sem confirmação local a cada sessão, a declaração da política original sobre confirmação do usuário **não deve ser tratada como comprovada para todos os modos**. O termo de autorização precisa distinguir acesso assistido e não assistido; qualquer discrepância efetiva exigirá ajuste da prática ou atualização transparente da política, sem declaração prematura de conformidade.
 
-Poderão acessar dados apenas pessoas autorizadas e prestadores estritamente necessários ao suporte, à hospedagem ou à segurança, sujeitos às condições legais, contratuais e de confidencialidade aplicáveis. Não comercializamos dados pessoais como parte do serviço de acesso remoto; qualquer alteração dessa prática exige revisão desta política.
+## Direitos e contatos
 
-## 6. Segurança
+A política contempla direitos do art. 18 da LGPD (acesso, confirmação, correção, eliminação/bloqueio/anonimização em hipóteses aplicáveis, portabilidade, informação de compartilhamentos e revogação do consentimento quando aplicável). Solicitações: **privacidade@drginfo.com.br**.
 
-A DRGinfo deverá adotar medidas técnicas e organizacionais proporcionais aos riscos, tais como autenticação adequada, autorização por atendimento, segregação de acessos, privilégio mínimo, proteção das credenciais, controle de acesso a logs, atualizações de segurança, backups protegidos e procedimentos de resposta a incidentes.
+## Estado documental
 
-A existência de servidor próprio **não elimina riscos**, e a aplicação atual não possui assinatura digital Authenticode. Hashes SHA-256 e canais HTTPS auxiliam na integridade e no transporte, mas não substituem controles de identidade e segurança operacional.
+- **Concluído:** recuperação do conteúdo original, dados cadastrais e canais existentes, prazo de 90 dias, provedor e localidade, distinção das responsabilidades; este arquivo deixa de concorrer com a política oficial.
+- **Não executado:** alteração do WordPress, auditoria externa da página pública, auditoria operacional de expurgo de logs, certificação jurídica da transferência internacional.
+- **Regra:** a política oficial publicada é a referência para clientes. Não criar página duplicada, nem atualizar seu conteúdo sem controle de versão e autorização.
 
-## 7. Retenção e descarte
-
-Registros técnicos e dados de atendimento serão retidos somente pelo tempo necessário à finalidade legítima, às obrigações legais e contratuais e à defesa de direitos, de acordo com tabela de retenção aprovada pela DRGinfo e com as instruções do controlador quando atuar como operadora.
-
-**Prazo de retenção: [DEFINIR POR CATEGORIA].** Não há comprovação nesta documentação de período único efetivamente configurado em todos os logs e servidores. Expirado o prazo e ausente outra justificativa legal, aplicar eliminação segura, anonimização quando cabível ou outra destinação legalmente permitida.
-
-## 8. Direitos dos titulares
-
-Os titulares podem solicitar informações e o exercício dos direitos previstos na LGPD, incluindo confirmação de tratamento, acesso, correção e eliminação nas hipóteses legais. Quando a DRGinfo atuar como operadora, encaminhará a demanda ao controlador competente e prestará a assistência contratualmente definida. Solicitações podem exigir validação de identidade e podem estar sujeitas a hipóteses legais de conservação.
-
-Canal para solicitações: **[PREENCHER CANAL EFETIVO]**.
-
-## 9. Incidentes e contato com o cliente
-
-Suspeitas de acesso indevido ou incidente envolvendo dados pessoais devem ser registradas e avaliadas prontamente. A DRGinfo comunicará ao controlador/cliente conforme contrato e aplicará os procedimentos legais cabíveis. A obrigação de notificação à ANPD e aos titulares, quando aplicável, deve observar o regulamento vigente e as responsabilidades de cada agente.
-
-## 10. Atualizações desta política
-
-Mudanças relevantes nos recursos, servidores, tratamento, retenção ou fornecedores exigirão revisão da política e comunicação adequada. A versão e data da política atualizada devem ser exibidas no site.
-
-## Pendências objetivas para adoção pública
-
-1. Informar **nome empresarial/identificação jurídica** e **canal válido de privacidade** da DRGinfo (sem divulgar dados pessoais desnecessários).
-2. Confirmar o fluxo real dos dados: onde rodam `hbbs/hbbr`, autenticação, logs, se há gravação de sessões e recursos de transferência de arquivos/clipboard.
-3. Definir efetivamente categorias, base legal, destinatários, eventual transferência internacional, tabela de retenção e responsável pelo atendimento dos titulares.
-4. Comparar e publicar esta versão, após adequação à operação real, na **página WordPress já existente**, preservando a URL para não quebrar links.
-5. Confirmar e publicar o vínculo de navegação entre **Sobre**, **Política de Privacidade** e **Termo de Autorização**.
-
-**Referências legais:** LGPD atualizada (Lei 13.709/2018): https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-normaatualizada-pl.html ; ANPD, guia de agentes de tratamento: https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/ ; ANPD, medidas de segurança para pequenos agentes: https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-sobre-seguranca-da-informacao-para-agentes-de-tratamento-de-pequeno-porte .
+**Referências:** https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm ; https://www.gov.br/anpd/pt-br .
