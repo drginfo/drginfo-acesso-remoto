@@ -41,6 +41,8 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
   double? get height => bind.isIncomingOnly() ? null : em * 3;
 
   void onUsePublicServerGuide() {
+    // A edicao corporativa nao encaminha usuarios ao pricing upstream.
+    if (bind.isCustomClient()) return;
     const url = "https://rustdesk.com/pricing";
     canLaunchUrlString(url).then((can) {
       if (can) {

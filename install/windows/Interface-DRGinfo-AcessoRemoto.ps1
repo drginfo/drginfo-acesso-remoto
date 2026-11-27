@@ -30,15 +30,31 @@ $Sha256 = [string]$ReleaseConfig.SoftwareSha256
 $SoftwareVersion = [string]$ReleaseConfig.SoftwareVersion
 $Offline = $false
 if ($ReleaseConfig.ContainsKey('Offline')) { $Offline = [bool]$ReleaseConfig['Offline'] }
-# Assinatura obrigatoria por padrao. Apenas piloto tecnicamente identificado
-# pode executar a release legada nao assinada enquanto aguarda certificado OV.
+# P4: autorizacao explicita de laboratorio, vinculada a uma release especifica.
+# Nao aceitar modo unsigned de producao nem manifesto sem commit de origem.
 $UnsignedPilot = $false
 if ($ReleaseConfig.ContainsKey('UnsignedPilot')) {
   $UnsignedPilot = [bool]$ReleaseConfig['UnsignedPilot']
 }
-if ($UnsignedPilot -and ($SoftwareVersion -ne '1.5.3-drginfo.2' -or
-  $Sha256 -ne '7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525')) {
-  throw 'UnsignedPilot permitido somente para a release legada explicitamente fixada.'
+$ReleaseChannel = ''
+if ($ReleaseConfig.ContainsKey('ReleaseChannel')) {
+  $ReleaseChannel = [string]$ReleaseConfig['ReleaseChannel']
+}
+$SourceCommit = ''
+if ($ReleaseConfig.ContainsKey('SourceCommit')) {
+  $SourceCommit = [string]$ReleaseConfig['SourceCommit']
+}
+if ($SourceCommit -cnotmatch '^[a-fA-F0-9]{40}$') {
+  throw 'Manifesto sem commit de origem valido e imutavel.'
+}
+if ($UnsignedPilot -and $ReleaseChannel -ne 'laboratorio') {
+  throw 'UnsignedPilot permitido somente com ReleaseChannel=laboratorio.'
+}
+if ($ReleaseChannel -notin @('laboratorio','producao')) {
+  throw 'Canal de release invalido. Informe laboratorio ou producao.'
+}
+if ($ReleaseChannel -eq 'producao' -and $UnsignedPilot) {
+  throw 'Release de producao exige Authenticode.'
 }
 $PublisherThumbprint = ''
 if ($ReleaseConfig.ContainsKey('PublisherThumbprint')) {

@@ -233,14 +233,20 @@ class _InstallPageBodyState extends State<_InstallPageBody>
                           InkWell(
                             hoverColor: Colors.transparent,
                             onTap: () => launchUrlString(
-                                'https://rustdesk.com/privacy.html'),
+                                bind.isCustomClient()
+                                    ? 'https://drginfo.com.br/privacidade-acesso-remoto/'
+                                    : 'https://rustdesk.com/privacy.html'),
                             child: Tooltip(
-                              message: 'https://rustdesk.com/privacy.html',
+                              message: bind.isCustomClient()
+                                  ? 'https://drginfo.com.br/privacidade-acesso-remoto/'
+                                  : 'https://rustdesk.com/privacy.html',
                               child: Row(children: [
                                 Icon(Icons.launch_outlined, size: 16)
                                     .marginOnly(right: 5),
                                 Text(
-                                  translate('End-user license agreement'),
+                                  bind.isCustomClient()
+                                      ? 'Política de Privacidade — DRGinfo'
+                                      : translate('End-user license agreement'),
                                   style: const TextStyle(
                                       decoration: TextDecoration.underline),
                                 )
