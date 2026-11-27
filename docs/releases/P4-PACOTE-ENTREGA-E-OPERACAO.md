@@ -1,6 +1,8 @@
 # DRGinfo Acesso Remoto — Entrega Windows P4 (1.5.3-drginfo.p4)
 
-Data: 2026-11-27. **Estado: homologação funcional CONCLUÍDA; distribuição pública irrestrita condicionada aos controles legais e de procedência descritos abaixo.**
+Data: 2026-11-27. **Estado: Windows P4 homologado funcionalmente para piloto controlado; distribuição comercial irrestrita condicionada a autorização de suporte, licenças, privacidade e publicação de release formal.**
+
+**Padrão de nomenclatura:** usar `DRGinfo-Acesso-Remoto-Windows-x64.zip` como nome canônico da próxima release. Na VPS o mesmo conteúdo está publicado como `DRGinfo-AcessoRemoto-windows-x64.zip`; preservar a URL antiga até migração controlada. O hash, não o nome, identifica os bytes do pacote.
 
 ## Produtos de entrega previamente preparados e auditados
 | Produto | SHA-256 ZIP | Situação |
@@ -35,6 +37,9 @@ Data: 2026-11-27. **Estado: homologação funcional CONCLUÍDA; distribuição p
 5. Controles mínimos de distribuição: hashes por pacote, changelog, registros das versões, backup dos artefatos, validação dos links e testes de download com máquina limpa; não bloquear exigências de segurança do cliente.
 6. Assinatura Authenticode: **ADIADA POR DECISÃO DE CUSTO**, não incluída nesta release. Revisitar quando a comercialização financiar aquisição.
 7. Não misturar builds futuras Linux/Android nem alterar branch padrão do GitHub sem homologação independente.
+
+## Pré-release futura
+Nenhuma GitHub Release existia na consulta de 27/11. Proposta: pré-release com tag no commit imutável `5bbef89a64c707a67a8ff4b5de9c228eb732dc79`, contendo quatro ZIPs originais com hashes; **ainda não criada** porque não foi validada a disponibilidade dos três ZIPs adicionais como arquivos acessíveis ao publicador. Previamente definir termo de autorização de acesso remoto e fazer revisão de LGPD. Consulte `P4-RECONCILIACAO-E-CRITERIOS-DE-LIBERACAO.md`.
 
 ## Registro final de decisão
 Homologação funcional encerrada. A comercialização de **serviços de suporte com software livre** é tecnicamente viável, mas a DRGinfo **não deve descrever o pacote como integralmente liberado para distribuição irrestrita** antes de disponibilizar os avisos de licença, verificar disponibilidade do código-fonte completo correspondente e comprovar a publicação das informações de privacidade. **A revisão exata e a integridade do artefato já estão comprovadas.** Não é necessário recompilar para produzir essas evidências, salvo se o artefato original não puder ser vinculado ao código existente.
