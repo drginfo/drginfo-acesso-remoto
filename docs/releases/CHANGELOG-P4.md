@@ -1,3 +1,8 @@
+## 2026-11-27 — Botão Fechar da GUI offline aprovado
+- Operador confirmou **OK** após usar `Fechar` na interface gráfica offline, tendo sido solicitado que verificasse o encerramento da janela sem interferência na instalação funcional existente.
+- Controles da GUI offline com P4 instalada: identidade visual, detecção do serviço, abrir aplicativo, abrir log e fechar **aprovados** pelo operador.
+- **Ainda pendente:** teste de instalação nova via botão GUI e solicitação UAC em VM sem aplicativo instalado; homologação funcional do ZIP portátil empacotado e instalador online.
+
 ## 2026-11-27 — Botão Abrir log na GUI offline aprovado
 - Operador confirmou **OK** após acionar `Abrir log` no instalador gráfico offline P4.
 - Resultado: visualização do log de instalação pelo botão da interface funcionou conforme esperado.
