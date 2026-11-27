@@ -9,14 +9,14 @@ Data: 2026-11-27. Documento técnico de conformidade, não parecer jurídico.
 - A marca comercial DRGinfo identifica esta personalização, **não transforma o código AGPL em software proprietário exclusivo nem elimina direitos de terceiros**.
 - Clientes podem receber o software e o serviço de instalação/suporte mediante remuneração; as liberdades concedidas pela AGPL devem permanecer intactas. Não cobrar para exercer os direitos sobre o código-fonte que a licença exige disponibilizar.
 - Preservar avisos de copyright, alteração da obra, texto integral da licença, eventuais avisos legais de interface, autorias e condições de dependências. Conferir marcas e materiais visuais de terceiros antes de divulgação.
-- Fonte correspondente à **revisão EXATA** é pendência controlada em `P4-RASTREABILIDADE-BINARIO.md`. Repositório genérico não comprova, sozinho, obrigação satisfeita.
+- A **revisão exata** foi identificada em `5bbef89a64c707a67a8ff4b5de9c228eb732dc79`, com SHA-256 correspondente ao artefato GitHub Actions #45929565631, conforme `P4-RASTREABILIDADE-BINARIO.md`. Permanece necessário assegurar o acesso ao conjunto de fontes e materiais exigidos pela AGPL; o commit, por si só, não é auditoria jurídica completa.
 
 ## Uso de rede e segurança
 - A operação do acesso remoto depende de configuração e permissão legítima do titular/administrador da máquina. Disponibilizar o app exclusivamente para suporte autorizado.
 - Antes do atendimento, informar claramente finalidade, responsáveis, escopo, necessidade de consentimento ou outra base legal adequada, política de acesso, procedimentos de revogação, retenção de registros e canal de suporte.
 - Proteger chaves/segredos; **não colocar credenciais, senhas de uso único, IDs individuais ou logs pessoais em repositório público**.
 - Aplicar autenticação robusta, controle de operadores, mínimo privilégio, trilha de auditoria e procedimento para incidentes, conforme obrigações legais e contratos.
-- Publicação da página de política de privacidade em WordPress **ainda deve ser validada em produção**. Não afirmar publicação sem evidência.
+- O operador informou que a política de privacidade está publicada no WordPress. A captura da página Sobre confirmou a referência correta da P4. A política de privacidade ainda requer **revisão de conteúdo e adequação ao fluxo real de dados/LGPD**; não declarar auditoria jurídica concluída.
 - Lei 13.709/2018 (LGPD): https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm e https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados .
 
 ## Distribuição sem assinatura
