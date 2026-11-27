@@ -39,9 +39,12 @@ O texto prevê eliminação ou anonimização após os períodos respectivos. **
 
 ## Segurança, autorizações e atualizações conforme a política
 
-O HTML descreve: conexões cifradas, senhas temporárias por sessão, confirmação antes de conexão, aviso visível, autenticação administrativa por chave SSH e segundo fator, backups e acesso restrito. Descreve também distribuição de novas versões pela DRGinfo, sem atualização manual pela interface, com avisos ao e-mail cadastrado.
+O HTML descreve: conexões cifradas, aviso visível durante a sessão, autenticação administrativa por chave SSH e segundo fator, backups e acesso restrito. Quanto aos modos de acesso, descreve dois modos distintos:
 
-**Compatibilização necessária:** a P4 tem serviço Windows persistente e foi considerada para suporte não assistido. Se a operação realmente permitir conexão sem confirmação local a cada sessão, a declaração da política original sobre confirmação do usuário **não deve ser tratada como comprovada para todos os modos**. O termo de autorização precisa distinguir acesso assistido e não assistido; qualquer discrepância efetiva exigirá ajuste da prática ou atualização transparente da política, sem declaração prematura de conformidade.
+- **Atendimento assistido:** senha temporária exibida pelo aplicativo para cada sessão e confirmação do usuário do computador antes de a conexão ser aceita.
+- **Acesso não assistido:** conexão sem a presença do usuário, com senha de acesso definida pelo cliente, somente nos computadores, usuários e períodos previstos no termo de autorização assinado pelo cliente. Nesse modo, o aviso visível na tela do computador e o registro da sessão são obrigatórios, conforme a implementação aprovada. Descreve também distribuição de novas versões pela DRGinfo, sem atualização manual pela interface, com avisos ao e-mail cadastrado.
+
+**Pendência de verificação:** a afirmação de que a confirmação do usuário ocorre antes de cada conexão vale apenas para o modo assistido. Antes de declarar esse controle para o acesso não assistido, a DRGinfo deve comprovar, em teste documentado, que o serviço Windows aplica a senha de acesso definida pelo cliente e registra a sessão. Enquanto essa comprovação não existir, a política não deve afirmar conformidade operacional do modo não assistido. O termo de autorização distingue os dois modos e só habilita o não assistido quando expressamente escolhido pelo cliente.
 
 ## Direitos e contatos
 
