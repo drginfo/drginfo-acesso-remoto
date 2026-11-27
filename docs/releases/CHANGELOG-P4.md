@@ -1,3 +1,11 @@
+## 2026-11-27 — Correção dos três bloqueios de empacotamento (somente fonte)
+- `install/windows/Gerar-Pacote-Instalador.ps1`: versão do instalador, versão do software, SHA-256, URL HTTPS e commit de origem são entradas obrigatórias; `-UnsignedLab` restrito ao canal laboratório; distribuição regular exige thumbprint Authenticode.
+- `install/windows/Gerar-Pacotes-Offline-Portatil.ps1`: recebe explicitamente `-Version`, `-ExpectedHash`, `-InstallerVersion`, `-SourceCommit` e política de assinatura; remove os valores fixos da versão antiga.
+- `install/windows/Interface-DRGinfo-AcessoRemoto.ps1`: valida `SourceCommit` (40 hex), `ReleaseChannel`, `UnsignedPilot` e certificado sem referência a versão antiga; distribuição em produção não usa modo unsigned.
+- `tools/validar-p4-release.sh`: verifica os novos requisitos estáticos e recusa referências antigas nos três scripts.
+- **Não foram executados Windows PowerShell 5.1, build Rust/Flutter, novo empacotamento, nem testes de GUI/UAC/reboot nesta alteração.** Integridade de pacote e assinatura continuam exigidas.
+- O novo `SourceCommit` para empacotamento deve ser o SHA do commit final efetivamente aprovado, nunca a branch móvel; `SoftwareSha256` deve vir do ZIP efetivamente compilado e verificado.
+
 # CHANGELOG — Preparação DRGinfo Windows P4 (26–27/11/2026)
 
 ## Não lançada / sem nova compilação
