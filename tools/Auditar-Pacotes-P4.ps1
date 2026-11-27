@@ -33,10 +33,24 @@ function Assert-HashFile([string]$Path,[string]$Expected) {
   if ($actual -ne $Expected.ToUpperInvariant()) { throw "SHA256 incorreto: $Path : $actual" }
   Log "[OK] SHA256: $(Split-Path $Path -Leaf) = $actual"
 }
+function Normalize-ZipPath([string]$Name) {
+  $canonical = $Name.Replace('\','/')
+  if (-not $canonical -or
+      $canonical.StartsWith('/') -or
+      $canonical -match '^[A-Za-z]:' -or
+      $canonical.Contains(':') -or
+      @($canonical.Split('/') | Where-Object { $_ -eq '..' -or $_ -eq '.' -or $_ -eq '' }).Count -gt 0) {
+    throw "Entrada ZIP insegura: $Name"
+  }
+  return $canonical
+}
 function Get-Entry([System.IO.Compression.ZipArchive]$Archive,[string]$Name) {
-  $entry = $Archive.GetEntry($Name)
-  if ($null -eq $entry) { throw "Entrada ausente: $Name" }
-  return $entry
+  $expected = Normalize-ZipPath $Name
+  $matches = @($Archive.Entries | Where-Object {
+    (($_.FullName).Replace('\','/')) -ceq $expected
+  })
+  if ($matches.Count -ne 1) { throw "Entrada ausente ou duplicada: $Name" }
+  return $matches[0]
 }
 function Get-HashStream([System.IO.Stream]$Stream) {
   $sha = [Security.Cryptography.SHA256]::Create()
@@ -55,9 +69,9 @@ function Assert-Manifest([System.IO.Compression.ZipArchive]$Archive) {
   if ($items.Count -eq 0) { throw 'Manifesto sem entradas' }
   $seen = @{}
   foreach ($item in $items) {
-    $name = ([string]$item.Arquivo).Replace('\','/')
-    if (-not $name -or $name -match '(^/|\.\.|:|\\)' -or $seen.ContainsKey($name)) {
-      throw "Caminho repetido ou inseguro: $name"
+    $name = Normalize-ZipPath ([string]$item.Arquivo)
+    if ($seen.ContainsKey($name)) {
+      throw "Caminho repetido: $name"
     }
     $seen[$name] = $true
     $expected = [string]$item.SHA256
@@ -69,7 +83,7 @@ function Assert-Manifest([System.IO.Compression.ZipArchive]$Archive) {
   }
   $files = @($Archive.Entries | Where-Object { -not $_.FullName.EndsWith('/') -and $_.FullName -ne 'manifesto-distribuicao-sha256.csv' })
   foreach ($file in $files) {
-    if (-not $seen.ContainsKey($file.FullName)) { throw "Fora do manifesto: $($file.FullName)" }
+    if (-not $seen.ContainsKey((Normalize-ZipPath $file.FullName))) { throw "Fora do manifesto: $($file.FullName)" }
   }
   Log "[OK] Manifesto completo: $($items.Count)/$($files.Count) arquivos"
 }
@@ -85,10 +99,15 @@ try {
     $label = [string]$entry[1]
     $archive = [IO.Compression.ZipFile]::OpenRead($zipPath)
     try {
-      $names = @($archive.Entries | ForEach-Object { $_.FullName })
-      if (@($names | Select-Object -Unique).Count -ne $names.Count) { throw "Entradas duplicadas: $label" }
-      foreach ($name in $names) {
-        if ($name -match '(^/|(^|/)\.\.(/|$)|^[A-Za-z]:|\\|:)' ) { throw "Entrada ZIP insegura: $name" }
+      $names = @($archive.Entries | ForEach-Object {
+        $name = $_.FullName
+        if ($name.EndsWith('/') -or $name.EndsWith('\')) {
+          $name = $name.TrimEnd('/','\')
+        }
+        Normalize-ZipPath $name
+      })
+      if (@($names | Select-Object -Unique -CaseSensitive).Count -ne $names.Count) {
+        throw "Entradas duplicadas apos normalizacao: $label"
       }
       Assert-Manifest $archive
       if ($label -eq 'OFFLINE') {
