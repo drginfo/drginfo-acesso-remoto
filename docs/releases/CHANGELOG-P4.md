@@ -1,3 +1,11 @@
+## 2026-11-27 — Serviço instalado restaurado após teste do portátil
+- Após encerramento do uso do pacote portátil, o operador confirmou a saída de `Get-CimInstance Win32_Service` para `DRGinfo Acesso Remoto`:
+  - `State=Running`
+  - `StartMode=Auto`
+  - `StartName=LocalSystem`
+- Resultado: serviço principal restaurado com sucesso após os testes fim a fim do ZIP portátil, sem reinstalação ou recompilação.
+- Pendências: pacote gráfico online, ensaio de instalação nova pela GUI offline e critérios comerciais (assinatura digital).
+
 ## 2026-11-27 — Conexão remota fim a fim do pacote portátil P4 APROVADA
 - Operador confirmou **OK** após conexão de outro computador ao ID exibido pelo portátil extraído de `DRGinfo-Portatil-Windows-x64.zip`, com visualização e controle da área de trabalho e encerramento normal da conexão conforme teste solicitado.
 - Serviço instalado permanecia em estado `Stopped` para evitar duas instâncias simultâneas.
