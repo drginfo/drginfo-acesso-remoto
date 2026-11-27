@@ -1,3 +1,11 @@
+## 2026-11-27 — Instalador gráfico ONLINE P4 gerado em laboratório
+- Operador confirmou execução concluída de `install/windows/Gerar-Pacote-Instalador.ps1`, com código e logotipo obtidos da revisão fixada `440cbab70fe4e2e330d2f47c546a0bbe11f4741e`.
+- `Version=1.0.0-p4-online-lab1`, `SoftwareVersion=1.5.3-drginfo.p4`, `UnsignedLab`.
+- ZIP: `C:\ProgramData\DRGinfo\AcessoRemoto\releases\installer-gui\1.0.0-p4-online-lab1\DRGinfo-Instalador-Windows-x64.zip`.
+- SHA-256 **informado pelo gerador**: `0C55846BD82AC030FB51BC7A65478696385F9E281A66E2E2244F1E8C6A6CEDDB`.
+- Manifesto: `C:\ProgramData\DRGinfo\AcessoRemoto\releases\installer-gui\1.0.0-p4-online-lab1\manifesto-sha256.csv`.
+- Status: **GERADO; verificacao independente do pacote e testes GUI online pendentes**. Não alterar a P4 atualmente instalada nem distribuir comercialmente sem homologação e assinatura.
+
 ## 2026-11-27 — Publicação HTTPS do ZIP de software P4 confirmada
 - Transferência da versão homologada do notebook Debian para VPS por SSH/SCP concluída (100%, aproximadamente 34 MiB).
 - Diretório real: `/srv/drginfo-downloads/rustdesk/drginfo-acesso-remoto/1.5.3-drginfo.p4/DRGinfo-AcessoRemoto-windows-x64.zip`.
