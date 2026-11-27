@@ -1,3 +1,11 @@
+## 2026-11-27 — Pacote portátil de distribuição P4: abertura e prontidão aprovadas
+- Serviço instalado `DRGinfo Acesso Remoto` interrompido para evitar instâncias simultâneas; estado reportado: `Stopped`, inicialização `Automatic`.
+- Operador extraiu `DRGinfo-Portatil-Windows-x64.zip` em `C:\DRGinfo-P4-Teste\Portatil-Teste` e abriu `Abrir-DRGinfo-Portatil.cmd` na console da VM.
+- Operador respondeu **OK** às verificações de abertura da interface, identidade visual/logotipo, ID e estado `Pronto`.
+- **APROVADO:** inicialização local e prontidão do pacote portátil de distribuição P4.
+- **PENDENTE:** teste de conexão remota fim a fim deste ZIP portátil empacotado; verificação de encerramento e restauração do serviço instalado.
+- Não confundir com teste portátil inicial do ZIP original já homologado anteriormente.
+
 ## 2026-11-27 — Botão Fechar da GUI offline aprovado
 - Operador confirmou **OK** após usar `Fechar` na interface gráfica offline, tendo sido solicitado que verificasse o encerramento da janela sem interferência na instalação funcional existente.
 - Controles da GUI offline com P4 instalada: identidade visual, detecção do serviço, abrir aplicativo, abrir log e fechar **aprovados** pelo operador.
