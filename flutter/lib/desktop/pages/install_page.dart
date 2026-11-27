@@ -244,7 +244,9 @@ class _InstallPageBodyState extends State<_InstallPageBody>
                                 Icon(Icons.launch_outlined, size: 16)
                                     .marginOnly(right: 5),
                                 Text(
-                                  translate('End-user license agreement'),
+                                  bind.isCustomClient()
+                                      ? 'Política de Privacidade — DRGinfo'
+                                      : translate('End-user license agreement'),
                                   style: const TextStyle(
                                       decoration: TextDecoration.underline),
                                 )
