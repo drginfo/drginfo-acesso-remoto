@@ -1,3 +1,12 @@
+## 2026-11-27 — Fechamento da homologação funcional Windows P4
+- Operador executou instalação nova pela GUI offline com cache original isolado (backups online/offline preservados) e adaptador virtual desconectado no hipervisor.
+- `Test-NetConnection downloads.drginfo.com.br -Port 443 -InformationLevel Quiet` retornou `False`. Captura da VM desconectada mostra GUI offline concluída, serviço em execução, aplicativo aberto, identidade DRGinfo e estado aguardando rede.
+- Captura após reconectar o adaptador demonstra recuperação automática do estado `Pronto`, sem reinstalação; instalador reconhece `Já instalado`.
+- O log visível na captura registra `INSTALACAO CONCLUIDA. Servico automatico em execucao.` às **13:48:26**, criação de serviço, atalhos e registro em aplicativos instalados.
+- **Conclusão:** homologação **funcional** de GUI online (download real da VPS e SHA-256 idêntico), GUI offline em VM sem rede e sem cache original ativo, portátil previamente validado, instalação/desinstalação, identidade visual, serviço, retomada de rede e acesso remoto fim a fim concluída.
+- **Ressalva de evidência:** a linha textual `Validando software offline sem usar rede.` ainda não foi copiada pelo operador; a confirmação offline está ancorada no ensaio isolado e capturas.
+- **Pendências de liberação definitiva:** assinatura Authenticode; rastreabilidade do `head_sha` exato do job que compilou o executável (correspondência AGPL código/binário); publicação/validação final de página Sobre/política de privacidade, conforme fluxo comercial. Não confundir homologação funcional com assinatura ou liberação comercial.
+
 ## 2026-11-27 — GUI offline P4: aprovação funcional; cache não isolado
 - Operador informou: interface, logotipos, links, instalação, acesso remoto fim a fim, ícones, aplicativos, Menu Iniciar e Adicionar/Remover Programas: **todos OK**.
 - Log 13:37:41–13:37:45: ACLs verificadas; hash P4 SHA-256 `926FAA9759236E18D4F5791A4A3BE76F0C96973676904F6F5FE08D8AA50B533A` validado; serviço criado/iniciado; registro ARP e atalhos criados; instalação concluída.
