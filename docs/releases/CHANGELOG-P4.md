@@ -1,3 +1,12 @@
+## 2026-11-27 — Homologação funcional P4 portátil (evidência informada pelo operador)
+- Artefato `DRGinfo-Acesso-Remoto-Windows-x64.zip`; SHA-256 `926faa9759236e18d4f5791a4a3be76f0c96973676904f6f5fe08d8aa50b533a`.
+- Auditoria inicial ZIP: 109 entradas, integridade aprovada, componentes essenciais presentes; ausência de `rustdesk.exe` legado.
+- Auditoria integral de manifesto: 108/108 hashes correspondentes, nenhum arquivo fora do manifesto, zero falhas.
+- VM Windows de teste: serviço instalado da build #18 interrompido antes da execução P4 para minimizar conflito de duas instâncias.
+- **APROVADO PELO OPERADOR:** execução portátil P4, logotipo DRGinfo, ID, estado Pronto, links Website/Privacidade corporativos e acesso remoto assistido fim a fim.
+- **NÃO COMPROVADO/CONCLUÍDO NESTA EVIDÊNCIA:** restauração do serviço build #18, instalação automática e persistência pós-reboot P4, GUI online/offline, desinstalação, atualização, assinatura Authenticode, vinculação do artefato ao SHA exato do workflow GitHub Actions, distribuição comercial.
+- A aprovação limita-se ao modo portátil e à conexão testada; manter a build #18 homologada e não substituir instalações existentes.
+
 ## 2026-11-27 — Correção dos três bloqueios de empacotamento (somente fonte)
 - `install/windows/Gerar-Pacote-Instalador.ps1`: versão do instalador, versão do software, SHA-256, URL HTTPS e commit de origem são entradas obrigatórias; `-UnsignedLab` restrito ao canal laboratório; distribuição regular exige thumbprint Authenticode.
 - `install/windows/Gerar-Pacotes-Offline-Portatil.ps1`: recebe explicitamente `-Version`, `-ExpectedHash`, `-InstallerVersion`, `-SourceCommit` e política de assinatura; remove os valores fixos da versão antiga.
