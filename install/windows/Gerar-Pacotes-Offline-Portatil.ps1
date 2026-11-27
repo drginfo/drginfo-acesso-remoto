@@ -9,15 +9,25 @@
 [CmdletBinding()]
 param(
   [Parameter(Mandatory=$true)][string]$SoftwareZip,
-  [Parameter(Mandatory=$true)][string]$OutputRoot
+  [Parameter(Mandatory=$true)][string]$OutputRoot,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$Version,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[a-fA-F0-9]{64}$')][string]$ExpectedHash,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')][string]$InstallerVersion,
+  [Parameter(Mandatory=$true)][ValidatePattern('^[a-fA-F0-9]{40}$')][string]$SourceCommit,
+  [switch]$UnsignedLab,
+  [ValidatePattern('^[a-fA-F0-9]{40,64}$')][string]$PublisherThumbprint
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$Version = '1.5.3-drginfo.2'
-$InstallerVersion = '1.0.0-gui6-offline'
-$ExpectedHash = '7770F8D6B61217568124BBB2FB96D482621BA52FBF1C8CEFF2CD31A2EF776525'
-$SourceCommit = '716b7de3985bdc8a2738129eaadc56b21b07e99f'
+# P4: nenhuma release antiga ou hash e assumido implicitamente.
+if ($UnsignedLab -and $PublisherThumbprint) {
+  throw 'UnsignedLab nao pode coexistir com PublisherThumbprint.'
+}
+if (-not $UnsignedLab -and -not $PublisherThumbprint) {
+  throw 'Instalador regular exige Authenticode; para laboratorio declare -UnsignedLab.'
+}
+$ReleaseChannel = if ($UnsignedLab) { 'laboratorio' } else { 'producao' }
 $BaseUrl = "https://raw.githubusercontent.com/drginfo/drginfo-acesso-remoto/$SourceCommit/"
 $SoftwareUrl = "https://downloads.drginfo.com.br/rustdesk/drginfo-acesso-remoto/$Version/DRGinfo-AcessoRemoto-windows-x64.zip"
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -55,7 +65,7 @@ try {
   Assert-SafeZip $src
   New-Item -ItemType Directory -Path $offline,$portable -Force | Out-Null
 
-  # Front-end/engine vindo de commit fixo: mesmos scripts gui6 e rollback.
+  # Front-end/engine vindo do commit exato informado; sem fallback para legado.
   $files = [ordered]@{
     'instalador-drginfo.cmd' = 'install/windows/instalador-drginfo.cmd'
     'Interface-DRGinfo-AcessoRemoto.ps1' = 'install/windows/Interface-DRGinfo-AcessoRemoto.ps1'
@@ -77,8 +87,12 @@ try {
     '@{'
     '  Offline = $true'
     "  SoftwareUrl = '$SoftwareUrl'"
-    "  SoftwareSha256 = '$ExpectedHash'"
+    "  SoftwareSha256 = '$($ExpectedHash.ToUpperInvariant())'"
     "  SoftwareVersion = '$Version'"
+    "  SourceCommit = '$($SourceCommit.ToLowerInvariant())'"
+    "  ReleaseChannel = '$ReleaseChannel'"
+    ('  UnsignedPilot = ' + $(if ($UnsignedLab) { '$true' } else { '$false' }))
+    "  PublisherThumbprint = '$PublisherThumbprint'"
     '}'
   ) | Set-Content -LiteralPath (Join-Path $offline 'release-config.psd1') -Encoding ASCII
   Copy-Item -LiteralPath $src -Destination (Join-Path $offline 'DRGinfo-AcessoRemoto-windows-x64.zip')
@@ -138,7 +152,8 @@ try {
   @(
     "Version=$Version"
     "SourceCommit=$SourceCommit"
-    "SoftwareSHA256=$ExpectedHash"
+    "SoftwareSHA256=$($ExpectedHash.ToUpperInvariant())"
+    "ReleaseChannel=$ReleaseChannel"
     "OfflineZIP_SHA256=$((Get-FileHash -LiteralPath $offlineZip -Algorithm SHA256).Hash)"
     "PortableZIP_SHA256=$((Get-FileHash -LiteralPath $portableZip -Algorithm SHA256).Hash)"
     'Estado=PREPARADO_NAO_HOMOLOGADO'
