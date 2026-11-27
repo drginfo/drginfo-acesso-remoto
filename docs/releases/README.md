@@ -1,5 +1,6 @@
 # Índice — DRGinfo Acesso Remoto / Preparação de release Windows
-Data: 2026-11-27. Branch: `release/drginfo-windows-p4-links-docs`.
+
+> **Atualização 27/11/2026:** os três bloqueios de versão/hash fixos nos scripts foram corrigidos **no código-fonte** (geradores online/offline/portátil e interface). O bloqueio **operacional** permanece até existir binário novo compilado, SHA-256 independente, revisão do código e testes completos em Windows. Anotações históricas abaixo sobre geradores legados referem-se ao estado anterior desta etapa.\n\nData: 2026-11-27. Branch: `release/drginfo-windows-p4-links-docs`.
 
 | Entregável | Arquivo | Status |
 |---|---|---|
