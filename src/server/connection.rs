@@ -357,6 +357,13 @@ impl TerminalUserToken {
 }
 pub struct Connection {
     inner: ConnInner,
+    // DRGinfo: identidade e estado da auditoria local da sessão (Fase 1).
+    #[cfg(windows)]
+    local_audit_id: String,
+    #[cfg(windows)]
+    local_audit_started: Option<chrono::DateTime<chrono::Utc>>,
+    #[cfg(windows)]
+    local_audit_accepted: bool,
     display_idx: usize,
     stream: super::Stream,
     server: super::ServerPtrWeak,
@@ -576,6 +583,12 @@ impl Connection {
                 tx: Some(tx),
                 tx_video: Some(tx_video),
             },
+            #[cfg(windows)]
+            local_audit_id: uuid::Uuid::new_v4().to_string(),
+            #[cfg(windows)]
+            local_audit_started: None,
+            #[cfg(windows)]
+            local_audit_accepted: false,
             require_2fa: crate::auth_2fa::get_2fa(None),
             awaiting_2fa: false,
             trusted_device: None,
@@ -1941,6 +1954,8 @@ impl Connection {
         }
         self.lr.trusted_device_v2_token.clear();
         self.authorized = true;
+        #[cfg(windows)]
+        self.record_local_acceptance();
         self.unauthorized_id = None;
         // One-time means gone once it has let a peer in, not once that peer
         // leaves. This session's later logins come in on the password the
@@ -2910,6 +2925,10 @@ impl Connection {
 
     async fn handle_login_request_without_validation(&mut self, lr: &LoginRequest) {
         self.lr = lr.clone();
+        #[cfg(windows)]
+        if self.local_audit_started.is_none() {
+            self.local_audit_started = Some(chrono::Utc::now());
+        }
         self.peer_argb = crate::str2color(&format!("{}{}", &lr.my_id, &lr.my_platform), 0xff);
         if let Some(o) = lr.option.as_ref() {
             self.options_in_login = Some(o.clone());
@@ -5441,11 +5460,72 @@ impl Connection {
         }
     }
 
+    // DRGinfo: auditoria local. Falhas são registradas e não alteram a autorização.
+    #[cfg(windows)]
+    fn local_audit_mode(&self) -> &'static str {
+        match self.conn_audit_primary_auth {
+            ConnAuditPrimaryAuth::Click | ConnAuditPrimaryAuth::TemporaryPassword => "assistido",
+            ConnAuditPrimaryAuth::PermanentPassword => "nao_assistido",
+            ConnAuditPrimaryAuth::SwitchSides => "troca_lado",
+            ConnAuditPrimaryAuth::None => "indeterminado",
+        }
+    }
+
+    #[cfg(windows)]
+    fn record_local_acceptance(&mut self) {
+        if self.local_audit_accepted {
+            return;
+        }
+        self.local_audit_accepted = true;
+        let started = *self
+            .local_audit_started
+            .get_or_insert_with(chrono::Utc::now);
+        self.write_local_audit("aceita", started, None);
+    }
+
+    #[cfg(windows)]
+    fn record_local_closure(&self) {
+        let Some(started) = self.local_audit_started else {
+            return;
+        };
+        let result = if self.local_audit_accepted {
+            "encerrada"
+        } else {
+            "recusada"
+        };
+        self.write_local_audit(result, started, Some(chrono::Utc::now()));
+    }
+
+    #[cfg(windows)]
+    fn write_local_audit(
+        &self,
+        result: &str,
+        started: chrono::DateTime<chrono::Utc>,
+        finished: Option<chrono::DateTime<chrono::Utc>>,
+    ) {
+        use super::session_audit::{write_event, SessionEvent};
+        let peer_id: String = self.lr.my_id.chars().take(256).collect();
+        let peer_name: String = self.lr.my_name.chars().take(256).collect();
+        let mode = self.local_audit_mode();
+        write_event(&SessionEvent {
+            session_id: &self.local_audit_id,
+            peer_id: &peer_id,
+            peer_name: &peer_name,
+            origin_ip: &self.ip,
+            mode,
+            result,
+            started,
+            finished,
+        });
+    }
+
     async fn on_close(&mut self, reason: &str, lock: bool) {
         if self.closed {
             return;
         }
         self.closed = true;
+        #[cfg(windows)]
+        self.record_local_closure();
         #[cfg(windows)]
         self.privacy_preparation.take();
         // If voice A,B -> C, and A,B has voice call

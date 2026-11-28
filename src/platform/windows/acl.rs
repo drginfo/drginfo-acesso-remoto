@@ -873,3 +873,141 @@ mod tests {
         let _ = fs::remove_dir_all(&root);
     }
 }
+
+// ---------------------------------------------------------------------------
+// DRGinfo: primitivas da auditoria local (Fase 1).
+// Diretórios recebem DACL protegida, com somente SYSTEM e Administradores.
+// Arquivos criados dentro deles herdam essa DACL, inclusive temporários de purga.
+// ---------------------------------------------------------------------------
+
+/// Cria um diretório com DACL protegida. Se o diretório já existir, não altera a ACL.
+pub(crate) fn create_audit_directory(path: &Path) -> ResultType<()> {
+    use windows::{
+        core::{w, Owned, PCWSTR},
+        Win32::{
+            Foundation::HLOCAL,
+            Security::{
+                Authorization::{
+                    ConvertStringSecurityDescriptorToSecurityDescriptorW, SDDL_REVISION_1,
+                },
+                PSECURITY_DESCRIPTOR, SECURITY_ATTRIBUTES,
+            },
+            Storage::FileSystem::CreateDirectoryW,
+        },
+    };
+
+    if path.is_dir() {
+        return Ok(());
+    }
+    let path_str = path
+        .to_str()
+        .ok_or_else(|| anyhow!("Caminho de auditoria inválido"))?;
+    let wide = wide_string(path_str);
+    let mut descriptor = PSECURITY_DESCRIPTOR::default();
+    // "P" = DACL protegida, sem herdar do pai. "OICI" = herdada por arquivos e subpastas.
+    unsafe {
+        ConvertStringSecurityDescriptorToSecurityDescriptorW(
+            w!("D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)"),
+            SDDL_REVISION_1,
+            &mut descriptor,
+            None,
+        )?;
+    }
+    // Libera o descritor local ao sair do escopo; o kernel copia o que precisa.
+    let _descriptor = unsafe { Owned::new(HLOCAL(descriptor.0)) };
+    let attributes = SECURITY_ATTRIBUTES {
+        nLength: std::mem::size_of::<SECURITY_ATTRIBUTES>() as u32,
+        lpSecurityDescriptor: descriptor.0,
+        bInheritHandle: false.into(),
+    };
+    unsafe { CreateDirectoryW(PCWSTR(wide.as_ptr()), Some(&attributes))? };
+    Ok(())
+}
+
+/// Guarda de um mutex nomeado. Libera (se adquirido) e fecha o handle ao sair de escopo.
+pub(crate) struct NamedMutexGuard {
+    handle: HANDLE,
+    owned: bool,
+}
+
+impl Drop for NamedMutexGuard {
+    fn drop(&mut self) {
+        use windows::Win32::System::Threading::ReleaseMutex;
+        if self.owned {
+            let _ = unsafe { ReleaseMutex(self.handle) };
+        }
+        let _ = unsafe { CloseHandle(self.handle) };
+    }
+}
+
+/// Adquire o mutex nomeado com timeout. Mutex abandonado é recuperado com aviso em log.
+pub(crate) fn acquire_named_mutex(name: &str, timeout_ms: u32) -> ResultType<NamedMutexGuard> {
+    use windows::{
+        core::{w, Owned, PCWSTR},
+        Win32::{
+            Foundation::{HLOCAL, WAIT_ABANDONED, WAIT_OBJECT_0, WAIT_TIMEOUT},
+            Security::{
+                Authorization::{
+                    ConvertStringSecurityDescriptorToSecurityDescriptorW, SDDL_REVISION_1,
+                },
+                PSECURITY_DESCRIPTOR, SECURITY_ATTRIBUTES,
+            },
+            System::Threading::{CreateMutexW, WaitForSingleObject},
+        },
+    };
+
+    let mut descriptor = PSECURITY_DESCRIPTOR::default();
+    // Somente SYSTEM e Administradores podem abrir o mutex.
+    unsafe {
+        ConvertStringSecurityDescriptorToSecurityDescriptorW(
+            w!("D:P(A;;GA;;;SY)(A;;GA;;;BA)"),
+            SDDL_REVISION_1,
+            &mut descriptor,
+            None,
+        )?;
+    }
+    let _descriptor = unsafe { Owned::new(HLOCAL(descriptor.0)) };
+    let attributes = SECURITY_ATTRIBUTES {
+        nLength: std::mem::size_of::<SECURITY_ATTRIBUTES>() as u32,
+        lpSecurityDescriptor: descriptor.0,
+        bInheritHandle: false.into(),
+    };
+    let wide = wide_string(name);
+    let handle = unsafe { CreateMutexW(Some(&attributes), false, PCWSTR(wide.as_ptr()))? };
+    let mut guard = NamedMutexGuard {
+        handle,
+        owned: false,
+    };
+    let wait = unsafe { WaitForSingleObject(handle, timeout_ms) };
+    if wait == WAIT_OBJECT_0 {
+        guard.owned = true;
+        Ok(guard)
+    } else if wait == WAIT_ABANDONED {
+        // O dono anterior terminou sem liberar. Este processo passa a ser o dono.
+        log::warn!("DRGinfo auditoria: mutex abandonado por processo anterior; recuperado");
+        guard.owned = true;
+        Ok(guard)
+    } else if wait == WAIT_TIMEOUT {
+        bail!("timeout aguardando mutex de auditoria")
+    } else {
+        bail!("WaitForSingleObject retornou {:?}", wait)
+    }
+}
+
+/// Substitui `to` por `from` de forma atômica no mesmo volume (MOVEFILE_REPLACE_EXISTING).
+pub(crate) fn replace_file(from: &Path, to: &Path) -> ResultType<()> {
+    use windows::{
+        core::HSTRING,
+        Win32::Storage::FileSystem::{MoveFileExW, MOVEFILE_REPLACE_EXISTING},
+    };
+    let from_w = HSTRING::from(
+        from.to_str()
+            .ok_or_else(|| anyhow!("Caminho de origem inválido"))?,
+    );
+    let to_w = HSTRING::from(
+        to.to_str()
+            .ok_or_else(|| anyhow!("Caminho de destino inválido"))?,
+    );
+    unsafe { MoveFileExW(&from_w, &to_w, MOVEFILE_REPLACE_EXISTING)? };
+    Ok(())
+}

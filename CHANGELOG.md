@@ -13,3 +13,11 @@
 - Corrigido `loadIcon()` para usar ícone DRGinfo derivado do logotipo aprovado; adicionada geração do asset no build.
 - Gate do workflow falha se estiver ausente o ícone gerado ou referência aos assets DRGinfo.
 - Sem mudanças em servidor, chave, ACLs, instalador homologado e builds Linux/Android.
+
+## Auditoria local de sessões (Fase 1, Windows, não homologada)
+
+- Adicionado registro local JSONL por sessão (`src/server/session_audit.rs`), com eventos `aceita`, `encerrada` e `recusada` e modos `assistido`, `nao_assistido`, `troca_lado` e `indeterminado`.
+- Adicionadas primitivas em `src/platform/windows/acl.rs`: diretório com DACL protegida, mutex nomeado com timeout e substituição atômica de arquivo.
+- Retenção de 90 dias pelo timestamp de cada evento, com purga na inicialização e a cada hora no processo servidor.
+- Nenhuma alteração em autenticação, autorização, rendezvous ou permissões de controle remoto.
+- Pendente: compilação Windows x64 e homologação conforme `docs/TESTES.md`.

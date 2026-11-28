@@ -64,3 +64,17 @@ Não liberar se faltar marca, configuração embarcada ou proteção contra atua
 - Confirmado que `get_key(sync=false)` pode consultar IPC; no módulo exato os overrides devem estar presentes no mapa retornado por `Config::get_options()`, condicionado ao processo receptor ter carregado a configuração embarcada. Não foi verificado empiricamente sob Windows.
 - **Lacunas antes da build:** a configuração de `api-server` continua protegida contra edição sem ter valor embutido explícito; checar se o bloqueio da API é necessário para o produto. `Config2` permite `rendezvous_server` legado privado e sincronização de segurança; overrides corporativos têm prioridade nos métodos inspecionados, mas não equivalem a proteção contra edição binária. Conferir a compatibilidade de autenticação/IPC e ausência de regressões em teste Windows.
 - **Status:** revisão estática do submódulo fixado concluída e correção de escrita do instalador aplicada no fonte; ainda NÃO houve compilação, execução de testes Rust ou homologação. A build #10 permanece intocada.
+
+## Auditoria local de sessões (Fase 1, Windows)
+
+- **O que é registrado:** um evento `aceita` quando a autorização é efetiva e um evento `encerrada` ou `recusada` no encerramento da conexão, correlacionados pelo mesmo `session_id` (UUID v4).
+- **Campos:** `peer_id`, `peer_name` (limitados a 256 caracteres), `origin_ip` (ou `indisponivel`), `started_at_utc`, `finished_at_utc`, `duration_seconds`, `mode`, `result`.
+- **Modos:** `assistido` (Click, senha temporária), `nao_assistido` (senha permanente), `troca_lado` (SwitchSides) e `indeterminado` (mecanismo não identificado).
+- **Não registrado:** senhas, hashes, tokens, chaves, conteúdo de tela, teclado, áudio ou arquivos.
+- **Local:** `%PROGRAMDATA%\DRGinfo Acesso Remoto\auditoria\sessoes\AAAA-MM-DD.jsonl`.
+- **Permissões:** DACL protegida, somente SYSTEM e Administradores (`S-1-5-18` e `S-1-5-32-544`), herdada por arquivos e temporários. Aplicada na criação dos diretórios. Diretórios que já existiam não têm a ACL alterada por este código.
+- **Concorrência:** mutex nomeado global `Global\DRGinfo.AcessoRemoto.Auditoria`, com ACL restrita a SYSTEM e Administradores, timeout de 5 s e recuperação de mutex abandonado. Gravação e purga usam o mesmo mutex.
+- **Retenção:** 90 dias corridos, pelo timestamp individual de cada evento. A purga roda na inicialização do processo servidor e a cada hora. Reescrita por arquivo temporário e substituição atômica (`MoveFileExW` com `MOVEFILE_REPLACE_EXISTING`). Uma máquina desligada não executa a purga; ao ligar, a purga roda na inicialização.
+- **Falhas (fail-open):** falha de criação de diretório, ACL, mutex, gravação ou purga é registrada no log do aplicativo. Nenhuma falha altera `self.authorized` nem bloqueia a sessão.
+- **Limitações conhecidas:** a gravação é síncrona e pode aguardar até 5 s pelo mutex; o `origin_ip` pode ser o IP do relay, não do técnico original; um administrador local pode alterar os arquivos; a integridade ainda não tem assinatura ou encadeamento de registros.
+- **Status:** implementação proposta, sem compilação Windows nem homologação.

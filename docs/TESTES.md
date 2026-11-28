@@ -88,3 +88,20 @@ Não confundir script disponível com execução ou homologação.
 - Outros sistemas operacionais e o RustDesk sem customização continuam utilizando o caminho original.
 - Commits: `53f3bdbde8c41b50770bae723bcf8b5b93493118` e `4c4130802519c2ff6565ad854e4893ed63faf698`.
 - **Pendências:** Flutter analyzer/compilação não executados; verificar que todas as entradas da caixa de servidor foram cobertas, inclusive deep links. A regra de proteção efetiva continua em Rust; ocultar UI não é um limite de segurança isolado. A build #10 permanece homologada no escopo anterior, inalterada.
+
+## Homologação da auditoria local (Fase 1)
+
+Pré-requisito: patch aplicado em branch de teste, build Windows x64 gerada pelo workflow `drginfo-diagnostico-windows-x64.yml`.
+
+1. Compilar e confirmar que a identidade DRGinfo permanece inalterada.
+2. Iniciar o serviço e verificar ACL de `ProgramData\DRGinfo Acesso Remoto\auditoria\sessoes`: somente SYSTEM e Administradores, sem herança.
+3. Conexão assistida com aceite: eventos `aceita` e `encerrada` com o mesmo `session_id`, modo `assistido`.
+4. Conexão com senha permanente: modo `nao_assistido`.
+5. Recusa: nenhum evento `aceita`; evento `recusada` no encerramento.
+6. Conferir em cada linha: UTC, `duration_seconds`, `peer_id`, `peer_name`, `origin_ip`, JSON válido e ausência de credenciais ou conteúdo remoto.
+7. Forçar falha de escrita (diretório sem permissão) e confirmar erro no log sem interromper a conexão.
+8. Retenção: criar registros com `started_at_utc` de 91 dias e 89 dias em arquivo de teste; após a purga, somente os de 89 dias permanecem e o arquivo temporário não fica no diretório.
+9. Dois processos servidores disputando o mutex: nenhuma linha perdida após purga concorrente.
+10. Reinício e encerramento abrupto: o evento `aceita` permanece no arquivo.
+
+Critério: todos os itens executados e documentados com data, operador e resultado.
